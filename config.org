@@ -1,0 +1,42 @@
+#+TITLE: Emacs Configuration
+#+OPTIONS: toc:4 h:4
+
+* General Emacs Settings
+  
+** UI configuration
+   Removing menu bar, toolbar and scollbar
+  
+#+BEGIN_SRC emacs-lisp
+  (when (fboundp 'menu-bar-mode) (menu-bar-mode -1))
+  (when (fboundp 'tool-bar-mode) (tool-bar-mode -1))
+  (when (fboundp 'scroll-bar-mode) (scroll-bar-mode -1))
+#+END_SRC  
+  
+** Standard configuration
+   
+
+#+BEGIN_SRC emacs-lisp
+  (setq inhibit-splash-screen t) ;; Remove splas screen
+  (global-linum-mode t) ;; enable lines in gutter
+  (setq backup-directory-alist '(("." . "~/.saves"))) ;; Save backup files in a dedicated directory
+  (server-start) ;; Startup emacs server
+#+END_SRC
+
+** Window configuration
+   
+#+BEGIN_SRC emacs-lisp
+  (winner-mode 1) 
+  (windmove-default-keybindings) ;; Set S-<arrows> to move around the windows (S- <arrow> to move along windows)
+#+END_SRC
+
+   Commands for controlling windows
+   C-c <-    : Restore configuration
+   C-c ->    : Next configuration
+   S-<arrow> : Move between windows
+   
+** Setting up the color theme
+
+#+BEGIN_SRC emacs-lisp
+  (add-to-list 'custom-theme-load-path "~/.emacs.d/emacs-color-theme-solarized")
+  (load-theme 'solarized-dark t)
+#+END_SRC
