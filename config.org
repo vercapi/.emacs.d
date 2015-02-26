@@ -4,6 +4,7 @@
 * General Emacs Settings
   
 ** UI configuration
+*** Emacs window (Frame in emacs terminology)
    Removing menu bar, toolbar and scollbar
   
 #+BEGIN_SRC emacs-lisp
@@ -11,15 +12,55 @@
   (when (fboundp 'tool-bar-mode) (tool-bar-mode -1))
   (when (fboundp 'scroll-bar-mode) (scroll-bar-mode -1))
 #+END_SRC  
-  
-** Standard configuration
-   
+
+*** mode line
+    Set the file size on the mode line  
+#+BEGIN_SRC emacs-lisp
+(setq size-indication-mode t)
+#+END_SRC
+
+*** Mini bufer
+
+    Turn ido mode on
+    Ido is a better autocomplete on the 
 
 #+BEGIN_SRC emacs-lisp
-  (setq inhibit-splash-screen t) ;; Remove splas screen
-  (global-linum-mode t) ;; enable lines in gutter
-  (setq backup-directory-alist '(("." . "~/.saves"))) ;; Save backup files in a dedicated directory
-  (server-start) ;; Startup emacs server
+(require 'ido)
+(ido-mode t)
+#+END_SRC
+
+   Turn on line numbers in the gutter
+*** Text area
+
+#+BEGIN_SRC emacs-lisp
+(setq column-number-mode t)
+#+END_SRC
+    
+*** Fonts
+    Set the standard fonts for emacs and other componets
+    This is based on std configuration. So if emacs adds this again in init.el or .emacs things might break and this needs to be update manually
+
+#+BEGIN_SRC emacs-lisp
+(custom-set-faces
+ '(default ((t (:family "DejaVu Sans Mono" :foundry "unknown" :slant normal :weight normal :height 140 :width normal))))
+ '(minimap-font-face ((t (:height 40 :family "DejaVu Sans Mono")))))
+#+END_SRC
+
+** Standard configuration
+   
+   Removing splash screen
+   Set line numbers in gutter
+   All backup files are located in 1 directory
+   Start emacs server so files can be opened in the running instance
+   Set username and address
+
+#+BEGIN_SRC emacs-lisp
+  (setq inhibit-splash-screen t)
+  (global-linum-mode t)
+  (setq backup-directory-alist '(("." . "~/.saves")))
+  (server-start)
+  (setq user-full-name "Pieter Vercammen")
+  (setq user-mail-address "pieterv.sorano@gmail.com")
 #+END_SRC
 
 ** Window configuration
@@ -39,4 +80,293 @@
 #+BEGIN_SRC emacs-lisp
   (add-to-list 'custom-theme-load-path "~/.emacs.d/emacs-color-theme-solarized")
   (load-theme 'solarized-dark t)
+#+END_SRC
+** Locale Settings
+
+#+BEGIN_SRC emacs-lisp
+   (set-language-environment 'utf-8)
+   (set-terminal-coding-system 'utf-8)
+   (setq locale-coding-system 'utf-8)
+   (set-default-coding-systems 'utf-8)
+   (set-selection-coding-system 'utf-8)
+   (prefer-coding-system 'utf-8)
+#+END_SRC
+** Global editor settings
+
+#+BEGIN_SRC emacs-lisp
+  (setq-default indent-tabs-mode nil) ;; don't use tabs
+  (setq-default tab-width 2) ;; use 2 space tabs
+  (global-hl-line-mode 1) ;; highlight current line
+  (show-paren-mode 1) ;; show matching parentheses
+  (tool-bar-mode -1) ;; no toolbar
+  (column-number-mode t)
+  (size-indication-mode) ;; show filesize
+  (fset 'yes-or-no-p 'y-or-n-p) ;; type y/n not yes/no
+#+END_SRC
+
+* Packages setup
+
+  Initialize
+#+BEGIN_SRC emacs-lisp
+;; activate all the packages (in particular autoloads)
+(package-initialize)
+#+END_SRC
+
+
+** Packages sources
+
+#+BEGIN_SRC emacs-lisp
+ (setq package-archives '(("melpa" . "http://melpa.milkbox.net/packages/")
+                          ("marmalade" . "http://marmalade-repo.org/packages/")
+                          ("SC" . "http://joseito.republika.pl/sunrise-commander/")
+                          ("gnu" . "http://elpa.gnu.org/packages/")))
+#+END_SRC
+
+** List of packages
+   
+    package List and installation
+
+#+BEGIN_SRC emacs-lisp
+(setq package-list '(ace-jump-mode autopair ecb goto-chg undo-tree expand-region f dash s flymake-lua flymake-python-pyflakes flymake-easy flymake-yaml flymake-easy goto-chg iy-go-to-char jedi python-environment deferred auto-complete popup epc ctable concurrent deferred lua-mode magit git-rebase-mode git-commit-mode multiple-cursors nurumacs popup projectile pkg-info epl dash s pymacs python-environment deferred s sr-speedbar ssh sunrise-commander undo-tree yaml-mode))
+
+;; refresh package archive
+(unless package-archive-contents
+  (package-refresh-contents)e)
+
+;; install the missing packages
+(dolist (package package-list)
+  (unless (package-installed-p package)
+    (package-install package)))
+
+#+END_SRC
+
+* CEDET
+** Iinitialize CEDET
+
+#+BEGIN_SRC emacs-lisp
+(load-file "~/.emacs.d/cedet-bzr/trunk/cedet-devel-load.el") 
+(add-to-list 'semantic-default-submodes 'global-semantic-idle-summary-mode t)
+(add-to-list 'semantic-default-submodes 'global-semantic-idle-completions-mode t)
+(add-to-list 'semantic-default-submodes 'global-cedet-m3-minor-mode t)
+(add-to-list 'semantic-default-submodes 'global-semantic-highlight-func-mode t)
+(semantic-mode 1)                        ; Enable semantic
+
+;; load contrib library
+(load-file "~/.emacs.d/cedet-bzr/trunk/contrib/cedet-contrib-load.el")
+#+END_SRC
+
+* ECB
+  Emacs Code Browser
+  Set the configurations for ECB
+#+BEGIN_SRC emacs-lisp
+(setq ecb-options-version "2.40")
+(setq ecb-tip-of-the-day nil)
+#+END_SRC
+* Org Mode
+
+** Display settings
+
+#+BEGIN_SRC emacs-lisp
+  (setq org-src-fontify-natively t)
+#+END_SRC
+
+
+
+
+** Code blocks
+
+#+BEGIN_SRC emacs-lisp
+(org-babel-do-load-languages
+ 'org-babel-load-languages
+ '( (python . t)
+     )
+ )
+#+END_SRC
+
+* Python
+
+  Setup python environment
+
+#+BEGIN_SRC emacs-lisp
+(setq python-version-checked t)
+(setenv "PYMACS_PYTHON" "python2")
+(setq python-python-command "python2")
+(setq py-shell-name "/usr/bin/python2")
+#+END_SRC
+
+** pymacs
+
+Initialize pymacs
+Pymacs is an interface between emacs and python.
+
+#+BEGIN_SRC emacs-lisp
+(autoload 'pymacs-apply "pymacs")
+(autoload 'pymacs-call "pymacs")
+(autoload 'pymacs-eval "pymacs" nil t)
+(autoload 'pymacs-exec "pymacs" nil t)
+(autoload 'pymacs-load "pymacs" nil t)
+(autoload 'pymacs-autoload "pymacs")
+#+END_SRC
+
+** ropemacs 
+
+intialize ropemacs
+ropemacs is a refactoring framework for python
+
+#+BEGIN_SRC emacs-lisp
+(pymacs-load "ropemacs" "rope-")
+#+END_SRC
+
+** jedi
+
+   Initalize jedi
+   Jedi is an autocomplete tool for python
+
+#+BEGIN_SRC emacs lisp
+(require 'jedi)
+(add-hook 'python-mode-hook 'jedi:setup)
+#+END_SRC
+
+** pyflakes
+
+   Initialize pyflakes   
+   pyflakes is a syntac checker for python
+
+#+BEGIN_SRC emacs-lisp
+(add-hook 'python-mode-hook 'flymake-python-pyflakes-load)
+#+END_SRC
+
+   Show info about error at point
+
+#+BEGIN_SRC emacs-lisp
+(defun flymake-show-error ()
+      "Show error at point"
+      (interactive)
+      (let ((err (get-char-property (point) 'help-echo)))
+        (when err
+          (message err))))
+#+END_SRC
+
+** py-tests
+   Custom el code to run standard tests right from emacs
+   
+#+BEGIN_SRC emacs-lisp
+(load "~/.emacs.d/custom/py-tests.el")
+#+END_SRC
+
+** python-tools
+
+   Some random collection of tools to use with python
+
+#+BEGIN_SRC emacs-lisp
+(load "~/.emacs.d/custom/py-tests.el")
+#+END_SRC
+
+#+RESULTS:
+: t
+
+** python keymaps
+
+#+BEGIN_SRC emacs-lisp
+(global-set-key (kbd "C-c J") 'semantic-ia-fast-jump)
+(global-set-key (kbd "C-c j") 'jedi:goto-definition)
+(global-set-key (kbd "C-c d") 'jedi:show-doc)
+(global-set-key (kbd "<C-tab>") 'jedi:complete)
+(global-set-key (kbd "C-c i") 'flymake-show-error)
+(global-set-key (kbd "C-c n") 'senator-next-tag)
+(global-set-key (kbd "C-c p") 'senator-previous-tag)
+(global-set-key (kbd "C-D") 'python-docstring)
+#+END_SRC
+   
+* Navigation
+** ace-jump
+
+   Ace jump let you jump directrly to some character
+   Intialize ace-jump
+
+#+BEGIN_SRC emacs-lisp
+(autoload
+  'ace-jump-mode
+  "ace-jump-mode"
+  "Emacs quick move minor mode"
+  t)
+(define-key global-map (kbd "C-c SPC") 'ace-jump-mode)
+
+#+END_SRC
+** sr-speedbar
+
+   Speedbar is a tool that creates a window and shows speedbar inside
+   Initialize sr-speedbar
+
+#+BEGIN_SRC emacs-lisp
+(require 'sr-speedbar)
+#+END_SRC
+
+** Navigation keymaps
+   
+   Some global keymaps
+
+#+BEGIN_SRC emacs-lisp
+(global-set-key (kbd "C-c f") 'iy-go-to-char)
+(global-set-key (kbd "C-c F") 'iy-go-to-char-backward)
+(global-set-key (kbd "C-c ;") 'iy-go-to-or-up-to-continue)
+(global-set-key (kbd "C-c ,") 'iy-go-to-or-up-to-continue-backward)
+#+END_SRC
+* Text
+
+** autocomplete
+   
+   autocomplete in drop down menus (inline)
+*** TODO Is this realy needed?
+
+#+BEGIN_SRC emacs-lisp
+(require 'auto-complete-config)
+(add-to-list 'ac-dictionary-directories "~/.emacs.d/ac-dict")
+(ac-config-default)
+#+END_SRC
+
+** undo-tree
+
+   An advanced undo system
+
+#+BEGIN_SRC emacs-lisp
+(global-undo-tree-mode t)
+(setq undo-tree-visualizer-relative-timestamps t)
+(setq undo-tree-visualizer-timestamps t)
+#+END_SRC
+** autopair
+   
+   Automagically pair braces and quotes like TextMate
+
+#+BEGIN_SRC emacs-lisp
+(require 'autopair)
+(autopair-global-mode)
+#+END_SRC
+
+** Multiple cursors
+
+   Mutliple cursors does what it says
+
+#+BEGIN_SRC emacs-lisp
+(global-set-key (kbd "C->") 'mc/mark-next-like-this)
+(global-set-key (kbd "C-<") 'mc/mark-previous-like-this)
+(global-set-key (kbd "C-c C-<") 'mc/mark-all-like-this)
+#+END_SRC
+* Code
+** Standard configuration
+   
+   Show matching parentheses
+#+BEGIN_SRC emacs-lisp
+(setq show-paren-mode t)
+#+END_SRC
+** Keymaps for comments
+
+#+BEGIN_SRC emacs-lisp
+(global-set-key (kbd "C-;") 'comment-or-uncomment-region)
+#+END_SRC
+
+** Keymaps for selection
+
+#+BEGIN_SRC emacs-lisp
+(global-set-key (kbd "C-=") 'er/expand-region)
 #+END_SRC
