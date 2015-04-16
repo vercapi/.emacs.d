@@ -42,8 +42,8 @@
 
 #+BEGIN_SRC emacs-lisp
 (custom-set-faces
- '(default ((t (:family "DejaVu Sans Mono" :foundry "unknown" :slant normal :weight normal :height 140 :width normal))))
- '(minimap-font-face ((t (:height 40 :family "DejaVu Sans Mono")))))
+ '(default ((t (:family "DejaVu Sans Mono for Powerline" :foundry "unknown" :slant normal :weight normal :height 140 :width normal))))
+ '(mode-line ((t (:family "DejaVu Sans Mono for Powerline" :foundry "unknown" :slant normal :weight normal :height 140 :width normal)))))
 #+END_SRC
 
 ** Standard configuration
@@ -75,12 +75,6 @@
    C-c ->    : Next configuration
    S-<arrow> : Move between windows
    
-** Setting up the color theme
-
-#+BEGIN_SRC emacs-lisp
-  (add-to-list 'custom-theme-load-path "~/.emacs.d/emacs-color-theme-solarized")
-  (load-theme 'solarized-dark t)
-#+END_SRC
 ** Locale Settings
 
 #+BEGIN_SRC emacs-lisp
@@ -127,7 +121,7 @@
     package List and installation
 
 #+BEGIN_SRC emacs-lisp
-(setq package-list '(ace-jump-mode autopair ecb goto-chg undo-tree expand-region f dash s flymake-lua flymake-python-pyflakes flymake-easy flymake-yaml flymake-easy goto-chg iy-go-to-char jedi python-environment deferred auto-complete popup epc ctable concurrent deferred lua-mode magit git-rebase-mode git-commit-mode multiple-cursors nurumacs popup projectile pkg-info epl dash s pymacs python-environment deferred s sr-speedbar ssh sunrise-commander undo-tree yaml-mode))
+(setq package-list '(ace-jump-mode autopair ecb goto-chg undo-tree expand-region f dash s flymake-lua flymake-python-pyflakes flymake-easy flymake-yaml flymake-easy goto-chg iy-go-to-char jedi python-environment deferred auto-complete popup epc ctable concurrent deferred lua-mode magit git-rebase-mode git-commit-mode multiple-cursors nurumacs popup projectile pkg-info epl dash s pymacs python-environment deferred s sr-speedbar ssh sunrise-commander undo-tree yaml-mode powerline solarized-theme))
 
 ;; refresh package archive
 (unless package-archive-contents
@@ -139,7 +133,7 @@
     (package-install package)))
 
 #+END_SRC
-
+    
 * CEDET
 ** Iinitialize CEDET
 
@@ -163,7 +157,6 @@
 (setq ecb-tip-of-the-day nil)
 #+END_SRC
 * Org Mode
-
 ** Display settings
 
 #+BEGIN_SRC emacs-lisp
@@ -171,16 +164,43 @@
 #+END_SRC
 
 
-
-
 ** Code blocks
 
+Set languages that can be executed
+
 #+BEGIN_SRC emacs-lisp
-(org-babel-do-load-languages
- 'org-babel-load-languages
- '( (python . t)
-     )
- )
+  (org-babel-do-load-languages
+   'org-babel-load-languages
+   '((python . t)
+     (sh . t)
+     (emacs-lisp . t)
+     ))
+#+END_SRC
+
+Set it so that code executes without asking permission when pressing C-c C-c
+
+#+BEGIN_SRC emacs-lisp
+(setq org-confirm-babel-evaluate nil)
+#+END_SRC
+
+* UI
+** Theme
+
+   https://github.com/bbatsov/solarized-emacs
+
+#+BEGIN_SRC emacs-lisp
+  (load-theme 'solarized-dark t)
+#+END_SRC
+   
+** Powerline
+   Activate powerline with the default theme
+
+   You need to use patched fonts -> 
+   git clone https://github.com/powerline/fonts
+
+#+BEGIN_SRC emacs-lisp
+  (require 'powerline)
+  (powerline-default-theme)
 #+END_SRC
 
 * Python
@@ -188,10 +208,10 @@
   Setup python environment
 
 #+BEGIN_SRC emacs-lisp
-(setq python-version-checked t)
-(setenv "PYMACS_PYTHON" "python2")
-(setq python-python-command "python2")
-(setq py-shell-name "/usr/bin/python2")
+  (setq python-version-checked t)
+  (setenv "PYMACS_PYTHON" "python2")
+  (setq python-python-command "python2")
+  (setq py-shell-name "/usr/bin/python2")
 #+END_SRC
 
 ** pymacs
@@ -370,3 +390,4 @@ ropemacs is a refactoring framework for python
 #+BEGIN_SRC emacs-lisp
 (global-set-key (kbd "C-=") 'er/expand-region)
 #+END_SRC
+   

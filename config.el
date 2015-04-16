@@ -3,12 +3,16 @@
 (when (fboundp 'tool-bar-mode) (tool-bar-mode -1))
 (when (fboundp 'scroll-bar-mode) (scroll-bar-mode -1))
 
+(setq size-indication-mode t)
+
 (require 'ido)
 (ido-mode t)
 
 (setq column-number-mode t)
 
-(setq size-indication-mode t)
+(custom-set-faces
+ '(default ((t (:family "DejaVu Sans Mono for Powerline" :foundry "unknown" :slant normal :weight normal :height 140 :width normal))))
+ '(mode-line ((t (:family "DejaVu Sans Mono for Powerline" :foundry "unknown" :slant normal :weight normal :height 140 :width normal)))))
 
 (setq inhibit-splash-screen t)
 (global-linum-mode t)
@@ -19,9 +23,6 @@
 
 (winner-mode 1) 
 (windmove-default-keybindings) ;; Set S-<arrows> to move around the windows (S- <arrow> to move along windows)
-
-(add-to-list 'custom-theme-load-path "~/.emacs.d/emacs-color-theme-solarized")
-(load-theme 'solarized-dark t)
 
 (set-language-environment 'utf-8)
 (set-terminal-coding-system 'utf-8)
@@ -47,7 +48,7 @@
                          ("SC" . "http://joseito.republika.pl/sunrise-commander/")
                          ("gnu" . "http://elpa.gnu.org/packages/")))
 
-(setq package-list '(ace-jump-mode autopair ecb goto-chg undo-tree expand-region f dash s flymake-lua flymake-python-pyflakes flymake-easy flymake-yaml flymake-easy goto-chg iy-go-to-char jedi python-environment deferred auto-complete popup epc ctable concurrent deferred lua-mode magit git-rebase-mode git-commit-mode multiple-cursors nurumacs popup projectile pkg-info epl dash s pymacs python-environment deferred s sr-speedbar ssh sunrise-commander undo-tree yaml-mode))
+(setq package-list '(ace-jump-mode autopair ecb goto-chg undo-tree expand-region f dash s flymake-lua flymake-python-pyflakes flymake-easy flymake-yaml flymake-easy goto-chg iy-go-to-char jedi python-environment deferred auto-complete popup epc ctable concurrent deferred lua-mode magit git-rebase-mode git-commit-mode multiple-cursors nurumacs popup projectile pkg-info epl dash s pymacs python-environment deferred s sr-speedbar ssh sunrise-commander undo-tree yaml-mode powerline solarized-theme))
 
 ;; refresh package archive
 (unless package-archive-contents
@@ -75,9 +76,15 @@
 
 (org-babel-do-load-languages
  'org-babel-load-languages
- '( (python . t)
-     )
- )
+ '((python . t)
+   (sh . t)
+   (emacs-lisp . t)
+   ))
+
+(load-theme 'solarized-dark t)
+
+(require 'powerline)
+(powerline-default-theme)
 
 (setq python-version-checked t)
 (setenv "PYMACS_PYTHON" "python2")
