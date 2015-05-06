@@ -48,7 +48,7 @@
                          ("SC" . "http://joseito.republika.pl/sunrise-commander/")
                          ("gnu" . "http://elpa.gnu.org/packages/")))
 
-(setq package-list '(ace-jump-mode autopair ecb goto-chg undo-tree expand-region f dash s flymake-lua flymake-python-pyflakes flymake-easy flymake-yaml flymake-easy goto-chg iy-go-to-char jedi python-environment deferred auto-complete popup epc ctable concurrent deferred lua-mode magit git-rebase-mode git-commit-mode multiple-cursors nurumacs popup projectile pkg-info epl dash s pymacs python-environment deferred s sr-speedbar ssh sunrise-commander undo-tree yaml-mode powerline solarized-theme))
+(setq package-list '(ace-jump-mode autopair ecb goto-chg undo-tree expand-region f dash s flymake-lua flymake-python-pyflakes flymake-easy flymake-yaml flymake-easy goto-chg iy-go-to-char jedi python-environment deferred auto-complete popup epc ctable concurrent deferred lua-mode magit git-rebase-mode git-commit-mode multiple-cursors nurumacs popup projectile pkg-info epl dash s pymacs python-environment deferred s sr-speedbar ssh sunrise-commander undo-tree yaml-mode powerline solarized-theme markdown-mode))
 
 ;; refresh package archive
 (unless package-archive-contents
@@ -81,6 +81,8 @@
    (emacs-lisp . t)
    ))
 
+(setq org-confirm-babel-evaluate nil)
+
 (load-theme 'solarized-dark t)
 
 (require 'powerline)
@@ -90,6 +92,8 @@
 (setenv "PYMACS_PYTHON" "python2")
 (setq python-python-command "python2")
 (setq py-shell-name "/usr/bin/python2")
+(setq py-python-command "/usr/bin/python2")
+(setq python-environment-virtualenv (list "virtualenv2" "--system-site-packages" "--quiet"))
 
 (autoload 'pymacs-apply "pymacs")
 (autoload 'pymacs-call "pymacs")
@@ -109,6 +113,8 @@
         (when err
           (message err))))
 
+(global-set-key (kbd "C-c i") 'flymake-show-error)
+
 (load "~/.emacs.d/custom/py-tests.el")
 
 (load "~/.emacs.d/custom/py-tests.el")
@@ -117,7 +123,6 @@
 (global-set-key (kbd "C-c j") 'jedi:goto-definition)
 (global-set-key (kbd "C-c d") 'jedi:show-doc)
 (global-set-key (kbd "<C-tab>") 'jedi:complete)
-(global-set-key (kbd "C-c i") 'flymake-show-error)
 (global-set-key (kbd "C-c n") 'senator-next-tag)
 (global-set-key (kbd "C-c p") 'senator-previous-tag)
 (global-set-key (kbd "C-D") 'python-docstring)

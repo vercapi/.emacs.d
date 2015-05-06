@@ -121,7 +121,7 @@
     package List and installation
 
 #+BEGIN_SRC emacs-lisp
-(setq package-list '(ace-jump-mode autopair ecb goto-chg undo-tree expand-region f dash s flymake-lua flymake-python-pyflakes flymake-easy flymake-yaml flymake-easy goto-chg iy-go-to-char jedi python-environment deferred auto-complete popup epc ctable concurrent deferred lua-mode magit git-rebase-mode git-commit-mode multiple-cursors nurumacs popup projectile pkg-info epl dash s pymacs python-environment deferred s sr-speedbar ssh sunrise-commander undo-tree yaml-mode powerline solarized-theme))
+(setq package-list '(ace-jump-mode autopair ecb goto-chg undo-tree expand-region f dash s flymake-lua flymake-python-pyflakes flymake-easy flymake-yaml flymake-easy goto-chg iy-go-to-char jedi python-environment deferred auto-complete popup epc ctable concurrent deferred lua-mode magit git-rebase-mode git-commit-mode multiple-cursors nurumacs popup projectile pkg-info epl dash s pymacs python-environment deferred s sr-speedbar ssh sunrise-commander undo-tree yaml-mode powerline solarized-theme markdown-mode))
 
 ;; refresh package archive
 (unless package-archive-contents
@@ -207,11 +207,14 @@ Set it so that code executes without asking permission when pressing C-c C-c
 
   Setup python environment
 
+Setting everything to use python 2
 #+BEGIN_SRC emacs-lisp
   (setq python-version-checked t)
   (setenv "PYMACS_PYTHON" "python2")
   (setq python-python-command "python2")
   (setq py-shell-name "/usr/bin/python2")
+  (setq py-python-command "/usr/bin/python2")
+  (setq python-environment-virtualenv (list "virtualenv2" "--system-site-packages" "--quiet"))
 #+END_SRC
 
 ** pymacs
@@ -242,9 +245,21 @@ ropemacs is a refactoring framework for python
    Initalize jedi
    Jedi is an autocomplete tool for python
 
-#+BEGIN_SRC emacs lisp
+#+BEGIN_SRC emacs-lisp
 (require 'jedi)
 (add-hook 'python-mode-hook 'jedi:setup)
+#+END_SRC
+
+This actually makes sure jedi uses the "two" virtual env. Because this is a python 2 environment we need to use the virtualenv2 command.
+Directory: ~/.emacs.d/.python-environments/two
+Create virtualenv with: "virtualenv2 --system-site-packages two" in the "~/.emacs.d/.python-environments" directory
+When switching environments execute "jedi:install-server" again in emacs
+
+#+BEGIN_SRC emacs-lisp
+(setq jedi:environment-root "two")
+(setq jedi:environment-virtualenv
+      (append "virtualenv2"
+              '("--python" "/usr/bin/python2")))
 #+END_SRC
 
 ** pyflakes
@@ -265,6 +280,8 @@ ropemacs is a refactoring framework for python
       (let ((err (get-char-property (point) 'help-echo)))
         (when err
           (message err))))
+
+(global-set-key (kbd "C-c i") 'flymake-show-error)
 #+END_SRC
 
 ** py-tests
@@ -292,7 +309,6 @@ ropemacs is a refactoring framework for python
 (global-set-key (kbd "C-c j") 'jedi:goto-definition)
 (global-set-key (kbd "C-c d") 'jedi:show-doc)
 (global-set-key (kbd "<C-tab>") 'jedi:complete)
-(global-set-key (kbd "C-c i") 'flymake-show-error)
 (global-set-key (kbd "C-c n") 'senator-next-tag)
 (global-set-key (kbd "C-c p") 'senator-previous-tag)
 (global-set-key (kbd "C-D") 'python-docstring)
