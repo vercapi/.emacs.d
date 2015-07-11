@@ -121,7 +121,7 @@
     package List and installation
 
 #+BEGIN_SRC emacs-lisp
-(setq package-list '(ace-jump-mode autopair ecb goto-chg undo-tree expand-region f dash s flymake-lua flymake-python-pyflakes flymake-easy flymake-yaml flymake-easy goto-chg iy-go-to-char jedi python-environment deferred auto-complete popup epc ctable concurrent deferred lua-mode magit git-rebase-mode git-commit-mode multiple-cursors nurumacs popup projectile pkg-info epl dash s pymacs python-environment deferred s sr-speedbar ssh sunrise-commander undo-tree yaml-mode powerline solarized-theme markdown-mode))
+(setq package-list '(ace-jump-mode ecb goto-chg undo-tree expand-region f dash s flymake-lua flymake-python-pyflakes flymake-easy flymake-yaml flymake-easy goto-chg iy-go-to-char jedi python-environment deferred auto-complete popup epc ctable concurrent deferred lua-mode magit git-rebase-mode git-commit-mode multiple-cursors nurumacs popup projectile pkg-info epl dash s pymacs python-environment deferred s sr-speedbar ssh sunrise-commander undo-tree yaml-mode powerline solarized-theme markdown-mode helm helm-pydoc))
 
 ;; refresh package archive
 (unless package-archive-contents
@@ -163,7 +163,6 @@
   (setq org-src-fontify-natively t)
 #+END_SRC
 
-
 ** Code blocks
 
 Set languages that can be executed
@@ -182,6 +181,72 @@ Set it so that code executes without asking permission when pressing C-c C-c
 #+BEGIN_SRC emacs-lisp
 (setq org-confirm-babel-evaluate nil)
 #+END_SRC
+
+Set python version
+#+BEGIN_SRC emacs-lisp
+(setq org-babel-python-command "python2")
+#+END_SRC
+
+** Keymaps
+   
+   | Key   | Function                |
+   |-------+-------------------------|
+   | C-C ' | Edit code in own editor |
+   |       |                         |
+   |       |                         |
+   |       |                         |
+      
+* helm
+
+[[http://tuhdo.github.io/helm-intro.html][Helm tutorial]]
+
+Helm is find first decide action later
+
+** General config
+
+#+BEGIN_SRC elisp
+  (require helm)
+  (require 'helm-config)
+  (helm-mode 1)
+
+  (setq helm-split-window-in-side-p           t ; open helm buffer inside current window, not occupy whole other window
+        helm-move-to-line-cycle-in-source     t ; move to end or beginning of source when reaching top or bottom of source.
+        helm-ff-search-library-in-sexp        t ; search for library in `require' and `declare-function' sexp.
+        helm-scroll-amount                    8 ; scroll 8 lines other window using M-<next>/M-<prior>
+        helm-ff-file-name-history-use-recentf t)
+
+  (helm-mode 1)
+
+  (when (executable-find "curl")
+      (setq helm-google-suggest-use-curl-p t))
+#+END_SRC
+
+** Key bindings
+
+| key          | fuction                        | Explanation                             |
+|--------------+--------------------------------+-----------------------------------------|
+| M-y          | helm-show-kill-ring            |                                         |
+| <tab> or C-i | helm-execute-persistent-action |                                         |
+| C-z          | helm-select-action             | List of possible actions                |
+| C-x c i      | helm-semantic-or-imenu         | Show semantic definitions in buffer     |
+| C-x c m      | helm-man-woman                 |                                         |
+| C-x c /      | helm-find                      | Search files starting in the active dir |
+| C-c h o      | helm-occur                     | Occurences in current file              |
+| C-c h g      | helm-google-suggest            |                                         |
+
+
+#+BEGIN_SRC elisp
+  (define-key helm-map (kbd "<tab>") 'helm-execute-persistent-action) ; rebind tab to run persistent action
+  (define-key helm-map (kbd "C-i") 'helm-execute-persistent-action) ; make TAB works in terminal
+  (define-key helm-map (kbd "C-z")  'helm-select-action) ; list actions using C-z
+  (global-set-key (kbd "C-x b") 'helm-mini)
+  (global-set-key (kbd "C-x C-f") 'helm-find-files)
+  (global-set-key (kbd "C-c h o") 'helm-occur)
+  (global-set-key (kbd "C-c h g") 'helm-google-suggest)
+#+END_SRC
+
+#+RESULTS:
+: helm-occur
 
 * UI
 ** Theme
@@ -304,15 +369,27 @@ When switching environments execute "jedi:install-server" again in emacs
 
 ** python keymaps
 
+   | Key     | Function   | Explanation               |
+   |---------+------------+---------------------------|
+   | C-c h p | helm-pydoc | Show python documentation |
+   |         |            |                           |
+   |         |            |                           |
+   |         |            |                           |
+   
+
 #+BEGIN_SRC emacs-lisp
-(global-set-key (kbd "C-c J") 'semantic-ia-fast-jump)
-(global-set-key (kbd "C-c j") 'jedi:goto-definition)
-(global-set-key (kbd "C-c d") 'jedi:show-doc)
-(global-set-key (kbd "<C-tab>") 'jedi:complete)
-(global-set-key (kbd "C-c n") 'senator-next-tag)
-(global-set-key (kbd "C-c p") 'senator-previous-tag)
-(global-set-key (kbd "C-D") 'python-docstring)
+  (global-set-key (kbd "C-c J") 'semantic-ia-fast-jump)
+  (global-set-key (kbd "C-c j") 'jedi:goto-definition)
+  (global-set-key (kbd "C-c d") 'jedi:show-doc)
+  (global-set-key (kbd "<C-tab>") 'jedi:complete)
+  (global-set-key (kbd "C-c n") 'senator-next-tag)
+  (global-set-key (kbd "C-c p") 'senator-previous-tag)
+  (global-set-key (kbd "C-D") 'python-docstring)
+  (global-set-key (kbd "C-c h p") 'helm-pydoc)
 #+END_SRC
+
+#+RESULTS:
+: helm-pydoc
    
 * Navigation
 ** ace-jump
@@ -329,6 +406,10 @@ When switching environments execute "jedi:install-server" again in emacs
 (define-key global-map (kbd "C-c SPC") 'ace-jump-mode)
 
 #+END_SRC
+
+#+RESULTS:
+: ace-jump-mode
+
 ** sr-speedbar
 
    Speedbar is a tool that creates a window and shows speedbar inside
@@ -341,6 +422,7 @@ When switching environments execute "jedi:install-server" again in emacs
 ** Navigation keymaps
    
    Some global keymaps
+*** TODO Remove conflict with rope functions
 
 #+BEGIN_SRC emacs-lisp
 (global-set-key (kbd "C-c f") 'iy-go-to-char)
@@ -348,8 +430,17 @@ When switching environments execute "jedi:install-server" again in emacs
 (global-set-key (kbd "C-c ;") 'iy-go-to-or-up-to-continue)
 (global-set-key (kbd "C-c ,") 'iy-go-to-or-up-to-continue-backward)
 #+END_SRC
-* Text
 
+   Usefull keys
+
+   | Key     | Function      |
+   |---------+---------------|
+   | C-s C-w | Find at point |
+   |         |               |
+   |         |               |
+   |         |               |
+   
+* Text  Editing
 ** autocomplete
    
    autocomplete in drop down menus (inline)
@@ -361,7 +452,7 @@ When switching environments execute "jedi:install-server" again in emacs
 (ac-config-default)
 #+END_SRC
 
-** undo-tree
+** undo
 
    An advanced undo system
 
@@ -370,13 +461,18 @@ When switching environments execute "jedi:install-server" again in emacs
 (setq undo-tree-visualizer-relative-timestamps t)
 (setq undo-tree-visualizer-timestamps t)
 #+END_SRC
-** autopair
+** parenthesis
    
    Automagically pair braces and quotes like TextMate
 
 #+BEGIN_SRC emacs-lisp
-(require 'autopair)
-(autopair-global-mode)
+  (electric-pair-mode)
+#+END_SRC
+
+   Show matching parentheses
+
+#+BEGIN_SRC emacs-lisp
+(setq show-paren-mode t)
 #+END_SRC
 
 ** Multiple cursors
@@ -388,22 +484,48 @@ When switching environments execute "jedi:install-server" again in emacs
 (global-set-key (kbd "C-<") 'mc/mark-previous-like-this)
 (global-set-key (kbd "C-c C-<") 'mc/mark-all-like-this)
 #+END_SRC
-* Code
-** Standard configuration
-   
-   Show matching parentheses
-#+BEGIN_SRC emacs-lisp
-(setq show-paren-mode t)
-#+END_SRC
-** Keymaps for comments
-
-#+BEGIN_SRC emacs-lisp
-(global-set-key (kbd "C-;") 'comment-or-uncomment-region)
-#+END_SRC
-
-** Keymaps for selection
+** Selection
 
 #+BEGIN_SRC emacs-lisp
 (global-set-key (kbd "C-=") 'er/expand-region)
 #+END_SRC
+
+** Copy paste
+   Custom el to change behavior of std copy/cut paste behavior
+   Some code based on xah-lee's version on http://ergoemacs.org/emacs/emacs_copy_cut_current_line.html
+
+#+BEGIN_SRC emacs-lisp
+(load "~/.emacs.d/custom/copy-paste-behavior.el")
+
+(global-set-key (kbd "C-w") 'custom-cut-line-or-region) ; cut
+(global-set-key (kbd "M-w") 'custom-copy-line-or-region) ; copy
+#+END_SRC
+
+#+RESULTS:
+: xah-copy-line-or-region
+
+** Indentation
    
+   | Key              | Function                                          |
+   |------------------+---------------------------------------------------|
+   | M-x align-regexp | Make alignments e.g. [:space] to aligin on spaces |
+   |                  |                                                   |
+   |                  |                                                   |
+   |                  |                                                   |
+   
+* Code
+** Comments
+
+#+BEGIN_SRC emacs-lisp
+(global-set-key (kbd "C-;") 'comment-or-uncomment-region)
+#+END_SRC
+   
+* Emacs general
+** Help
+| Key   | Command           | Explanation             |
+|-------+-------------------+-------------------------|
+| C-h f | describe-function | Show emacs doc          |
+| C-h b | describe-bidings  | show all bindings       |
+| C-h k | describe-key      | Show command behind key |
+|       |                   |                         |
+

@@ -48,7 +48,7 @@
                          ("SC" . "http://joseito.republika.pl/sunrise-commander/")
                          ("gnu" . "http://elpa.gnu.org/packages/")))
 
-(setq package-list '(ace-jump-mode autopair ecb goto-chg undo-tree expand-region f dash s flymake-lua flymake-python-pyflakes flymake-easy flymake-yaml flymake-easy goto-chg iy-go-to-char jedi python-environment deferred auto-complete popup epc ctable concurrent deferred lua-mode magit git-rebase-mode git-commit-mode multiple-cursors nurumacs popup projectile pkg-info epl dash s pymacs python-environment deferred s sr-speedbar ssh sunrise-commander undo-tree yaml-mode powerline solarized-theme markdown-mode))
+(setq package-list '(ace-jump-mode ecb goto-chg undo-tree expand-region f dash s flymake-lua flymake-python-pyflakes flymake-easy flymake-yaml flymake-easy goto-chg iy-go-to-char jedi python-environment deferred auto-complete popup epc ctable concurrent deferred lua-mode magit git-rebase-mode git-commit-mode multiple-cursors nurumacs popup projectile pkg-info epl dash s pymacs python-environment deferred s sr-speedbar ssh sunrise-commander undo-tree yaml-mode powerline solarized-theme markdown-mode))
 
 ;; refresh package archive
 (unless package-archive-contents
@@ -83,6 +83,8 @@
 
 (setq org-confirm-babel-evaluate nil)
 
+(setq org-babel-python-command "python2")
+
 (load-theme 'solarized-dark t)
 
 (require 'powerline)
@@ -103,6 +105,14 @@
 (autoload 'pymacs-autoload "pymacs")
 
 (pymacs-load "ropemacs" "rope-")
+
+(require 'jedi)
+(add-hook 'python-mode-hook 'jedi:setup)
+
+(setq jedi:environment-root "two")
+(setq jedi:environment-virtualenv
+      (append "virtualenv2"
+              '("--python" "/usr/bin/python2")))
 
 (add-hook 'python-mode-hook 'flymake-python-pyflakes-load)
 
@@ -149,15 +159,19 @@
 (setq undo-tree-visualizer-relative-timestamps t)
 (setq undo-tree-visualizer-timestamps t)
 
-(require 'autopair)
-(autopair-global-mode)
+(electric-pair-mode)
+
+(setq show-paren-mode t)
 
 (global-set-key (kbd "C->") 'mc/mark-next-like-this)
 (global-set-key (kbd "C-<") 'mc/mark-previous-like-this)
 (global-set-key (kbd "C-c C-<") 'mc/mark-all-like-this)
 
-(setq show-paren-mode t)
+(global-set-key (kbd "C-=") 'er/expand-region)
+
+(load "~/.emacs.d/custom/copy-paste-behavior.el")
+
+(global-set-key (kbd "C-w") 'custom-cut-line-or-region) ; cut
+(global-set-key (kbd "M-w") 'custom-copy-line-or-region) ; copy
 
 (global-set-key (kbd "C-;") 'comment-or-uncomment-region)
-
-(global-set-key (kbd "C-=") 'er/expand-region)
