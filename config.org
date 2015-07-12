@@ -157,6 +157,22 @@
 (setq ecb-tip-of-the-day nil)
 #+END_SRC
 * Org Mode
+** General settings
+[[http://orgmode.org/manual/Conflicts.html][
+Confliction manual org-mode]]
+
+Make sure we don't have a conflict with S-arrow keys
+#+BEGIN_SRC elisp
+  (setq org-replace-disputed-keys t)
+  (add-hook 'org-shiftup-final-hook 'windmove-up)
+  (add-hook 'org-shiftleft-final-hook 'windmove-left)
+  (add-hook 'org-shiftdown-final-hook 'windmove-down)
+  (add-hook 'org-shiftright-final-hook 'windmove-right)
+#+END_SRC
+
+#+RESULTS:
+| windmove-right |
+
 ** Display settings
 
 #+BEGIN_SRC emacs-lisp
@@ -243,10 +259,11 @@ Helm is find first decide action later
   (global-set-key (kbd "C-x C-f") 'helm-find-files)
   (global-set-key (kbd "C-c h o") 'helm-occur)
   (global-set-key (kbd "C-c h g") 'helm-google-suggest)
+  (define-key helm-map (kbd "M-y") 'helm-show-kill-ring)
 #+END_SRC
 
 #+RESULTS:
-: helm-occur
+: helm-show-kill-ring
 
 * UI
 ** Theme
