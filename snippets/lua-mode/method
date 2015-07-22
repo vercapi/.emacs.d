@@ -1,0 +1,7 @@
+# name : Lua function
+# key : luam
+# --
+
+function $1:$2($3)
+
+end

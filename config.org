@@ -1,5 +1,5 @@
 #+TITLE: Emacs Configuration
-#+OPTIONS: toc:4 h:4
+#+OPTIONS: toc:4 h:4m 
 
 * General Emacs Settings
   
@@ -105,8 +105,7 @@
 ;; activate all the packages (in particular autoloads)
 (package-initialize)
 #+END_SRC
-
-
+  
 ** Packages sources
 
 #+BEGIN_SRC emacs-lisp
@@ -121,7 +120,7 @@
     package List and installation
 
 #+BEGIN_SRC emacs-lisp
-(setq package-list '(ace-jump-mode ecb goto-chg undo-tree expand-region f dash s flymake-lua flymake-python-pyflakes flymake-easy flymake-yaml flymake-easy goto-chg iy-go-to-char jedi python-environment deferred auto-complete popup epc ctable concurrent deferred lua-mode magit git-rebase-mode git-commit-mode multiple-cursors nurumacs popup projectile pkg-info epl dash s pymacs python-environment deferred s sr-speedbar ssh sunrise-commander undo-tree yaml-mode powerline solarized-theme markdown-mode helm helm-pydoc))
+(setq package-list '(ace-jump-mode ecb goto-chg undo-tree expand-region f dash s flymake-lua flymake-python-pyflakes flymake-easy flymake-yaml flymake-easy goto-chg iy-go-to-char jedi python-environment deferred auto-complete popup epc ctable concurrent deferred lua-mode magit git-rebase-mode git-commit-mode multiple-cursors nurumacs popup projectile pkg-info epl dash s pymacs python-environment deferred s sr-speedbar ssh sunrise-commander undo-tree yaml-mode powerline solarized-theme markdown-mode helm helm-pydoc helm-projectile helm-spotify))
 
 ;; refresh package archive
 (unless package-archive-contents
@@ -133,6 +132,8 @@
     (package-install package)))
 
 #+END_SRC
+
+#+RESULTS:
     
 * CEDET
 ** Iinitialize CEDET
@@ -162,7 +163,8 @@
 Confliction manual org-mode]]
 
 Make sure we don't have a conflict with S-arrow keys
-#+BEGIN_SRC elisp
+Now org mode S-arrows switches windows when there is no relevant action for the org-mode bound command
+#+BEGIN_SRC emacs-lisp
   (setq org-replace-disputed-keys t)
   (add-hook 'org-shiftup-final-hook 'windmove-up)
   (add-hook 'org-shiftleft-final-hook 'windmove-left)
@@ -213,15 +215,15 @@ Set python version
    |       |                         |
       
 * helm
+  [[http://tuhdo.github.io/helm-intro.html][Helm tutorial]]
 
-[[http://tuhdo.github.io/helm-intro.html][Helm tutorial]]
-
-Helm is find first decide action later
+  Helm is find first decide action later
+  
+  helm spotify
 
 ** General config
 
-#+BEGIN_SRC elisp
-  (require helm)
+#+BEGIN_SRC emacs-lisp
   (require 'helm-config)
   (helm-mode 1)
 
@@ -237,6 +239,9 @@ Helm is find first decide action later
       (setq helm-google-suggest-use-curl-p t))
 #+END_SRC
 
+#+RESULTS:
+: t
+
 ** Key bindings
 
 | key          | fuction                        | Explanation                             |
@@ -251,7 +256,7 @@ Helm is find first decide action later
 | C-c h g      | helm-google-suggest            |                                         |
 
 
-#+BEGIN_SRC elisp
+#+BEGIN_SRC emacs-lisp
   (define-key helm-map (kbd "<tab>") 'helm-execute-persistent-action) ; rebind tab to run persistent action
   (define-key helm-map (kbd "C-i") 'helm-execute-persistent-action) ; make TAB works in terminal
   (define-key helm-map (kbd "C-z")  'helm-select-action) ; list actions using C-z
@@ -530,19 +535,57 @@ When switching environments execute "jedi:install-server" again in emacs
    |                  |                                                   |
    |                  |                                                   |
    
+** YaSnippet
+
+Enable yasnippet on startup for all mode
+#+BEGIN_SRC emacs-lisp
+  (yas-global-mode 1)
+#+END_SRC
+
+| key   | command        | explanation         |
+|-------+----------------+---------------------|
+|       | yas-reload-all | Reload snippets     |
+| <TAB> | yas-expand     | expand abbreviation |
+|       |                |                     |
+
 * Code
 ** Comments
+
+*** TODO change comment uncomment behavior
+    when no region act on current line
+    region should virtually expand to the beginning of the first line, so it doesn't cut lines in half
 
 #+BEGIN_SRC emacs-lisp
 (global-set-key (kbd "C-;") 'comment-or-uncomment-region)
 #+END_SRC
    
+* Projects
+  Projectile is the project mgmt tool
+
+**  helm-projectile
+    [[http://tuhdo.github.io/helm-projectile.html][helm projectile]]
+
+    key bindingd
+    #+BEGIN_SRC emacs-lisp
+     (global-set-key (kbd "C-c r h") 'helm-projectile)
+    #+END_SRC
+
+    #+RESULTS:
+    : helm-projectile
+
+    | key     | command         | explantion             |
+    |---------+-----------------+------------------------|
+    | C-c r h | helm-projectile | fhind projectile files |
+    |         |                 |                        |
+    |         |                 |                        |
+        
 * Emacs general
 ** Help
-| Key   | Command           | Explanation             |
-|-------+-------------------+-------------------------|
-| C-h f | describe-function | Show emacs doc          |
-| C-h b | describe-bidings  | show all bindings       |
-| C-h k | describe-key      | Show command behind key |
-|       |                   |                         |
+| Key   | Command           | Explanation                  |
+|-------+-------------------+------------------------------|
+| C-h f | describe-function | Show emacs doc               |
+| C-h b | describe-bidings  | show all bindings            |
+| C-h k | describe-key      | Show command behind key      |
+| C-h v | describe-variable | Show the value of a variable |
+|       |                   |                              |
 
