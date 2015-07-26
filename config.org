@@ -120,7 +120,7 @@
     package List and installation
 
 #+BEGIN_SRC emacs-lisp
-(setq package-list '(ace-jump-mode ecb goto-chg undo-tree expand-region f dash s flymake-lua flymake-python-pyflakes flymake-easy flymake-yaml flymake-easy goto-chg iy-go-to-char jedi python-environment deferred auto-complete popup epc ctable concurrent deferred lua-mode magit git-rebase-mode git-commit-mode multiple-cursors nurumacs popup projectile pkg-info epl dash s pymacs python-environment deferred s sr-speedbar ssh sunrise-commander undo-tree yaml-mode powerline solarized-theme markdown-mode helm helm-pydoc helm-projectile helm-spotify))
+(setq package-list '(ace-jump-mode ecb goto-chg undo-tree expand-region f dash s flymake-lua flymake-python-pyflakes flymake-easy flymake-yaml flymake-easy goto-chg iy-go-to-char jedi python-environment deferred auto-complete popup epc ctable concurrent deferred lua-mode magit git-rebase-mode git-commit-mode multiple-cursors nurumacs popup projectile pkg-info epl dash s pymacs python-environment deferred s sr-speedbar ssh sunrise-commander undo-tree yaml-mode powerline solarized-theme markdown-mode helm helm-pydoc helm-projectile helm-spotify olivetti litable))
 
 ;; refresh package archive
 (unless package-archive-contents
@@ -207,12 +207,13 @@ Set python version
 
 ** Keymaps
    
-   | Key   | Function                |
-   |-------+-------------------------|
-   | C-C ' | Edit code in own editor |
-   |       |                         |
-   |       |                         |
-   |       |                         |
+   | Key       | Function          | Explantion              |
+   |-----------+-------------------+-------------------------|
+   | C-c '     |                   | Edit code in own editor |
+   | --links-- |                   |                         |
+   | C-c C-o   | org-open-at-point | Open link               |
+   | C-c C-l   | org-create-link   | Create link             |
+   |           |                   |                         |
       
 * helm
   [[http://tuhdo.github.io/helm-intro.html][Helm tutorial]]
@@ -413,6 +414,10 @@ When switching environments execute "jedi:install-server" again in emacs
 #+RESULTS:
 : helm-pydoc
    
+* lua/awesome
+  These are the customizations for lua. Especially for development of awesome
+
+** TODO Tests
 * Navigation
 ** ace-jump
 
@@ -462,6 +467,10 @@ When switching environments execute "jedi:install-server" again in emacs
    |         |               |
    |         |               |
    
+* Blogging/writing
+** olivetti mode
+   on [[https://github.com/rnkn/olivetti][github]]
+   
 * Text  Editing
 ** autocomplete
    
@@ -496,6 +505,32 @@ When switching environments execute "jedi:install-server" again in emacs
 #+BEGIN_SRC emacs-lisp
 (setq show-paren-mode t)
 #+END_SRC
+
+   I don't want numerous colors for every parenthesis.
+   I only want to see the non matching parenthesis
+   
+#+BEGIN_SRC emacs-lisp
+  (add-hook 'prog-mode-hook 'rainbow-delimiters-mode)
+  (require 'rainbow-delimiters)
+  (setq rainbow-delimiters-max-face-count 1)
+  (set-face-attribute 'rainbow-delimiters-unmatched-face nil
+                      :foreground 'unspecified
+                      :inherit 'error)
+#+END_SRC
+
+#+RESULTS:
+
+Move by parenthesis as per http://ergoemacs.org/emacs/emacs_navigating_keys_for_brackets.html
+
+#+BEGIN_SRC emacs-lisp
+  (load "~/.emacs.d/custom/brackets-movement.el")
+
+  (global-set-key (kbd "C-(") 'xah-backward-left-bracket)
+  (global-set-key (kbd "C-)") 'xah-forward-right-bracket)
+#+END_SRC
+
+#+RESULTS:
+: xah-forward-right-bracket
 
 ** Multiple cursors
 
@@ -558,7 +593,10 @@ Enable yasnippet on startup for all mode
 #+BEGIN_SRC emacs-lisp
 (global-set-key (kbd "C-;") 'comment-or-uncomment-region)
 #+END_SRC
-   
+
+** elisp
+   autocompletion with litable
+   [[https://github.com/Fuco1/litable][github page]]
 * Projects
   Projectile is the project mgmt tool
 
@@ -589,3 +627,16 @@ Enable yasnippet on startup for all mode
 | C-h v | describe-variable | Show the value of a variable |
 |       |                   |                              |
 
+* Eshell
+  enable helm autocompletion
+
+  #+BEGIN_SRC emacs-lisp
+    (add-hook 'eshell-mode-hook
+              '(lambda ()
+                 (define-key eshell-mode-map (kbd "C-c C-l")  'helm-eshell-history)))
+  #+END_SRC
+
+  #+RESULTS:
+  | lambda | nil | (define-key eshell-mode-map (kbd C-c C-l) (quote helm-eshell-history)) |
+
+* Evernote

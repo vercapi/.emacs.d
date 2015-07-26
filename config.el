@@ -204,6 +204,8 @@
 (global-set-key (kbd "C-w") 'custom-cut-line-or-region) ; cut
 (global-set-key (kbd "M-w") 'custom-copy-line-or-region) ; copy
 
+(yas-global-mode 1)
+
 (global-set-key (kbd "C-;") 'comment-or-uncomment-region)
 
-(define-key helm-map (kbd "C-c h p")  'helm-projechtile)
+(global-set-key (kbd "C-c r h") 'helm-projectile)

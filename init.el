@@ -13,6 +13,7 @@
  '(jedi:install-python-jedi-dev-command
    (quote
     ("pip2" "install" "--upgrade" "git+https://github.com/davidhalter/jedi.git@dev#egg=jedi")))
+ '(org-agenda-files (quote ("~/.emacs.d/config.org")))
  '(org-babel-python-command "python2"))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
