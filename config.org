@@ -447,8 +447,16 @@ When switching environments execute "jedi:install-server" again in emacs
 #+END_SRC
 
 ** Navigation keymaps
-   
    Some global keymaps
+   
+   | Key     | Command | Explanation        |
+   |---------+---------+--------------------|
+   | C-x r m |         | Set bookmark       |
+   | C-x r b |         | Go to a bookmark   |
+   | C-x r l |         | List all bookmarks |
+   |         |         |                    |
+   
+   
 *** TODO Remove conflict with rope functions
 
 #+BEGIN_SRC emacs-lisp
