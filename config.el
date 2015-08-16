@@ -48,7 +48,7 @@
                          ("SC" . "http://joseito.republika.pl/sunrise-commander/")
                          ("gnu" . "http://elpa.gnu.org/packages/")))
 
-(setq package-list '(ace-jump-mode ecb goto-chg undo-tree expand-region f dash s flymake-lua flymake-python-pyflakes flymake-easy flymake-yaml flymake-easy goto-chg iy-go-to-char jedi python-environment deferred auto-complete popup epc ctable concurrent deferred lua-mode magit git-rebase-mode git-commit-mode multiple-cursors nurumacs popup projectile pkg-info epl dash s pymacs python-environment deferred s sr-speedbar ssh sunrise-commander undo-tree yaml-mode powerline solarized-theme markdown-mode helm helm-pydoc helm-projectile helm-spotify))
+(setq package-list '(ecb goto-chg undo-tree expand-region f dash s flymake-lua flymake-python-pyflakes flymake-easy flymake-yaml flymake-easy goto-chg iy-go-to-char jedi python-environment deferred auto-complete popup epc ctable concurrent deferred lua-mode magit multiple-cursors nurumacs popup projectile pkg-info epl dash s pymacs python-environment deferred s sr-speedbar ssh sunrise-commander undo-tree yaml-mode powerline solarized-theme markdown-mode helm helm-pydoc helm-projectile helm-spotify olivetti litable anzu avy))
 
 ;; refresh package archive
 (unless package-archive-contents
@@ -167,12 +167,10 @@
 (global-set-key (kbd "C-D") 'python-docstring)
 (global-set-key (kbd "C-c h p") 'helm-pydoc)
 
-(autoload
-  'ace-jump-mode
-  "ace-jump-mode"
-  "Emacs quick move minor mode"
-  t)
-(define-key global-map (kbd "C-c SPC") 'ace-jump-mode)
+(avy-setup-default)
+(global-set-key (kbd "C-:") 'avy-goto-char)
+(global-set-key (kbd "C-'") 'avy-goto-char-2)
+(global-set-key (kbd "M-g f") 'avy-goto-line)
 
 (require 'sr-speedbar)
 
@@ -193,6 +191,18 @@
 
 (setq show-paren-mode t)
 
+(add-hook 'prog-mode-hook 'rainbow-delimiters-mode)
+(require 'rainbow-delimiters)
+(setq rainbow-delimiters-max-face-count 1)
+(set-face-attribute 'rainbow-delimiters-unmatched-face nil
+                    :foreground 'unspecified
+                    :inherit 'error)
+
+(load "~/.emacs.d/custom/brackets-movement.el")
+
+(global-set-key (kbd "C-(") 'xah-backward-left-bracket)
+(global-set-key (kbd "C-)") 'xah-forward-right-bracket)
+
 (global-set-key (kbd "C->") 'mc/mark-next-like-this)
 (global-set-key (kbd "C-<") 'mc/mark-previous-like-this)
 (global-set-key (kbd "C-c C-<") 'mc/mark-all-like-this)
@@ -206,6 +216,19 @@
 
 (yas-global-mode 1)
 
+(load "~/.emacs.d/custom/typo-correct.el")
+(dubcaps-mode)
+
+(global-set-key (kbd "C-c c") 'endless/ispell-word-then-abbrev)
+
+(global-anzu-mode)
+(global-set-key (kbd "M-%") 'anzu-query-replace)
+(global-set-key (kbd "C-M-%") 'anzu-query-replace-regexp)
+
 (global-set-key (kbd "C-;") 'comment-or-uncomment-region)
 
 (global-set-key (kbd "C-c r h") 'helm-projectile)
+
+(add-hook 'eshell-mode-hook
+          '(lambda ()
+             (define-key eshell-mode-map (kbd "C-c C-l")  'helm-eshell-history)))
