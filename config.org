@@ -120,7 +120,7 @@
     package List and installation
 
 #+BEGIN_SRC emacs-lisp
-(setq package-list '(ecb goto-chg undo-tree expand-region f dash s flymake-lua flymake-python-pyflakes flymake-easy flymake-yaml flymake-easy goto-chg iy-go-to-char jedi python-environment deferred auto-complete popup epc ctable concurrent deferred lua-mode magit multiple-cursors nurumacs popup projectile pkg-info epl dash s pymacs python-environment deferred s sr-speedbar ssh sunrise-commander undo-tree yaml-mode powerline solarized-theme markdown-mode helm helm-pydoc helm-projectile helm-spotify olivetti litable anzu avy))
+(setq package-list '(ecb goto-chg undo-tree expand-region f dash s flymake-lua flymake-python-pyflakes flymake-easy flymake-yaml flymake-easy goto-chg iy-go-to-char jedi python-environment deferred auto-complete popup epc ctable concurrent deferred lua-mode magit multiple-cursors nurumacs popup projectile pkg-info epl dash s pymacs python-environment deferred s sr-speedbar ssh sunrise-commander undo-tree yaml-mode powerline solarized-theme markdown-mode helm helm-pydoc helm-projectile helm-spotify olivetti litable anzu avy xah-math-input))
 
 ;; refresh package archive
 (unless package-archive-contents
@@ -785,3 +785,15 @@ Enable yasnippet on startup for all mode
    |       |                 |             |
    |       |                 |             |
    
+** Characters and unicode
+
+ | Key       | Command | Explanation                                                                      |
+ |-----------+---------+----------------------------------------------------------------------------------|
+ | C-c C-x \ |         | Show entities as UTF 8 and also convert other conventions to nice looking things |
+ |           |         |                                                                                  |
+ | x_{B}     |         | Sub script                                                                       |
+ | x^{B}     |         | SupperScript                                                                     |
+ |           |         |                                                                                  |
+ | S-SPACE   |         | Expand math symbols ([[http://ergoemacs.org/emacs/xmsi-math-symbols-input.html][xah-math-input]]) xah-math-input-mode                         |
+ |           |         |                                                                                  |
+
