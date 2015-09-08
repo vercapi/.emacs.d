@@ -5,7 +5,7 @@
   
 ** UI configuration
 *** Emacs window (Frame in emacs terminology)
-   Removing menu bar, toolbar and scollbar
+Removing menu bar, toolbar and scollbar
   
 #+BEGIN_SRC emacs-lisp
   (when (fboundp 'menu-bar-mode) (menu-bar-mode -1))
@@ -14,22 +14,22 @@
 #+END_SRC  
 
 *** mode line
-    Set the file size on the mode line  
+Set the file size on the mode line  
 #+BEGIN_SRC emacs-lisp
 (setq size-indication-mode t)
 #+END_SRC
 
 *** Mini bufer
 
-    Turn ido mode on
-    Ido is a better autocomplete on the 
+Turn ido mode on
+Ido is a better autocomplete on the 
 
 #+BEGIN_SRC emacs-lisp
 (require 'ido)
 (ido-mode t)
 #+END_SRC
 
-   Turn on line numbers in the gutter
+Turn on line numbers in the gutter
 *** Text area
 
 #+BEGIN_SRC emacs-lisp
@@ -37,8 +37,8 @@
 #+END_SRC
     
 *** Fonts
-    Set the standard fonts for emacs and other componets
-    This is based on std configuration. So if emacs adds this again in init.el or .emacs things might break and this needs to be update manually
+Set the standard fonts for emacs and other componets
+This is based on std configuration. So if emacs adds this again in init.el or .emacs things might break and this needs to be update manually
 
 #+BEGIN_SRC emacs-lisp
 (custom-set-faces
@@ -48,11 +48,11 @@
 
 ** Standard configuration
    
-   Removing splash screen
-   Set line numbers in gutter
-   All backup files are located in 1 directory
-   Start emacs server so files can be opened in the running instance
-   Set username and address
+Removing splash screen
+Set line numbers in gutter
+All backup files are located in 1 directory
+Start emacs server so files can be opened in the running instance
+Set username and address
 
 #+BEGIN_SRC emacs-lisp
   (setq inhibit-splash-screen t)
@@ -63,18 +63,6 @@
   (setq user-mail-address "pieterv.sorano@gmail.com")
 #+END_SRC
 
-** Window configuration
-   
-#+BEGIN_SRC emacs-lisp
-  (winner-mode 1) 
-  (windmove-default-keybindings) ;; Set S-<arrows> to move around the windows (S- <arrow> to move along windows)
-#+END_SRC
-
-   Commands for controlling windows
-   C-c <-    : Restore configuration
-   C-c ->    : Next configuration
-   S-<arrow> : Move between windows
-   
 ** Locale Settings
 
 #+BEGIN_SRC emacs-lisp
@@ -100,7 +88,7 @@
 
 * Packages setup
 
-  Initialize
+Initialize
 #+BEGIN_SRC emacs-lisp
 ;; activate all the packages (in particular autoloads)
 (package-initialize)
@@ -117,10 +105,10 @@
 
 ** List of packages
    
-    package List and installation
+package List and installation
 
 #+BEGIN_SRC emacs-lisp
-(setq package-list '(ecb goto-chg undo-tree expand-region f dash s flymake-lua flymake-python-pyflakes flymake-easy flymake-yaml flymake-easy goto-chg iy-go-to-char jedi python-environment deferred auto-complete popup epc ctable concurrent deferred lua-mode magit multiple-cursors nurumacs popup projectile pkg-info epl dash s pymacs python-environment deferred s sr-speedbar ssh sunrise-commander undo-tree yaml-mode powerline solarized-theme markdown-mode helm helm-pydoc helm-projectile helm-spotify olivetti litable anzu avy xah-math-input))
+(setq package-list '(ecb goto-chg undo-tree expand-region f dash s flymake-lua flymake-python-pyflakes flymake-easy flymake-yaml flymake-easy goto-chg iy-go-to-char jedi python-environment deferred auto-complete popup epc ctable concurrent deferred lua-mode magit multiple-cursors nurumacs popup projectile pkg-info epl dash s pymacs python-environment deferred s sr-speedbar ssh sunrise-commander undo-tree yaml-mode powerline solarized-theme markdown-mode helm helm-pydoc helm-projectile helm-spotify olivetti litable anzu avy xah-math-input ace-window ztree))
 
 ;; refresh package archive
 (unless package-archive-contents
@@ -151,8 +139,12 @@
 #+END_SRC
 
 * ECB
-  Emacs Code Browser
-  Set the configurations for ECB
+
+** TODO We don't use it so remove it, what happens to CEDET?
+
+Emacs Code Browser
+Set the configurations for ECB
+
 #+BEGIN_SRC emacs-lisp
 (setq ecb-options-version "2.40")
 (setq ecb-tip-of-the-day nil)
@@ -206,24 +198,38 @@ Set python version
 #+END_SRC
 
 ** Keymaps
-   
-   | Key       | Function          | Explantion                                    |
-   |-----------+-------------------+-----------------------------------------------|
-   | C-c '     |                   | Edit code in own editor                       |
-   | --links-- |                   |                                               |
-   | C-c C-o   | org-open-at-point | Open link                                     |
-   | C-c C-l   | org-create-link   | Create link                                   |
-   |           |                   |                                               |
-   | Moving    |                   |                                               |
-   | C-c C-j   | org-goto          | Mode where you can easily navigate org buffer |
-   |           |                   |                                               |
+
+#+BEGIN_SRC emacs-lisp
+(global-set-key (kbd "<f7>") 'org-mark-ring-push)
+(global-set-key (kbd "C-<f7>") 'org-mark-ring-goto)
+#+END_SRC
+
+#+RESULTS:
+: org-mark-ring-goto
+
+
+| Key       | Function           | Explantion                                    |
+|-----------+--------------------+-----------------------------------------------|
+| C-c '     |                    | Edit code in own editor                       |
+|           |                    |                                               |
+| Links     |                    |                                               |
+| C-c C-o   | org-open-at-point  | Open link                                     |
+| C-c C-l   | org-create-link    | Create link                                   |
+|           |                    |                                               |
+| Moving    |                    |                                               |
+| C-c C-j   | org-goto           | Mode where you can easily navigate org buffer |
+| F7        | org-mark-ring-push |                                               |
+| C-F7      | org-mark-ring-goto |                                               |
+|           |                    |                                               |
+| Searching |                    |                                               |
+| C-c / R   | org-occur          |                                               |
       
 * helm
-  [[http://tuhdo.github.io/helm-intro.html][Helm tutorial]]
+[[http://tuhdo.github.io/helm-intro.html][Helm tutorial]]
 
-  Helm is find first decide action later
-  
-  helm spotify
+Helm is find first decide action later
+
+helm spotify
 
 ** General config
 
@@ -277,26 +283,62 @@ Set python version
 * UI
 ** Theme
 
-   https://github.com/bbatsov/solarized-emacs
+https://github.com/bbatsov/solarized-emacs
 
 #+BEGIN_SRC emacs-lisp
   (load-theme 'solarized-dark t)
 #+END_SRC
    
 ** Powerline
-   Activate powerline with the default theme
+Activate powerline with the default theme
 
-   You need to use patched fonts -> 
-   git clone https://github.com/powerline/fonts
+You need to use patched fonts -> 
+git clone https://github.com/powerline/fonts
 
 #+BEGIN_SRC emacs-lisp
   (require 'powerline)
   (powerline-default-theme)
 #+END_SRC
+   
+** Window configuration
 
+*** Winner mode
+Undo and redo configuration changes
+
+#+BEGIN_SRC emacs-lisp
+  (winner-mode 1) 
+  (windmove-default-keybindings) ;; Set S-<arrows> to move around the windows (S- <arrow> to move along windows)
+#+END_SRC
+
+Commands for controlling windows
+C-c <-    : Restore configuration
+C-c ->    : Next configuration
+S-<arrow> : Move between windows
+   
+*** Ace window
+[[https://github.com/abo-abo/ace-window][on github]]
+Do selective switching
+
+#+BEGIN_SRC emacs-lisp
+(global-set-key (kbd "M-0") 'ace-window)
+#+END_SRC
+
+#+RESULTS:
+: ace-window
+
+Keys
+
+x - delete window
+m - swap (move) window
+v - split window vertically
+b - split window horizontally
+n - select the previous window
+i - maximize window (select which window)
+o - maximize current window
+   
 * Python
 
-  Setup python environment
+Setup python environment
 
 Setting everything to use python 2
 #+BEGIN_SRC emacs-lisp
@@ -308,6 +350,8 @@ Setting everything to use python 2
   (setq python-environment-virtualenv (list "virtualenv2" "--system-site-packages" "--quiet"))
 #+END_SRC
 
+** TODO Python version switch
+** TODO Python virtualenv
 ** pymacs
 
 Initialize pymacs
@@ -333,8 +377,8 @@ ropemacs is a refactoring framework for python
 
 ** jedi
 
-   Initalize jedi
-   Jedi is an autocomplete tool for python
+Initalize jedi
+Jedi is an autocomplete tool for python
 
 #+BEGIN_SRC emacs-lisp
 (require 'jedi)
@@ -355,14 +399,14 @@ When switching environments execute "jedi:install-server" again in emacs
 
 ** pyflakes
 
-   Initialize pyflakes   
-   pyflakes is a syntac checker for python
+Initialize pyflakes   
+pyflakes is a syntac checker for python
 
 #+BEGIN_SRC emacs-lisp
 (add-hook 'python-mode-hook 'flymake-python-pyflakes-load)
 #+END_SRC
 
-   Show info about error at point
+Show info about error at point
 
 #+BEGIN_SRC emacs-lisp
 (defun flymake-show-error ()
@@ -375,16 +419,16 @@ When switching environments execute "jedi:install-server" again in emacs
 (global-set-key (kbd "C-c i") 'flymake-show-error)
 #+END_SRC
 
-** py-tests
-   Custom el code to run standard tests right from emacs
-   
+** TODO py-tests, this should become nose
+Custom el code to run standard tests right from emacs
+
 #+BEGIN_SRC emacs-lisp
 (load "~/.emacs.d/custom/py-tests.el")
 #+END_SRC
 
 ** python-tools
 
-   Some random collection of tools to use with python
+Some random collection of tools to use with python
 
 #+BEGIN_SRC emacs-lisp
 (load "~/.emacs.d/custom/py-tests.el")
@@ -393,15 +437,15 @@ When switching environments execute "jedi:install-server" again in emacs
 #+RESULTS:
 : t
 
-** python keymaps
+** TODO python keymaps, hook to python mode
 
-   | Key     | Function   | Explanation               |
-   |---------+------------+---------------------------|
-   | C-c h p | helm-pydoc | Show python documentation |
-   |         |            |                           |
-   |         |            |                           |
-   |         |            |                           |
-   
+| Key     | Function   | Explanation               |
+|---------+------------+---------------------------|
+| C-c h p | helm-pydoc | Show python documentation |
+|         |            |                           |
+|         |            |                           |
+|         |            |                           |
+
 
 #+BEGIN_SRC emacs-lisp
   (global-set-key (kbd "C-c J") 'semantic-ia-fast-jump)
@@ -418,17 +462,17 @@ When switching environments execute "jedi:install-server" again in emacs
 : helm-pydoc
    
 * lua/awesome
-  These are the customizations for lua. Especially for development of awesome
+These are the customizations for lua. Especially for development of awesome
 
 ** TODO Tests
 * TODO Java
-  https://github.com/jdee-emacs/jdee
+https://github.com/jdee-emacs/jde
 * Navigation
 ** avy (jump to x)
 
-   avy lets you jump directrly to one or a combination of 2 characters or to a line
-   Intialize avy
-   https://github.com/abo-abo/avy
+avy lets you jump directrly to one or a combination of 2 characters or to a line
+Intialize avy
+https://github.com/abo-abo/avy
 
 #+BEGIN_SRC emacs-lisp
   (avy-setup-default)
@@ -442,8 +486,8 @@ When switching environments execute "jedi:install-server" again in emacs
 
 ** sr-speedbar
 
-   Speedbar is a tool that creates a window and shows speedbar inside
-   Initialize sr-speedbar
+Speedbar is a tool that creates a window and shows speedbar inside
+Initialize sr-speedbar
 
 #+BEGIN_SRC emacs-lisp
 (require 'sr-speedbar)
@@ -451,26 +495,26 @@ When switching environments execute "jedi:install-server" again in emacs
 
 ** Navigation keymaps
    
-   Some global keymaps
-   
-   | Key       | Command         | Explanation                            |
-   |-----------+-----------------+----------------------------------------|
-   | bookmarks |                 |                                        |
-   | C-x r m   |                 | Set bookmark                           |
-   | C-x r b   |                 | Go to a bookmark                       |
-   | C-x r l   |                 | List all bookmarks                     |
-   |           |                 |                                        |
-   | C-u C-SPC |                 | Go back to last point                  |
-   | M-g M-g   | goto-line       |                                        |
-   |           |                 |                                        |
-   | C-M-a     |                 | Move to beginning of function          |
-   | C-M-e     |                 | Move to end of function                |
-   | C-M-h     |                 | Select the current function            |
-   |           |                 |                                        |
-   | Jump      |                 |                                        |
-   | C-:       | avy-goto-char   |                                        |
-   | C-'       | avy-goto-char-2 | same as avy-goto-char but with 2 chars |
-   | M-g f     | avy-goto-line   |                                        |
+Some global keymaps
+
+| Key       | Command         | Explanation                            |
+|-----------+-----------------+----------------------------------------|
+| bookmarks |                 |                                        |
+| C-x r m   |                 | Set bookmark                           |
+| C-x r b   |                 | Go to a bookmark                       |
+| C-x r l   |                 | List all bookmarks                     |
+|           |                 |                                        |
+| C-u C-SPC |                 | Go back to last point                  |
+| M-g M-g   | goto-line       |                                        |
+|           |                 |                                        |
+| C-M-a     |                 | Move to beginning of function          |
+| C-M-e     |                 | Move to end of function                |
+| C-M-h     |                 | Select the current function            |
+|           |                 |                                        |
+| Jump      |                 |                                        |
+| C-:       | avy-goto-char   |                                        |
+| C-'       | avy-goto-char-2 | same as avy-goto-char but with 2 chars |
+| M-g f     | avy-goto-line   |                                        |
 
    
    
@@ -483,23 +527,22 @@ When switching environments execute "jedi:install-server" again in emacs
 (global-set-key (kbd "C-c ,") 'iy-go-to-or-up-to-continue-backward)
 #+END_SRC
 
-   Usefull keys
+Usefull keys
 
-   | Key     | Function      |
-   |---------+---------------|
-   | C-s C-w | Find at point |
-   |         |               |
-   |         |               |
-   |         |               |
+| Key     | Function      |
+|---------+---------------|
+| C-s C-w | Find at point |
+|         |               |
+|         |               |
+|         |               |
    
 * Blogging/writing
 ** olivetti mode
-   on [[https://github.com/rnkn/olivetti][github]]
-   
+   on [[https://github.com/rnkn/olivetti][github]]   
 * Text  Editing
 ** autocomplete
    
-   autocomplete in drop down menus (inline)
+autocomplete in drop down menus (inline)
 *** TODO Is this realy needed?
 
 #+BEGIN_SRC emacs-lisp
@@ -510,7 +553,7 @@ When switching environments execute "jedi:install-server" again in emacs
 
 ** undo
 
-   An advanced undo system
+An advanced undo system
 
 #+BEGIN_SRC emacs-lisp
 (global-undo-tree-mode t)
@@ -519,21 +562,21 @@ When switching environments execute "jedi:install-server" again in emacs
 #+END_SRC
 ** parenthesis
    
-   Automagically pair braces and quotes like TextMate
+Automagically pair braces and quotes like TextMate
 
 #+BEGIN_SRC emacs-lisp
   (electric-pair-mode)
 #+END_SRC
 
-   Show matching parentheses
+Show matching parentheses
 
 #+BEGIN_SRC emacs-lisp
 (setq show-paren-mode t)
 #+END_SRC
 
-   I don't want numerous colors for every parenthesis.
-   I only want to see the non matching parenthesis
-   
+I don't want numerous colors for every parenthesis.
+I only want to see the non matching parenthesis
+
 #+BEGIN_SRC emacs-lisp
   (add-hook 'prog-mode-hook 'rainbow-delimiters-mode)
   (require 'rainbow-delimiters)
@@ -559,7 +602,7 @@ Move by parenthesis as per http://ergoemacs.org/emacs/emacs_navigating_keys_for_
 
 ** Multiple cursors
 
-   Mutliple cursors does what it says
+Mutliple cursors does what it says
 
 #+BEGIN_SRC emacs-lisp
 (global-set-key (kbd "C->") 'mc/mark-next-like-this)
@@ -574,8 +617,8 @@ Move by parenthesis as per http://ergoemacs.org/emacs/emacs_navigating_keys_for_
 #+END_SRC
 
 ** Copy paste
-   Custom el to change behavior of std copy/cut paste behavior
-   Some code based on xah-lee's version on http://ergoemacs.org/emacs/emacs_copy_cut_current_line.html
+Custom el to change behavior of std copy/cut paste behavior
+Some code based on xah-lee's version on http://ergoemacs.org/emacs/emacs_copy_cut_current_line.html
 
 #+BEGIN_SRC emacs-lisp
 (load "~/.emacs.d/custom/copy-paste-behavior.el")
@@ -589,12 +632,12 @@ Move by parenthesis as per http://ergoemacs.org/emacs/emacs_navigating_keys_for_
 
 ** Indentation
    
-   | Key              | Function                                          |
-   |------------------+---------------------------------------------------|
-   | M-x align-regexp | Make alignments e.g. [:space] to aligin on spaces |
-   |                  |                                                   |
-   |                  |                                                   |
-   |                  |                                                   |
+| Key              | Function                                          |
+|------------------+---------------------------------------------------|
+| M-x align-regexp | Make alignments e.g. [:space] to aligin on spaces |
+|                  |                                                   |
+|                  |                                                   |
+|                  |                                                   |
    
 ** YaSnippet
 
@@ -611,149 +654,211 @@ Enable yasnippet on startup for all mode
 
 ** Spelling/autocorrect//
    
-   For enabling spelling for a specific mode this is needed
-   (add-hook 'text-mode-hook 'flyspell-mode)
+For enabling spelling for a specific mode this is needed
+(add-hook 'text-mode-hook 'flyspell-mode)
 
-   #+BEGIN_SRC shell
-   sudo pacman -S aspell-en
-   #+END_SRC
-   
-   | Key   | Command       | Explanation               |
-   |-------+---------------+---------------------------|
-   |       | ispell-buffer | spell check entire buffer |
-   | M-$   |               | spell check word at point |
-   | C-c c |               | autocorrect               |
+#+BEGIN_SRC shell
+sudo pacman -S aspell-en
+#+END_SRC
+
+| Key   | Command       | Explanation               |
+|-------+---------------+---------------------------|
+|       | ispell-buffer | spell check entire buffer |
+| M-$   |               | spell check word at point |
+| C-c c |               | autocorrect               |
 
 *** Typo correctors
     
-    Enable auto correction for dubble typed CApitals
-    Found on stack exchange ...
-    #+BEGIN_SRC emacs-lisp
-      (load "~/.emacs.d/custom/typo-correct.el")
-      (dubcaps-mode)
-    #+END_SRC
+Enable auto correction for dubble typed CApitals
+Found on stack exchange ...
+#+BEGIN_SRC emacs-lisp
+  (load "~/.emacs.d/custom/typo-correct.el")
+  (dubcaps-mode)
+#+END_SRC
 
-    #+RESULTS:
-    : t
+#+RESULTS:
+: t
 
-    Enable autocorrect with suggestions to correct instea of retyping
-    Found at: http://endlessparentheses.com/ispell-and-abbrev-the-perfect-auto-correct.html
-    #+BEGIN_SRC emacs-lisp
-      (global-set-key (kbd "C-c c") 'endless/ispell-word-then-abbrev)
-    #+END_SRC
+Enable autocorrect with suggestions to correct instea of retyping
+Found at: http://endlessparentheses.com/ispell-and-abbrev-the-perfect-auto-correct.html
+#+BEGIN_SRC emacs-lisp
+  (global-set-key (kbd "C-c c") 'endless/ispell-word-then-abbrev)
+#+END_SRC
 
-    #+RESULTS:
-    : endless/ispell-word-then-abbrev
+#+RESULTS:
+: endless/ispell-word-then-abbrev
 
 ** Replace
 
-   #+BEGIN_SRC emacs-lisp
-     (global-anzu-mode)
-     (global-set-key (kbd "M-%") 'anzu-query-replace)
-     (global-set-key (kbd "C-M-%") 'anzu-query-replace-regexp)
-   #+END_SRC
+#+BEGIN_SRC emacs-lisp
+  (global-anzu-mode)
+  (global-set-key (kbd "M-%") 'anzu-query-replace)
+  (global-set-key (kbd "C-M-%") 'anzu-query-replace-regexp)
+#+END_SRC
 
-   #+RESULTS:
-   : anzu-query-replace-regexp
+#+RESULTS:
+: anzu-query-replace-regexp
 
-   | Key              | Command | Explanation                    |
-   |------------------+---------+--------------------------------|
-   | Search & Replace |         |                                |
-   | M-%              |         | Replace from cursor            |
-   | C-M-%            |         | Replace from cursro with regex |
+| Key              | Command | Explanation                    |
+|------------------+---------+--------------------------------|
+| Search & Replace |         |                                |
+| M-%              |         | Replace from cursor            |
+| C-M-%            |         | Replace from cursro with regex |
 
 *** TODO Replace should always start at the beginning of the buffer
     
 ** Shortcuts
 
-   | Key     | Command         | Explanation                         |
-   |---------+-----------------+-------------------------------------|
-   | M-\     |                 | Delete all whitespace on line       |
-   | M-SPC   |                 | Delete all but 1 whitespace on line |
-   |         | untabify        | Convert tabs to spaces              |
-   | C-t     | transpose-chars | transpose characters                |
-   | M-t     | transpose-words |                                     |
-   | C-M-t   | transpose-sexp  |                                     |
-   | C-x C-t | transpose-lines |                                     |
+| Key     | Command              | Explanation                         |
+|---------+----------------------+-------------------------------------|
+| M-\     |                      | Delete all whitespace on line       |
+| M-SPC   |                      | Delete all but 1 whitespace on line |
+|         | untabify             | Convert tabs to spaces              |
+| C-t     | transpose-chars      | transpose characters                |
+| M-t     | transpose-words      |                                     |
+| C-M-t   | transpose-sexp       |                                     |
+| C-x C-t | transpose-lines      |                                     |
+|         | transpose-sentences  |                                     |
+|         | transpose-paragrpahs |                                     |
+|         |                      |                                     |
+| M-z     |                      | Remove characters up to line        |
+|         | flush-lines          | Remove all lines matching regex     |
+|         | keep-lines           | Keep only lines matching regex      |
+|         |                      |                                     |
+* Search
+  
+Find in file(s)
+- occur
+- helm-occur
+- helm-multi-occur
 
+** Keybidnings
+
+| Key     | Command | Explanation                 |
+|---------+---------+-----------------------------|
+| C-s C-w |         | Search for word after point |
+| C-s C-s |         | Repeat last search          |
+| C-s M-y |         | Search last kill            |
+| C-u C-s |         | Regepx Search               |
+| C-u C-r |         | Reverse Regexp Search       |
+|         |         |                             |
+   
 * Code
 ** Comments
    
-   | Key | Command     | Explanation                                       |
-   |-----+-------------+---------------------------------------------------|
-   |     | comment-box | Create a comment box instead of simply commenting |
-   |     |             |                                                   |
-   |     |             |                                                   |
+| Key | Command     | Explanation                                       |
+|-----+-------------+---------------------------------------------------|
+|     | comment-box | Create a comment box instead of simply commenting |
+|     |             |                                                   |
+|     |             |                                                   |
    
 
 *** TODO change comment uncomment behavior
-    when no region act on current line
-    region should virtually expand to the beginning of the first line, so it doesn't cut lines in half
+when no region act on current line
+region should virtually expand to the beginning of the first line, so it doesn't cut lines in half
 
 #+BEGIN_SRC emacs-lisp
 (global-set-key (kbd "C-;") 'comment-or-uncomment-region)
 #+END_SRC
 
 ** elisp
-   autocompletion with litable
-   [[https://github.com/Fuco1/litable][github page]]
+autocompletion with litable
+[[https://github.com/Fuco1/litable][github page]]
 * Projects
-  Projectile is the project mgmt tool
+Projectile is the project mgmt tool
 
 **  helm-projectile
-    [[http://tuhdo.github.io/helm-projectile.html][helm projectile]]
+[[http://tuhdo.github.io/helm-projectile.html][helm projectile]]
 
-    key bindingd
-    #+BEGIN_SRC emacs-lisp
-     (global-set-key (kbd "C-c r h") 'helm-projectile)
-    #+END_SRC
+key bindingd
+#+BEGIN_SRC emacs-lisp
+ (global-set-key (kbd "C-c r h") 'helm-projectile)
+#+END_SRC
 
-    #+RESULTS:
-    : helm-projectile
+#+RESULTS:
+: helm-projectile
 
-    | key     | command         | explantion             |
-    |---------+-----------------+------------------------|
-    | C-c r h | helm-projectile | fhind projectile files |
-    |         |                 |                        |
-    |         |                 |                        |
+| key     | command         | explantion             |
+|---------+-----------------+------------------------|
+| C-c r h | helm-projectile | fhind projectile files |
+|         |                 |                        |
+|         |                 |                        |
         
 * Eshell
-  enable helm autocompletion
+enable helm autocompletion
 
-  #+BEGIN_SRC emacs-lisp
-    (add-hook 'eshell-mode-hook
-              '(lambda ()
-                 (define-key eshell-mode-map (kbd "C-c C-l")  'helm-eshell-history)))
-  #+END_SRC
+#+BEGIN_SRC emacs-lisp
+  (add-hook 'eshell-mode-hook
+            '(lambda ()
+               (define-key eshell-mode-map (kbd "C-c C-l")  'helm-eshell-history)))
+#+END_SRC
 
-  #+RESULTS:
-  | lambda | nil | (define-key eshell-mode-map (kbd C-c C-l) (quote helm-eshell-history)) |
+#+RESULTS:
+| lambda | nil | (define-key eshell-mode-map (kbd C-c C-l) (quote helm-eshell-history)) |
 
+** Keybindings
+
+   | Key               | Command | Explanation                                                          |
+   |-------------------+---------+----------------------------------------------------------------------|
+   | C-c C-l           |         | helm history                                                         |
+   | M-s / M-r         |         | Regex search for command / Backwards                                 |
+   | C-c M-r / C-c M-s |         | Previous / next command that used the same command                   |
+   |                   |         |                                                                      |
+   | !!                |         | repeat last command                                                  |
+   | !<cmd>            |         | repeat last command starting with <cmd>, tab autocomplete works here |
+   | !<cmd>:<n>        |         | use n^{th} argument from a prev command starting with <cmd>          |
+   | $_                |         | last parameter from the last executed command                        |
+   |                   |         |                                                                      |
+   | C-c M-b           |         | Insert emacs buffer name                                             |
+   | C-c M-i           |         | Insert process name                                                  |
+   | C-c M-v           |         | Insert environment variable                                          |
+   |                   |         |                                                                      |
+   
+** Command  examples
+
+   # last part is buffer name (via C-c M-b)
+   cat mylog.log >> #<buffer *scratch*>
+
+   Devices:
+   - /dev/eshell -> Prints the output interactively to Eshell.
+   - /dev/null   -> Sends the output to the NULL device.
+   - /dev/clip   -> Sends the output to the clipboard.
+   - /dev/kill   -> Sends the output to the kill ring.
+
+   
 * Spreadsheet
-  *.ses file
-  [[https://www.gnu.org/software/emacs/manual/html_mono/ses.html#Quick-Tutorial][SES documentation]]
+*.ses file
+[[https://www.gnu.org/software/emacs/manual/html_mono/ses.html#Quick-Tutorial][SES documentation]]
 * Evernote
-* Dired
+* Directories
+  
+  Dired is the standard in emacs
+  ztree is a tree browser
 
   Commands
-  
-  | Key         | Command | Explanation                      |
-  |-------------+---------+----------------------------------|
-  | m           |         | mark marked/current              |
-  | u           |         | unmark marked/current            |
-  | C           |         | Copy marked/current              |
-  | R           |         | Rename/Move marked/current       |
-  | D           |         | Delete marked/current            |
-  | Q           |         | Query replace in marked/current  |
-  | % m <regex> |         | Mark any file matching the regex |
-  | * t         |         | Invert mark                      |
-  | * s         |         | Mark all                         |
-  |             |         |                                  |
-  | a           |         | Open in current buffer           |
-  |             |         |                                  |
-  | C-x C-q     |         | Dired edit mode                  |
-  | C-c C-c     |         | Save changes                     |
-  | C-c C-k     |         | Cancel changes                   |
+
+| Key         | Command | Explanation                             |
+|-------------+---------+-----------------------------------------|
+| m           |         | mark marked/current                     |
+| u           |         | unmark marked/current                   |
+| C           |         | Copy marked/current                     |
+| R           |         | Rename/Move marked/current              |
+| D           |         | Delete marked/current                   |
+| Q           |         | Query replace in marked/current         |
+| % m <regex> |         | Mark any file matching the regex        |
+| * t         |         | Invert mark                             |
+| * s         |         | Mark all                                |
+| +           |         | Create directory                        |
+|             |         |                                         |
+| a           |         | Open in current buffer                  |
+|             |         |                                         |
+| C-x C-q     |         | Dired edit mode                         |
+| C-c C-c     |         | Save changes                            |
+| C-c C-k     |         | Cancel changes                          |
+|             |         |                                         |
+| w           |         | copy names of marked files to kill ring |
+| c-0 w       |         | copies absolute filename                |
+|             |         |                                         |
   
 * Emacs general
 ** Help
@@ -767,33 +872,42 @@ Enable yasnippet on startup for all mode
 
 ** Shell commands
 
-   | Key | Command                 | Explanation |
-   |-----+-------------------------+-------------|
-   | M-! | shell-command           |             |
-   | M-  | shell-command-on-region |             |
-   |     |                         |             |
+| Key | Command                 | Explanation |
+|-----+-------------------------+-------------|
+| M-! | shell-command           |             |
+| M-  | shell-command-on-region |             |
+|     |                         |             |
    
 ** Files
 
-   When open files remain on exiting, pressing 'd' will show the diff
+When open files remain on exiting, pressing 'd' will show the diff
 ** Windowing
    
-   | Key   | Command         | Explanation |
-   |-------+-----------------+-------------|
-   | C-x + | balance-windows |             |
-   |       |                 |             |
-   |       |                 |             |
-   |       |                 |             |
+| Key   | Command         | Explanation |
+|-------+-----------------+-------------|
+| C-x + | balance-windows |             |
+|       |                 |             |
+|       |                 |             |
+|       |                 |             |
    
 ** Characters and unicode
 
- | Key       | Command | Explanation                                                                      |
- |-----------+---------+----------------------------------------------------------------------------------|
- | C-c C-x \ |         | Show entities as UTF 8 and also convert other conventions to nice looking things |
- |           |         |                                                                                  |
- | x_{B}     |         | Sub script                                                                       |
- | x^{B}     |         | SupperScript                                                                     |
- |           |         |                                                                                  |
- | S-SPACE   |         | Expand math symbols ([[http://ergoemacs.org/emacs/xmsi-math-symbols-input.html][xah-math-input]]) xah-math-input-mode                         |
- |           |         |                                                                                  |
+#+BEGIN_SRC emacs-lisp
+  (require 'xah-math-input)
+  (define-key xah-math-input-keymap (kbd "C-<tab>") 'xah-math-input-change-to-symbol)
+#+END_SRC
 
+#+RESULTS:
+: xah-math-input-change-to-symbol
+
+| Key       | Command | Explanation                                                                      |
+|-----------+---------+----------------------------------------------------------------------------------|
+| C-c C-x \ |         | Show entities as UTF 8 and also convert other conventions to nice looking things |
+|           |         |                                                                                  |
+| x_{B}     |         | Sub script                                                                       |
+| x^{B}     |         | SupperScript                                                                     |
+|           |         |                                                                                  |
+| S-SPACE   |         | Expand math symbols ([[http://ergoemacs.org/emacs/xmsi-math-symbols-input.html][xah-math-input]]) xah-math-input-mode                         |
+|           |         |                                                                                  |
+
+* Things try out

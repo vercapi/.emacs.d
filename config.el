@@ -21,9 +21,6 @@
 (setq user-full-name "Pieter Vercammen")
 (setq user-mail-address "pieterv.sorano@gmail.com")
 
-(winner-mode 1) 
-(windmove-default-keybindings) ;; Set S-<arrows> to move around the windows (S- <arrow> to move along windows)
-
 (set-language-environment 'utf-8)
 (set-terminal-coding-system 'utf-8)
 (setq locale-coding-system 'utf-8)
@@ -48,7 +45,7 @@
                          ("SC" . "http://joseito.republika.pl/sunrise-commander/")
                          ("gnu" . "http://elpa.gnu.org/packages/")))
 
-(setq package-list '(ecb goto-chg undo-tree expand-region f dash s flymake-lua flymake-python-pyflakes flymake-easy flymake-yaml flymake-easy goto-chg iy-go-to-char jedi python-environment deferred auto-complete popup epc ctable concurrent deferred lua-mode magit multiple-cursors nurumacs popup projectile pkg-info epl dash s pymacs python-environment deferred s sr-speedbar ssh sunrise-commander undo-tree yaml-mode powerline solarized-theme markdown-mode helm helm-pydoc helm-projectile helm-spotify olivetti litable anzu avy))
+(setq package-list '(ecb goto-chg undo-tree expand-region f dash s flymake-lua flymake-python-pyflakes flymake-easy flymake-yaml flymake-easy goto-chg iy-go-to-char jedi python-environment deferred auto-complete popup epc ctable concurrent deferred lua-mode magit multiple-cursors nurumacs popup projectile pkg-info epl dash s pymacs python-environment deferred s sr-speedbar ssh sunrise-commander undo-tree yaml-mode powerline solarized-theme markdown-mode helm helm-pydoc helm-projectile helm-spotify olivetti litable anzu avy xah-math-input ace-window ztree))
 
 ;; refresh package archive
 (unless package-archive-contents
@@ -91,6 +88,9 @@
 
 (setq org-babel-python-command "python2")
 
+(global-set-key (kbd "<f7>") 'org-mark-ring-push)
+(global-set-key (kbd "C-<f7>") 'org-mark-ring-goto)
+
 (require 'helm-config)
 (helm-mode 1)
 
@@ -118,6 +118,11 @@
 
 (require 'powerline)
 (powerline-default-theme)
+
+(winner-mode 1) 
+(windmove-default-keybindings) ;; Set S-<arrows> to move around the windows (S- <arrow> to move along windows)
+
+(global-set-key (kbd "M-0") 'ace-window)
 
 (setq python-version-checked t)
 (setenv "PYMACS_PYTHON" "python2")
@@ -232,3 +237,6 @@
 (add-hook 'eshell-mode-hook
           '(lambda ()
              (define-key eshell-mode-map (kbd "C-c C-l")  'helm-eshell-history)))
+
+(require 'xah-math-input)
+(define-key xah-math-input-keymap (kbd "C-<tab>") 'xah-math-input-change-to-symbol)
