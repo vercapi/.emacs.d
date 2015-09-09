@@ -108,7 +108,7 @@ Initialize
 package List and installation
 
 #+BEGIN_SRC emacs-lisp
-(setq package-list '(ecb goto-chg undo-tree expand-region f dash s flymake-lua flymake-python-pyflakes flymake-easy flymake-yaml flymake-easy goto-chg iy-go-to-char jedi python-environment deferred auto-complete popup epc ctable concurrent deferred lua-mode magit multiple-cursors nurumacs popup projectile pkg-info epl dash s pymacs python-environment deferred s sr-speedbar ssh sunrise-commander undo-tree yaml-mode powerline solarized-theme markdown-mode helm helm-pydoc helm-projectile helm-spotify olivetti litable anzu avy xah-math-input ace-window ztree))
+(setq package-list '(goto-chg undo-tree expand-region f dash s flymake-lua flymake-python-pyflakes flymake-easy flymake-yaml flymake-easy goto-chg iy-go-to-char jedi python-environment deferred auto-complete popup epc ctable concurrent deferred lua-mode magit multiple-cursors nurumacs popup projectile pkg-info epl dash s pymacs python-environment deferred s sr-speedbar ssh sunrise-commander undo-tree yaml-mode powerline solarized-theme markdown-mode helm helm-pydoc helm-projectile helm-spotify olivetti litable anzu avy xah-math-input ace-window ztree))
 
 ;; refresh package archive
 (unless package-archive-contents
@@ -138,17 +138,6 @@ package List and installation
 (load-file "~/.emacs.d/cedet-bzr/trunk/contrib/cedet-contrib-load.el")
 #+END_SRC
 
-* ECB
-
-** TODO We don't use it so remove it, what happens to CEDET?
-
-Emacs Code Browser
-Set the configurations for ECB
-
-#+BEGIN_SRC emacs-lisp
-(setq ecb-options-version "2.40")
-(setq ecb-tip-of-the-day nil)
-#+END_SRC
 * Org Mode
 ** General settings
 [[http://orgmode.org/manual/Conflicts.html][
@@ -465,6 +454,24 @@ Some random collection of tools to use with python
 These are the customizations for lua. Especially for development of awesome
 
 ** TODO Tests
+  
+   Depends on [[https://github.com/siffiejoe/lua-testy][lua-testy]]
+
+   #+BEGIN_SRC emacs-lisp
+     (load "~/.emacs.d/custom/lua-tests.el")
+
+     (defun lua-mode-config ()
+       "Change some settings when lua mode is loaded"
+       (local-set-key (kbd "C-c C-t") 'lua-test)
+       )
+
+     (add-hook 'lua-mode-hook 'lua-mode-config)
+   #+END_SRC
+
+   #+RESULTS:
+   | lua-mode-config |
+
+   
 * TODO Java
 https://github.com/jdee-emacs/jde
 * Navigation

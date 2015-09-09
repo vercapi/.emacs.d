@@ -45,7 +45,7 @@
                          ("SC" . "http://joseito.republika.pl/sunrise-commander/")
                          ("gnu" . "http://elpa.gnu.org/packages/")))
 
-(setq package-list '(ecb goto-chg undo-tree expand-region f dash s flymake-lua flymake-python-pyflakes flymake-easy flymake-yaml flymake-easy goto-chg iy-go-to-char jedi python-environment deferred auto-complete popup epc ctable concurrent deferred lua-mode magit multiple-cursors nurumacs popup projectile pkg-info epl dash s pymacs python-environment deferred s sr-speedbar ssh sunrise-commander undo-tree yaml-mode powerline solarized-theme markdown-mode helm helm-pydoc helm-projectile helm-spotify olivetti litable anzu avy xah-math-input ace-window ztree))
+(setq package-list '(goto-chg undo-tree expand-region f dash s flymake-lua flymake-python-pyflakes flymake-easy flymake-yaml flymake-easy goto-chg iy-go-to-char jedi python-environment deferred auto-complete popup epc ctable concurrent deferred lua-mode magit multiple-cursors nurumacs popup projectile pkg-info epl dash s pymacs python-environment deferred s sr-speedbar ssh sunrise-commander undo-tree yaml-mode powerline solarized-theme markdown-mode helm helm-pydoc helm-projectile helm-spotify olivetti litable anzu avy xah-math-input ace-window ztree))
 
 ;; refresh package archive
 (unless package-archive-contents
@@ -65,9 +65,6 @@
 
 ;; load contrib library
 (load-file "~/.emacs.d/cedet-bzr/trunk/contrib/cedet-contrib-load.el")
-
-(setq ecb-options-version "2.40")
-(setq ecb-tip-of-the-day nil)
 
 (setq org-replace-disputed-keys t)
 (add-hook 'org-shiftup-final-hook 'windmove-up)
@@ -171,6 +168,8 @@
 (global-set-key (kbd "C-c p") 'senator-previous-tag)
 (global-set-key (kbd "C-D") 'python-docstring)
 (global-set-key (kbd "C-c h p") 'helm-pydoc)
+
+(load "~/.emacs.d/custom/lua-tests.el")
 
 (avy-setup-default)
 (global-set-key (kbd "C-:") 'avy-goto-char)

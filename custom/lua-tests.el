@@ -1,0 +1,43 @@
+;; Execute lua tests
+
+(defun lua-test ()
+  (interactive)
+  (let
+     ((test-file-path
+       (if (null (buffer-file-name))
+           (user-error "No file for buffer")
+         (buffer-file-name)))
+      (buffer (get-buffer-create "*LUA Test Results*")))
+    (set-buffer buffer)
+    (erase-buffer)
+    (call-process "lua" nil t nil "/usr/local/lua/lua-testy/testy.lua" test-file-path)
+    (display-buffer buffer))
+  (lua-test-parse)
+  )
+
+(defun lua-test-parse ()
+  (setq regex "\\(/[^/ \\:]*\\)+\\:[0-9]*\\:")
+  (goto-char (point-min))
+  (setq link-begin (re-search-forward regex nil t nil))
+  (while link-begin
+    (setq link-end (search-backward-regexp "^[:space:]*"))
+    (let ((map (make-sparse-keymap)))
+      (define-key map (kbd "RET") 'lua-test-open-file-at-line)
+      (add-text-properties link-begin link-end '(mouse-face highlight face bold))
+      (put-text-property link-begin link-end 'keymap map))
+    (end-of-line)
+    (setq link-begin (search-forward-regexp regex nil t)))
+  )
+
+(defun lua-test-open-file-at-line ()
+  (interactive)
+  (beginning-of-line)
+  (setq link-start (search-forward "/"))
+  (setq link-end (search-forward ":"))
+  (backward-char)
+  (setq line-nr-pos (search-forward-regexp "[0-9]*\\:"))
+  (setq line-nr (string-to-number (thing-at-point 'word)))
+  (print (buffer-substring (+ link-start 1) (- link-end 1)))
+  (switch-to-buffer-other-window (find-file-noselect (buffer-substring (- link-start 1) (- link-end 1))))
+  (let ((current-prefix-arg line-nr))
+    (call-interactively 'goto-line)))
