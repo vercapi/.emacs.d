@@ -10,6 +10,7 @@
   (setq endPos (point))
   (setq chars (- endPos startPos))
   (previous-line)
+  (newline)
   (insert-char ?- chars)
   (next-line)
   (newline)
