@@ -453,13 +453,27 @@ Some random collection of tools to use with python
 * lua/awesome
 These are the customizations for lua. Especially for development of awesome
 
-** TODO Tests
+** Tools
+
+   Tools for writing lua
+
+   #+BEGIN_SRC emacs-lisp
+   (load "~/.emacs.d/custom/lua-tools.el")   
+   #+END_SRC
+
+   #+RESULTS:
+   : t
+
+** Tests
   
    Depends on [[https://github.com/siffiejoe/lua-testy][lua-testy]]
 
    #+BEGIN_SRC emacs-lisp
      (load "~/.emacs.d/custom/lua-tests.el")
 
+   #+END_SRC
+
+   #+BEGIN_SRC emacs-lisp
      (defun lua-mode-config ()
        "Change some settings when lua mode is loaded"
        (local-set-key (kbd "C-c C-t") 'lua-test)
@@ -470,7 +484,6 @@ These are the customizations for lua. Especially for development of awesome
 
    #+RESULTS:
    | lua-mode-config |
-
    
 * TODO Java
 https://github.com/jdee-emacs/jde
@@ -769,8 +782,18 @@ region should virtually expand to the beginning of the first line, so it doesn't
 #+END_SRC
 
 ** elisp
-autocompletion with litable
-[[https://github.com/Fuco1/litable][github page]]
+   
+   autocompletion with litable
+   [[https://github.com/Fuco1/litable][github page]]
+
+*** Commands
+
+    | Key   | Command     | Description               |
+    |-------+-------------+---------------------------|
+    | C-M-x | eval-defun  | Evaluate current function |
+    |       | eval-buffer |                           |
+    |       | eval-region |                           |
+    
 * Projects
 Projectile is the project mgmt tool
 
@@ -832,7 +855,6 @@ enable helm autocompletion
    - /dev/clip   -> Sends the output to the clipboard.
    - /dev/kill   -> Sends the output to the kill ring.
 
-   
 * Spreadsheet
 *.ses file
 [[https://www.gnu.org/software/emacs/manual/html_mono/ses.html#Quick-Tutorial][SES documentation]]
