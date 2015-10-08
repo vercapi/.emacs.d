@@ -729,22 +729,24 @@ Found at: http://endlessparentheses.com/ispell-and-abbrev-the-perfect-auto-corre
     
 ** Shortcuts
 
-| Key     | Command              | Explanation                         |
-|---------+----------------------+-------------------------------------|
-| M-\     |                      | Delete all whitespace on line       |
-| M-SPC   |                      | Delete all but 1 whitespace on line |
-|         | untabify             | Convert tabs to spaces              |
-| C-t     | transpose-chars      | transpose characters                |
-| M-t     | transpose-words      |                                     |
-| C-M-t   | transpose-sexp       |                                     |
-| C-x C-t | transpose-lines      |                                     |
-|         | transpose-sentences  |                                     |
-|         | transpose-paragrpahs |                                     |
-|         |                      |                                     |
-| M-z     |                      | Remove characters up to line        |
-|         | flush-lines          | Remove all lines matching regex     |
-|         | keep-lines           | Keep only lines matching regex      |
-|         |                      |                                     |
+| Key     | Command              | Explanation                                                             |
+|---------+----------------------+-------------------------------------------------------------------------|
+| M-\     |                      | Delete all whitespace on line                                           |
+| M-SPC   |                      | Delete all but 1 whitespace on line                                     |
+| M-^     |                      | Join this line with the line above (also removes spaces to some extend) |
+| C-x C-o |                      | delete all empty lines but 1                                            |
+|         | untabify             | Convert tabs to spaces                                                  |
+| C-t     | transpose-chars      | transpose characters                                                    |
+| M-t     | transpose-words      |                                                                         |
+| C-M-t   | transpose-sexp       |                                                                         |
+| C-x C-t | transpose-lines      |                                                                         |
+|         | transpose-sentences  |                                                                         |
+|         | transpose-paragrpahs |                                                                         |
+|         |                      |                                                                         |
+| M-z     |                      | Remove characters up to line                                            |
+|         | flush-lines          | Remove all lines matching regex                                         |
+|         | keep-lines           | Keep only lines matching regex                                          |
+|         |                      |                                                                         |
 ** Behavior
    
    subword-mode enables camel casing
