@@ -108,7 +108,7 @@ Initialize
 package List and installation
 
 #+BEGIN_SRC emacs-lisp
-(setq package-list '(goto-chg undo-tree expand-region f dash s flymake-lua flymake-python-pyflakes flymake-easy flymake-yaml flymake-easy goto-chg iy-go-to-char jedi python-environment deferred auto-complete popup epc ctable concurrent deferred lua-mode magit multiple-cursors nurumacs popup projectile pkg-info epl dash s pymacs python-environment deferred s sr-speedbar ssh sunrise-commander undo-tree yaml-mode powerline solarized-theme markdown-mode helm helm-pydoc helm-projectile helm-spotify olivetti litable anzu avy xah-math-input ace-window ztree))
+(setq package-list '(goto-chg undo-tree expand-region f dash s flymake-lua flymake-python-pyflakes flymake-easy flymake-yaml flymake-easy goto-chg iy-go-to-char jedi python-environment deferred auto-complete popup epc ctable concurrent deferred lua-mode magit multiple-cursors nurumacs popup projectile pkg-info epl dash s pymacs python-environment deferred s sr-speedbar ssh sunrise-commander undo-tree yaml-mode powerline solarized-theme markdown-mode helm helm-pydoc helm-projectile helm-spotify olivetti litable anzu avy xah-math-input ace-window ztree syntax-subword))
 
 ;; refresh package archive
 (unless package-archive-contents
@@ -750,6 +750,10 @@ Found at: http://endlessparentheses.com/ispell-and-abbrev-the-perfect-auto-corre
 ** Behavior
    
    subword-mode enables camel casing
+
+   #+BEGIN_SRC emacs-lisp
+     (global-syntax-subword-mode)
+   #+END_SRC
 
 * Search
   
