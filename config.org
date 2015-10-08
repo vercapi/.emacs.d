@@ -745,6 +745,10 @@ Found at: http://endlessparentheses.com/ispell-and-abbrev-the-perfect-auto-corre
 |         | flush-lines          | Remove all lines matching regex     |
 |         | keep-lines           | Keep only lines matching regex      |
 |         |                      |                                     |
+** Behavior
+   
+   subword-mode enables camel casing
+
 * Search
   
 Find in file(s)
