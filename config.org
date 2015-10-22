@@ -574,14 +574,15 @@ Usefull keys
 * Text  Editing
 ** autocomplete
    
-autocomplete in drop down menus (inline)
+   hippie-expand to expand a sentence or a code block
+   
 *** TODO Is this realy needed?
-
-#+BEGIN_SRC emacs-lisp
-(require 'auto-complete-config)
-(add-to-list 'ac-dictionary-directories "~/.emacs.d/ac-dict")
-(ac-config-default)
-#+END_SRC
+    autocomplete in drop down menus (inline)
+    #+BEGIN_SRC emacs-lisp
+    (require 'auto-complete-config)
+    (add-to-list 'ac-dictionary-directories "~/.emacs.d/ac-dict")
+    (ac-config-default)
+    #+END_SRC
 
 ** undo
 
@@ -929,6 +930,8 @@ enable helm autocompletion
 * Files
 *** Edit current buffer as root
     
+    find-file-at-point to find a file at point
+ 
     #+BEGIN_SRC emacs-lisp
       (defun sudo-edit (&optional arg)
         "Edit currently visited file as root. With a prefix ARG prompt for a file to visit. Will also prompt for a file to visit if current buffer is not visiting a file."
@@ -939,6 +942,9 @@ enable helm autocompletion
           )
         )
     #+END_SRC
+
+    #+RESULTS:
+    : sudo-edit
 
 * Emacs general
 ** Help
