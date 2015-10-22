@@ -450,6 +450,10 @@ Some random collection of tools to use with python
 #+RESULTS:
 : helm-pydoc
    
+** TODO check pycscope
+   Inside and navigation into python code
+   [[https://github.com/portante/pycscope][github]]
+
 * lua/awesome
 These are the customizations for lua. Especially for development of awesome
 
@@ -515,7 +519,7 @@ Initialize sr-speedbar
 
 ** Navigation keymaps
    
-Some global keymaps
+   Some global keymaps
 
 | Key       | Command         | Explanation                            |
 |-----------+-----------------+----------------------------------------|
@@ -536,7 +540,15 @@ Some global keymaps
 | C-'       | avy-goto-char-2 | same as avy-goto-char but with 2 chars |
 | M-g f     | avy-goto-line   |                                        |
 
-   
+Keybindings for scrolling without moving the cursor
+#+BEGIN_SRC emacs-lisp
+(global-set-key (kbd "M-n") (kbd "C-u 1 C-v"))
+(global-set-key (kbd "M-p") (kbd "C-u 1 M-v"))
+#+END_SRC
+
+#+RESULTS:
+: [21 49 134217846]
+
    
 *** TODO Remove conflict with rope functions
 
@@ -785,10 +797,10 @@ Find in file(s)
 |     | comment-box | Create a comment box instead of simply commenting |
 |     |             |                                                   |
 |     |             |                                                   |
-   
+
 
 *** TODO change comment uncomment behavior
-when no region act on current line
+when no region act on current line (create region for current line)
 region should virtually expand to the beginning of the first line, so it doesn't cut lines in half
 
 #+BEGIN_SRC emacs-lisp
@@ -914,6 +926,20 @@ enable helm autocompletion
 | c-0 w       |         | copies absolute filename                |
 |             |         |                                         |
   
+* Files
+*** Edit current buffer as root
+    
+    #+BEGIN_SRC emacs-lisp
+      (defun sudo-edit (&optional arg)
+        "Edit currently visited file as root. With a prefix ARG prompt for a file to visit. Will also prompt for a file to visit if current buffer is not visiting a file."
+        (interactive "P")
+        (if (or arg (not buffer-file-name))
+            (find-file (concat "/sudo:root@localhost:" (ido-read-file-name "Find file(as root): ")))
+          (find-alternate-file (concat "/sudo:root@localhost:" buffer-file-name))
+          )
+        )
+    #+END_SRC
+
 * Emacs general
 ** Help
 | Key   | Command           | Explanation                  |
@@ -964,4 +990,5 @@ When open files remain on exiting, pressing 'd' will show the diff
 | S-SPACE   |         | Expand math symbols ([[http://ergoemacs.org/emacs/xmsi-math-symbols-input.html][xah-math-input]]) xah-math-input-mode                         |
 |           |         |                                                                                  |
 
+** Custom
 * Things try out
