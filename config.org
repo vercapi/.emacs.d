@@ -2,7 +2,6 @@
 #+OPTIONS: toc:4 h:4m 
 
 * General Emacs Settings
-  
 ** UI configuration
 *** Emacs window (Frame in emacs terminology)
 Removing menu bar, toolbar and scollbar
@@ -734,3 +733,5 @@ When open files remain on exiting, pressing 'd' will show the diff
 
 #+RESULTS:
 : xah-math-input-change-to-symbol
+** Links
+   [[http://emacs.sexy/][EmacsIsSexy]]

@@ -90,6 +90,13 @@
 |                      |                                                                                  |
 | S-SPACE              | Expand math symbols ([[http://ergoemacs.org/emacs/xmsi-math-symbols-input.html][xah-math-input]]) xah-math-input-mode                         |
 
+* Spelling
+| Key           | Function                  |
+|---------------+---------------------------|
+| flyspell-mode |                           |
+| C-;           | Cylce through corrections |
+|               |                           |
+|               |                           |
 
 * Org mode
 
