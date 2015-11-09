@@ -93,6 +93,38 @@ Initialize
 (package-initialize)
 #+END_SRC
   
+** Cask buid tool setup
+   
+   #+BEGIN_SRC sh
+   curl -fsSL https://raw.githubusercontent.com/cask/cask/master/go | python
+   #+END_SRC
+
+   This needs to be included in ~/.bash_profile
+   export PATH="/home/vercapi/.cask/bin:$PATH"
+
+   Init cask
+   #+BEGIN_SRC emacs-lisp
+   (require 'cask "~/.cask/cask.el")
+   (cask-initialize)
+   #+END_SRC
+
+   #+RESULTS:
+   : [cl-struct-cask-bundle nil nil nil ([cl-struct-cask-dependency yasnippet nil nil nil nil nil nil] [cl-struct-cask-dependency web-mode nil nil nil nil nil nil] [cl-struct-cask-dependency use-package nil nil nil nil nil nil] [cl-struct-cask-dependency undo-tree nil nil nil nil nil nil] [cl-struct-cask-dependency smex nil nil nil nil nil nil] [cl-struct-cask-dependency smartparens nil nil nil nil nil nil] [cl-struct-cask-dependency s nil nil nil nil nil nil] [cl-struct-cask-dependency projectile nil nil nil nil nil nil] [cl-struct-cask-dependency prodigy nil nil nil nil nil nil] [cl-struct-cask-dependency popwin nil nil nil nil nil nil] [cl-struct-cask-dependency pallet nil nil nil nil nil nil] [cl-struct-cask-dependency nyan-mode nil nil nil nil nil nil] [cl-struct-cask-dependency multiple-cursors nil nil nil nil nil nil] [cl-struct-cask-dependency magit nil nil nil nil nil nil] [cl-struct-cask-dependency lua-mode nil nil nil nil nil nil] [cl-struct-cask-dependency jedi nil nil nil nil nil nil] [cl-struct-cask-dependency idle-highlight-mode nil nil nil nil nil nil] [cl-struct-cask-dependency htmlize nil nil nil nil nil nil] [cl-struct-cask-dependency goto-chg nil nil nil nil nil nil] [cl-struct-cask-dependency flycheck-pyflakes nil nil nil nil nil nil] [cl-struct-cask-dependency flycheck-cask nil nil nil nil nil nil] [cl-struct-cask-dependency flycheck nil nil nil nil nil nil] [cl-struct-cask-dependency f nil nil nil nil nil nil] [cl-struct-cask-dependency expand-region nil nil nil nil nil nil] [cl-struct-cask-dependency exec-path-from-shell nil nil nil nil nil nil] [cl-struct-cask-dependency drag-stuff nil nil nil nil nil nil] [cl-struct-cask-dependency dash nil nil nil nil nil nil] [cl-struct-cask-dependency cask nil nil nil nil nil nil] [cl-struct-cask-dependency bind-key nil nil nil nil nil nil]) nil "/home/vercapi/.emacs.d/" nil ([cl-struct-cask-source "marmalade" "http://marmalade-repo.org/packages/"] [cl-struct-cask-source "gnu" "http://elpa.gnu.org/packages/"] [cl-struct-cask-source "SC" "http://joseito.republika.pl/sunrise-commander/"] [cl-struct-cask-source "melpa" "http://melpa.milkbox.net/packages/"])]
+
+   Init pallet, more info on [[https://github.com/rdallasgray/pallet][github]]
+   This makes sure that packages installed via the package manager are added to the Cask file
+   #+BEGIN_SRC emacs-lisp
+   (require 'pallet)
+   (pallet-mode t)
+   #+END_SRC
+
+   #+RESULTS:
+   : t
+
+   To update run pallet-update
+
+   
+   
 ** Packages sources
 
 #+BEGIN_SRC emacs-lisp
@@ -102,26 +134,6 @@ Initialize
                           ("gnu" . "http://elpa.gnu.org/packages/")))
 #+END_SRC
 
-** List of packages
-   
-package List and installation
-
-#+BEGIN_SRC emacs-lisp
-(setq package-list '(goto-chg undo-tree expand-region f dash s flycheck-pyflakes flycheck goto-chg jedi python-environment deferred popup epc ctable concurrent deferred lua-mode magit multiple-cursors nurumacs popup projectile pkg-info epl dash s pymacs python-environment deferred s sr-speedbar ssh sunrise-commander undo-tree yaml-mode powerline solarized-theme markdown-mode helm helm-pydoc helm-projectile helm-spotify olivetti litable anzu avy xah-math-input ace-window ztree syntax-subword company company-jedi company-web auto-complete))
-
-;; refresh package archive
-(unless package-archive-contents
-  (package-refresh-contents)e)
-
-;; install the missing packages
-(dolist (package package-list)
-  (unless (package-installed-p package)
-    (package-install package)))
-
-#+END_SRC
-
-#+RESULTS:
-    
 * CEDET
 ** Iinitialize CEDET
 
