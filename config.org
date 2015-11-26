@@ -85,6 +85,30 @@ Set username and address
   (fset 'yes-or-no-p 'y-or-n-p) ;; type y/n not yes/no
 #+END_SRC
 
+** Tramp
+
+   Make tramp use ssh, for multi hops
+   #+BEGIN_SRC emacs-lisp
+     (require 'tramp)
+     (setq tramp-default-method "ssh")
+   #+END_SRC
+
+   #+RESULTS:
+   : ssh
+
+   Add the needed hosts because mutli hop doesn't work with helm
+   Also because mutli hop is a lot of typing for hosts that are used all the time
+
+   Format of tripple is: HOST USER PROXY
+   #+BEGIN_SRC emacs-lisp
+     (add-to-list 'tramp-default-proxies-alist
+               '("\\`192.168.1.2\\'" "\\`root\\'" "/ssh:sorano@%h:"))
+   #+END_SRC
+
+   #+RESULTS:
+   | \`192.168.1.2\'        | \`root\' | /ssh:sorano@%h: |
+   | \`sorano@192.168.1.2\' | \`root\' | /ssh:%h:        |
+
 * Packages setup
 
 Initialize
@@ -137,7 +161,9 @@ Initialize
 * CEDET
 ** Iinitialize CEDET
 
-#+BEGIN_SRC emacs-lisp
+Currently not loading cedet because I'm not using it
+
+#+BEGIN_SRC off
 (load-file "~/.emacs.d/cedet-bzr/trunk/cedet-devel-load.el") 
 (add-to-list 'semantic-default-submodes 'global-semantic-idle-summary-mode t)
 (add-to-list 'semantic-default-submodes 'global-semantic-idle-completions-mode t)
