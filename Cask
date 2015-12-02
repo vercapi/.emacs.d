@@ -18,6 +18,7 @@
 (depends-on "flycheck-pyflakes")
 (depends-on "goto-chg")
 (depends-on "htmlize")
+(depends-on "hydra")
 (depends-on "idle-highlight-mode")
 (depends-on "jedi")
 (depends-on "lua-mode")

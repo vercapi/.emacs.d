@@ -157,7 +157,7 @@
 | S-<arrows> | Move between windows, doesn't always work in org mode |
 | C-x +      | balance-windows                                       |
 |            |                                                       |
-| M-0        | Invoke ace window                                     |
+| f12        | Invoke ace window                                     |
 |            | x - delete window                                     |
 |            | m - swap (move) window                                |
 |            | v - split window vertically                           |

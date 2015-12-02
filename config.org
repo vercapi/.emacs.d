@@ -231,12 +231,21 @@ Set python version
 ** Keymaps
 
 #+BEGIN_SRC emacs-lisp
-(global-set-key (kbd "<f7>") 'org-mark-ring-push)
-(global-set-key (kbd "C-<f7>") 'org-mark-ring-goto)
+  (add-hook 'org-mode-hook
+            (lambda ()
+              (require 'hydra)
+              (defhydra hydra-org-navigation (org-mode-map "<f2>")
+                "Org navigation"
+                ("n" outline-next-visible-heading)
+                ("p" outline-previous-visible-heading)
+                ("f" org-forward-heading-same-level)
+                ("b" org-backward-heading-same-level))
+              (local-set-key (kbd "<f7>") 'org-mark-ring-push)
+              (local-set-key (kbd "C-<f7>") 'org-mark-ring-goto)))
 #+END_SRC
 
 #+RESULTS:
-: org-mark-ring-goto
+| (lambda nil (require (quote hydra)) (defhydra hydra-org-navigation (global-map <f2>) zoom (quote ((n org-forward-element) (p org-backward-element) (f org-forward-heading-same-level) (b org-backward-heading-same-level)))) (local-set-key (kbd <f7>) (quote org-mark-ring-push)) (local-set-key (kbd C-<f7>) (quote org-mark-ring-goto))) | er/add-org-mode-expansions | (lambda nil (require (quote hydra)) (hydra-create <f2> (quote ((n org-forward-element) (p org-backward-element) (f org-forward-heading-same-level) (b org-backward-heading-same-level)))) (local-set-key (kbd <f7>) (quote org-mark-ring-push)) (local-set-key (kbd C-<f7>) (quote org-mark-ring-goto))) | (lambda nil (require (quote hydra)) (hydra-create <f1> (quote ((n org-forward-element) (p org-backward-element) (f org-forward-heading-same-level) (b org-backward-heading-same-level)))) (local-set-key (kbd <f7>) (quote org-mark-ring-push)) (local-set-key (kbd C-<f7>) (quote org-mark-ring-goto))) | #[nil \300\301\302\303\304$\207 [org-add-hook change-major-mode-hook org-show-block-all append local] 5] | #[nil \300\301\302\303\304$\207 [org-add-hook change-major-mode-hook org-babel-show-result-all append local] 5] | org-babel-result-hide-spec | org-babel-hide-all-hashes |
      
 * helm
 [[http://tuhdo.github.io/helm-intro.html][Helm tutorial]]
@@ -317,12 +326,9 @@ Undo and redo configuration changes
 Do selective switching
 
 #+BEGIN_SRC emacs-lisp
-(global-set-key (kbd "M-0") 'ace-window)
+(global-set-key (kbd "<f12>") 'ace-window)
 #+END_SRC
 
-#+RESULTS:
-: ace-window
-   
 * TODO Python
   The curren setup has too many issues. Try [[http://ericjmritz.name/2015/11/06/gnu-emacs-packages-for-python-programming/][this]]
 
