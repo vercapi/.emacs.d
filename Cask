@@ -32,6 +32,7 @@
 (depends-on "salt-mode")
 (depends-on "smartparens")
 (depends-on "smex")
+(depends-on "systemd")
 (depends-on "undo-tree")
 (depends-on "use-package")
 (depends-on "web-mode")

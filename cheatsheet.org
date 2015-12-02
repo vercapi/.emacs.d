@@ -133,7 +133,7 @@
 | C-c / R   | Regex search open all headers where occurences where found |
 |           |                                                            |
 
-* TODO Helm
+* Helm
   
 | Key          | Function                                |
 |--------------+-----------------------------------------|

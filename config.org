@@ -106,9 +106,14 @@ Set username and address
    #+END_SRC
 
    #+RESULTS:
-   | \`192.168.1.2\'        | \`root\' | /ssh:sorano@%h: |
-   | \`sorano@192.168.1.2\' | \`root\' | /ssh:%h:        |
+   | .*              | \`root\' | /ssh:%h:        |
+   | \`192.168.1.2\' | \`root\' | /ssh:sorano@%h: |
 
+   Set the timout of ssh
+   #+BEGIN_SRC emacs-lisp
+     (setq password-cache-expiry 1200)
+   #+END_SRC
+   
 * Packages setup
 
 Initialize
