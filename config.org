@@ -42,6 +42,7 @@ This is based on std configuration. So if emacs adds this again in init.el or .e
 #+BEGIN_SRC emacs-lisp
 (custom-set-faces
  '(default ((t (:family "DejaVu Sans Mono for Powerline" :foundry "unknown" :slant normal :weight normal :height 140 :width normal))))
+ '(minimap-font-face ((t (:height 40 :family "DejaVu Sans Mono"))))
  '(mode-line ((t (:family "DejaVu Sans Mono for Powerline" :foundry "unknown" :slant normal :weight normal :height 140 :width normal)))))
 #+END_SRC
 
@@ -303,7 +304,7 @@ https://github.com/bbatsov/solarized-emacs
 #+RESULTS:
 : t
 
-   
+
 ** Powerline
 Activate powerline with the default theme
 
