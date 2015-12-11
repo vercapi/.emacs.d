@@ -3,6 +3,8 @@
 (source gnu)
 (source marmalade)
 
+(depends-on "async")
+(depends-on "auto-complete")
 (depends-on "bind-key")
 (depends-on "cask")
 (depends-on "dash")
@@ -16,6 +18,7 @@
 (depends-on "flycheck")
 (depends-on "flycheck-cask")
 (depends-on "flycheck-pyflakes")
+(depends-on "git-commit")
 (depends-on "goto-chg")
 (depends-on "htmlize")
 (depends-on "hydra")

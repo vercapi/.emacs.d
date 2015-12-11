@@ -106,7 +106,6 @@ Set username and address
    #+END_SRC
 
    #+RESULTS:
-   | .*              | \`root\' | /ssh:%h:        |
    | \`192.168.1.2\' | \`root\' | /ssh:sorano@%h: |
 
    Set the timout of ssh
@@ -297,8 +296,13 @@ helm spotify
 https://github.com/bbatsov/solarized-emacs
 
 #+BEGIN_SRC emacs-lisp
-  (load-theme 'solarized-dark t)
+  (load-file "~/.emacs.d/soranomacs-theme/spacemacs-theme-autoloads.el")
+  (load-theme 'spacemacs-dark t)
 #+END_SRC
+
+#+RESULTS:
+: t
+
    
 ** Powerline
 Activate powerline with the default theme
@@ -309,7 +313,13 @@ git clone https://github.com/powerline/fonts
 #+BEGIN_SRC emacs-lisp
   (require 'powerline)
   (powerline-default-theme)
+  (setq powerline-default-separator 'slant)
+  (setq powerline-color1 "#cb4b16")
 #+END_SRC
+
+#+RESULTS:
+: #cb4b16
+
    
 ** Window configuration
    
