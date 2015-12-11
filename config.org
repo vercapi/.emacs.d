@@ -294,7 +294,7 @@ helm spotify
 * UI
 ** Theme
 
-https://github.com/bbatsov/solarized-emacs
+This is based on the [[https://github.com/nashamri/spacemacs-theme][spacemacs]] with the colors of [[http://eclipsecolorthemes.org/?view%3Dtheme&id%3D1115][solarized]]
 
 #+BEGIN_SRC emacs-lisp
   (load-file "~/.emacs.d/soranomacs-theme/spacemacs-theme-autoloads.el")
