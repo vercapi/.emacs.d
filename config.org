@@ -102,12 +102,15 @@ Set username and address
 
    Format of tripple is: HOST USER PROXY
    #+BEGIN_SRC emacs-lisp
-     (add-to-list 'tramp-default-proxies-alist
-               '("\\`192.168.1.2\\'" "\\`root\\'" "/ssh:sorano@%h:"))
+          (add-to-list 'tramp-default-proxies-alist
+                    '("\\`192.168.1.2\\'" "\\`root\\'" "/ssh:sorano@%h:"))
+          (add-to-list 'tramp-default-proxies-alist
+                    '("\\`192.168.1.252\\'" "\\`root\\'" "/ssh:alarm@%h:"))
    #+END_SRC
 
    #+RESULTS:
-   | \`192.168.1.2\' | \`root\' | /ssh:sorano@%h: |
+   | \`192.168.1.252\' | \`root\' | /ssh:alarm@%h:  |
+   | \`192.168.1.2\'   | \`root\' | /ssh:sorano@%h: |
 
    Set the timout of ssh
    #+BEGIN_SRC emacs-lisp
