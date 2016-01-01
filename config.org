@@ -787,3 +787,17 @@ When open files remain on exiting, pressing 'd' will show the diff
 : xah-math-input-change-to-symbol
 ** Links
    [[http://emacs.sexy/][EmacsIsSexy]]
+   
+** Help
+*** which-key
+    [[https://github.com/justbur/emacs-which-key#introduction][on github]]
+
+    Automatically show the possible key completions in emacs
+    
+    #+BEGIN_SRC emacs-lisp
+    (which-key-mode)
+    #+END_SRC
+
+    #+RESULTS:
+    : t
+
