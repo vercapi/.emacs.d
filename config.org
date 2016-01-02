@@ -693,14 +693,38 @@ Find in file(s)
    | global-flycheck-mode | global-company-mode | x-wm-set-size-hint |
 
 ** Comments
-   
-*** TODO change comment uncomment behavior
-when no region act on current line (create region for current line)
-region should virtually expand to the beginning of the first line, so it doesn't cut lines in half
+  
+   Comments line and regions without fixing 
+   #+BEGIN_SRC emacs-lisp
+     (defun endless/comment-line-or-region (n)
+       "Comment or uncomment current line and leave point after it.
+        With positive prefix, apply to N lines including current one.
+        With negative prefix, apply to -N lines above.
+        If region is active, apply to active region instead."
+       (interactive "p")
+       (if (use-region-p)
+           (comment-or-uncomment-region
+            (region-beginning) (region-end))
+         (let ((range
+                (list (line-beginning-position)
+                      (goto-char (line-end-position n)))))
+           (comment-or-uncomment-region
+            (apply #'min range)
+            (apply #'max range)))
+         (forward-line 1)
+         (back-to-indentation)))
+   #+END_SRC
 
-#+BEGIN_SRC emacs-lisp
-(global-set-key (kbd "C-;") 'comment-or-uncomment-region)
-#+END_SRC
+   #+RESULTS:
+   : endless/comment-line-or-region
+
+   Set keyboard binding
+   #+BEGIN_SRC emacs-lisp
+   (global-set-key (kbd "C-;") #'endless/comment-line-or-region)
+   #+END_SRC
+
+   #+RESULTS:
+   : endless/comment-line-or-region
 
 ** elisp
    
