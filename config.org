@@ -512,6 +512,17 @@ Initialize sr-speedbar
    (global-set-key (kbd "M-p") (kbd "C-u 1 M-v"))
    #+END_SRC
    
+** Goto-change
+   
+   #+BEGIN_SRC emacs-lisp
+     (require 'goto-chg)
+     (global-set-key (kbd "C-c p") 'goto-last-change)
+     (global-set-key (kbd "C-c n") 'goto-last-change-reverse)
+   #+END_SRC
+
+   #+RESULTS:
+   : goto-last-change-reverse
+
 * Blogging/writing
 ** olivetti mode
    on [[https://github.com/rnkn/olivetti][github]]   
@@ -694,7 +705,8 @@ Find in file(s)
 
 ** Comments
   
-   Comments line and regions without fixing 
+   Comments line and regions without breaking the line. And it can uncomment again.
+   Soruce: [[http://endlessparentheses.com/implementing-comment-line.html][blog]]
    #+BEGIN_SRC emacs-lisp
      (defun endless/comment-line-or-region (n)
        "Comment or uncomment current line and leave point after it.

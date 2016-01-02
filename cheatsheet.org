@@ -25,6 +25,9 @@
 | C-)       | Go to right brackt                  |
 | C-(       | Go to left bracket                  |
 |           |                                     |
+| C-c p     | Go to last change                   |
+| C-c n     | Go through changes in reverse order |
+|           |                                     |
 
 * Search
 
@@ -202,6 +205,7 @@
 | ispell-buffer  | spell check entire buffer                         |
 | untabify       | Convert tabs to spaces                            |
 |                |                                                   |
+
 * Eshell
 
 | Key               | Explanation                                                          |
@@ -271,4 +275,3 @@
 |-----+------------------------------------|
 | M-! | Shell command output to new buffer |
 | M-  | Shell command on region            |
-
