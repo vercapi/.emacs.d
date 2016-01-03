@@ -166,6 +166,7 @@ Initialize
                           ("gnu" . "http://elpa.gnu.org/packages/")))
 #+END_SRC
 
+
 * CEDET
 ** Iinitialize CEDET
 
@@ -837,3 +838,10 @@ When open files remain on exiting, pressing 'd' will show the diff
     #+RESULTS:
     : t
 
+* PDF
+
+  On [[https://github.com/politza/pdf-tools][github]]. Additional installation steps and dependencies are needed (pdf-tools-install)
+  
+  #+BEGIN_SRC emacs-lisp
+  (pdf-tools-install)
+  #+END_SRC
