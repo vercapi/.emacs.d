@@ -12,7 +12,7 @@
 | C-x r b   | Go to a bookmark                    |
 | C-x r l   | List all bookmarks                  |
 |           |                                     |
-| C-u C-SPC | Go back to last point               |
+| C-u C-SPC | Go back to last point on the stack  |
 | M-g M-g   | Go to line                          |
 |           |                                     |
 | C-M-a     | Move to beginning of function       |
@@ -260,6 +260,9 @@
 |             |                                         |
 
 * Emacs general
+  
+  pkill -SIGUSR2 emacs
+  
 ** Help
 | Key   | Explanation                  |
 |-------+------------------------------|

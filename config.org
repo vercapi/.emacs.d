@@ -166,7 +166,6 @@ Initialize
                           ("gnu" . "http://elpa.gnu.org/packages/")))
 #+END_SRC
 
-
 * CEDET
 ** Iinitialize CEDET
 
@@ -524,6 +523,29 @@ Initialize sr-speedbar
    #+RESULTS:
    : goto-last-change-reverse
 
+** Go back
+
+   Ensure that going back using C-U C-SPC actually moves to a different location every time it is invoked
+   #+BEGIN_SRC emacs-lisp
+     (defun my/multi-pop-to-mark (orig-fun &rest args)
+       "Call ORIG-FUN until the cursor moves.
+        Try the repeated popping up to 10 times."
+       (let ((p (point)))
+         (dotimes (i 10)
+           (when (= p (point))
+             (apply orig-fun args)))))
+     (advice-add 'pop-to-mark-command :around
+                 #'my/multi-pop-to-mark)
+   #+END_SRC
+
+   Make repeating C-u C-SPC, C-u C-SPC like C-u C-SPC, C-SPC
+   #+BEGIN_SRC emacs-lisp
+   (setq set-mark-command-repeat-pop t)
+   #+END_SRC
+
+   #+RESULTS:
+   : t
+
 * Blogging/writing
 ** olivetti mode
    on [[https://github.com/rnkn/olivetti][github]]   
@@ -557,7 +579,6 @@ Initialize sr-speedbar
 ** parenthesis
    
 Automagically pair braces and quotes like TextMate
-
 #+BEGIN_SRC emacs-lisp
   (electric-pair-mode)
 #+END_SRC
