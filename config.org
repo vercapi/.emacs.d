@@ -803,10 +803,30 @@ enable helm autocompletion
   #+RESULTS:
   : magit-status
   
+  Saving typed messages
+
+  #+BEGIN_SRC emacs-lisp
+    (load-file "~/.emacs.d/custom/message-history.el")
+
+    (defun message-add ()
+      "Actually add the message"
+      (message-history/add message-history/message-history-file))
+
+    (defun message-commit-setup ()
+      "Setting up the buffer so that it will save the messages"
+      (add-hook 'before-save-hook 'message-add nil t)
+      )
+
+    (add-hook 'git-commit-mode-hook 'message-commit-setup)
+  #+END_SRC
+
+  #+RESULTS:
+  | message-commit-setup |
+
 * Spreadsheet
 *.ses file
 [[https://www.gnu.org/software/emacs/manual/html_mono/ses.html#Quick-Tutorial][SES documentation]]
-* Evernote
+* [#A] Evernote
 * Directories
   
   Dired is the standard in emacs
@@ -867,3 +887,4 @@ When open files remain on exiting, pressing 'd' will show the diff
   #+BEGIN_SRC emacs-lisp
   (pdf-tools-install)
   #+END_SRC
+r

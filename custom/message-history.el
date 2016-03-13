@@ -27,13 +27,13 @@
   (push-mark)
   (goto-char (point-min))
   (setq content(buffer-substring 1 (- (re-search-forward "^#") 1)))
-  (message-history/write-message )
-  (append-to-file (message-history/format-message content (message-history/get-next-id)) nil pfile)
+  (append-to-file (message-history/format-message content (+ (message-history/get-next-id pfile) 1)) nil pfile)
   (pop-mark)
   )
 
-(defun message-history/insert (id)
-  "Retrieve a preious message from history and insert into the current buffer.  Pass ID to identify a message."
+(defun message-history/insert (pfile pid)
+  "Retrieve a previous message from history file PFILE and insert into the current buffer.  Pass PID to identify a message."
+  (insert (message-history/get pfile pid))
   )
 
 (defun message-history/show (pfile)
@@ -41,9 +41,12 @@
   (with-temp-buffer
     (let ((lines))
       (insert-file-contents pfile)
+      (setq i 1)
+      (setq max (message-history/get-next-id pfile))
       (while (re-search-forward (concat message-history/message-header-prefix "[0-9]+" message-history/message-header-suffix) nil t)
         (forward-line)
-        (push (buffer-substring-no-properties (line-beginning-position) (line-end-position)) lines)
+        (push (concat (number-to-string (+ (abs (- i max)) 1)) ". " (buffer-substring-no-properties (line-beginning-position) (line-end-position))) lines)
+        (setq i (+ i 1))
         )
       lines))
   )
@@ -51,17 +54,18 @@
 (defun message-history/get (pfile pid)
   "Get text from history in file PFILE with id PID."
   (with-temp-buffer
+    (setq realid (+ (abs (- pid (message-history/get-next-id pfile))) 1))
     (insert-file-contents pfile)
     (setq start-idx (+ (re-search-forward
-                 (message-history/build-separator pid)
+                 (message-history/build-separator realid)
                  nil t) 1))
     (forward-line)
     (setq end-found (re-search-forward
                      (concat message-history/message-header-prefix "[0-9]+" message-history/message-header-suffix) nil t))
     (if end-found 
         (setq end-idx (- end-found
-                         (length (message-history/build-separator pid)) 1))
-      (point-max))
+                         (length (message-history/build-separator realid)) 1))
+      (setq end-idx (point-max)))
     (buffer-substring start-idx end-idx)
     ))
 
@@ -73,8 +77,7 @@
 (defun message-history/format-message (pmessage pid)
   "This function formats PMESSAGE to a format so it can be persisted.  PID will be the unique pid given to the MESSAGE."
   (concat message-history/message-header-prefix (number-to-string pid) message-history/message-header-suffix "\n"
-          pmessage
-          message-history/message-header-prefix (number-to-string pid) message-history/message-header-suffix "\n"
+          pmessage "\n"
           ))
 
 (defun message-history/get-next-id (pfile)
@@ -89,13 +92,24 @@
       (when (> number maxnum) (setq maxnum number))) ;;; no setq but let in the let if > then x else largest
     maxnum))
 
-(defvar message-history/helm-sources
-  '((name . "Message history")
-    (candidates-process . message-history/show)
-    (action . (("insert" . message-history/insert)))
-    )
+(defun message-history/helm-insert (pselection)
+  "Helm insert helper function PSELECTION is what is selected in helm."
+  (message-history/insert message-history/message-history-file
+                          (let ((pstring (string-match "[0-9]+\\." pselection)))
+                            (string-to-number (substring pselection 0 (- (match-end 0) 1)))))
   )
 
+(defun message-history/helm-search ()
+  "Helper function to call the actual search function with parameter."
+  (message-history/show message-history/message-history-file)
+   )
+
+(defvar message-history/helm-sources
+  '((name . "Message history")
+    (candidates-process . message-history/helm-search)
+    (action . (("insert" . message-history/helm-insert)))
+    )
+  )
 (defun message-history/helm ()
   "Bring up a helm interface for the message history."
   (interactive)
@@ -103,4 +117,4 @@
         :buffer "*helm-message-history*")
   )
 
-;;; github-history.el ends here
+;;; message-history.el ends here
