@@ -37,6 +37,7 @@
 (depends-on "org-bullets")
 (depends-on "pallet")
 (depends-on "pdf-tools")
+(depends-on "peep-dired")
 (depends-on "popwin")
 (depends-on "prodigy")
 (depends-on "projectile")
