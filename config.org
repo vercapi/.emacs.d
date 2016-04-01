@@ -46,6 +46,16 @@ This is based on std configuration. So if emacs adds this again in init.el or .e
  '(mode-line ((t (:family "DejaVu Sans Mono for Powerline" :foundry "unknown" :slant normal :weight normal :height 140 :width normal)))))
 #+END_SRC
 
+*** alarms
+    
+    Turning them off completely
+    #+BEGIN_SRC emacs-lisp
+    (setq ring-bell-function 'ignore)
+    #+END_SRC
+
+    #+RESULTS:
+    : ignore
+
 ** Standard configuration
    
 Removing splash screen
