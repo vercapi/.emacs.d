@@ -489,6 +489,17 @@ These are the customizations for lua. Especially for development of awesome
 * TODO Java
 https://github.com/jdee-emacs/jde
 * Navigation
+** Beacon
+
+   Enable beacon a flash when your cursor jumps [[https://github.com/Malabarba/beacon][on github]]
+   
+   #+BEGIN_SRC emacs-lisp
+     (beacon-mode 1)
+   #+END_SRC
+
+   #+RESULTS:
+   : t
+
 ** avy (jump to x)
 
 avy lets you jump directrly to one or a combination of 2 characters or to a line
