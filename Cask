@@ -10,6 +10,7 @@
 (depends-on "bind-key")
 (depends-on "cask")
 (depends-on "company")
+(depends-on "company-shell")
 (depends-on "concurrent")
 (depends-on "dash")
 (depends-on "deferred")

@@ -278,3 +278,19 @@
 |-----+------------------------------------|
 | M-! | Shell command output to new buffer |
 | M-  | Shell command on region            |
+
+* Magit
+
+  | Key | Explanation     |
+  |-----+-----------------|
+  | !   | Run git command |
+  |     |                 |
+  
+
+** Stage mode
+  
+  | Key | Explanation              |
+  |-----+--------------------------|
+  | k   | Discard uncommted change |
+  |     |                          |
+  
