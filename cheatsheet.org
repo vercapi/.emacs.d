@@ -2,33 +2,40 @@
 
 * Text navigation
 
-| Key       | Function                            |
-|-----------+-------------------------------------|
-| C-:       | Goto char                           |
-| C-;       | Gotot a combination of 2 cahracters |
-|           |                                     |
-| bookmarks |                                     |
-| C-x r m   | Set bookmark                        |
-| C-x r b   | Go to a bookmark                    |
-| C-x r l   | List all bookmarks                  |
-|           |                                     |
-| C-u C-SPC | Go back to last point on the stack  |
-| M-g M-g   | Go to line                          |
-|           |                                     |
-| C-M-a     | Move to beginning of function       |
-| C-M-e     | Move to end of function             |
-| C-M-h     | Select the current function         |
-|           |                                     |
-| M-n       | Go down, don't move cursor          |
-| M-p       | Go up, don't move cursor            |
-|           |                                     |
-| C-)       | Go to right brackt                  |
-| C-(       | Go to left bracket                  |
-|           |                                     |
-| C-c p     | Go to last change                   |
-| C-c n     | Go through changes in reverse order |
-|           |                                     |
+  | Key       | Function                            |
+  |-----------+-------------------------------------|
+  | C-:       | Goto char                           |
+  | C-;       | Gotot a combination of 2 cahracters |
+  |           |                                     |
+  | bookmarks |                                     |
+  | C-x r m   | Set bookmark                        |
+  | C-x r b   | Go to a bookmark                    |
+  | C-x r l   | List all bookmarks                  |
+  |           |                                     |
+  | C-u C-SPC | Go back to last point on the stack  |
+  | M-g M-g   | Go to line                          |
+  |           |                                     |
+  | C-M-a     | Move to beginning of function       |
+  | C-M-e     | Move to end of function             |
+  | C-M-h     | Select the current function         |
+  |           |                                     |
+  | M-n       | Go down, don't move cursor          |
+  | M-p       | Go up, don't move cursor            |
+  |           |                                     |
+  | C-)       | Go to right brackt                  |
+  | C-(       | Go to left bracket                  |
+  |           |                                     |
+  | C-c p     | Go to last change                   |
+  | C-c n     | Go through changes in reverse order |
+  |           |                                     |
 
+** Text navigation configuration
+   
+   | Key              | Function                         |
+   |------------------+----------------------------------|
+   | (subword-mode 1) | Enable move cursor by camel case |
+   |                  |                                  |
+   
 * Search
 
 | Key     | Function                    |
@@ -77,7 +84,7 @@
 | C-M-t                | transpose sexp                                                                   |
 | C-x C-t              | transpose lines                                                                  |
 | transpose-sentences  | transpose sentences                                                              |
-| transpose-paragrpahs |                                                                                  |
+| transpose-paragrpahs | transpose paragraphs                                                             |
 |                      |                                                                                  |
 | C-x DEL              | delete to beginning of line                                                      |
 |                      |                                                                                  |
