@@ -809,7 +809,7 @@ enable helm autocompletion
 #+END_SRC
 
 #+RESULTS:
-| lambda | nil | (define-key eshell-mode-map (kbd C-c C-l) (quote helm-eshell-history)) |
+| lambda | nil | (define-key eshell-mode-map (kbd C-c C-l) (quote helm-eshell-history)) 
 * Magit
   
   git tool for emacs [[https://github.com/magit/magit][on github]]
@@ -912,3 +912,9 @@ r
   #+BEGIN_SRC emacs-lisp
   (require 'dsvn)
   #+END_SRC
+* Docker
+
+  For manageing dockers there are 3 packages:
+  - docker-mode for editing files
+  - docker for managing docker (can use tramp, needed for root access, but can also be used on other hosts)
+  - docker-tramp to have tramp like access to dockers /docker:<docker-name>:/home/
