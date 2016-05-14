@@ -586,7 +586,8 @@ Initialize sr-speedbar
 
    Company mode backends
    #+BEGIN_SRC emacs-lisp
-     (add-to-list 'company-backends 'company-shell)
+     (with-eval-after-load 'company
+       (add-to-list 'company-backends 'company-shell))
    #+END_SRC
 
    #+RESULTS:
