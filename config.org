@@ -1,132 +1,6 @@
 #+TITLE: Emacs Configuration
 #+OPTIONS: toc:4 h:4m 
 
-* General Emacs Settings
-** UI configuration
-*** Emacs window (Frame in emacs terminology)
-Removing menu bar, toolbar and scollbar
-  
-#+BEGIN_SRC emacs-lisp
-  (when (fboundp 'menu-bar-mode) (menu-bar-mode -1))
-  (when (fboundp 'tool-bar-mode) (tool-bar-mode -1))
-  (when (fboundp 'scroll-bar-mode) (scroll-bar-mode -1))
-#+END_SRC  
-
-*** mode line
-Set the file size on the mode line  
-#+BEGIN_SRC emacs-lisp
-(setq size-indication-mode t)
-#+END_SRC
-
-*** Mini bufer
-
-Turn ido mode on
-Ido is a better autocomplete on the 
-
-#+BEGIN_SRC emacs-lisp
-(require 'ido)
-(ido-mode t)
-#+END_SRC
-
-Turn on line numbers in the gutter
-*** Text area
-
-#+BEGIN_SRC emacs-lisp
-(setq column-number-mode t)
-#+END_SRC
-    
-*** Fonts
-Set the standard fonts for emacs and other componets
-This is based on std configuration. So if emacs adds this again in init.el or .emacs things might break and this needs to be update manually
-
-#+BEGIN_SRC emacs-lisp
-(custom-set-faces
- '(default ((t (:family "DejaVu Sans Mono for Powerline" :foundry "unknown" :slant normal :weight normal :height 140 :width normal))))
- '(minimap-font-face ((t (:height 40 :family "DejaVu Sans Mono"))))
- '(mode-line ((t (:family "DejaVu Sans Mono for Powerline" :foundry "unknown" :slant normal :weight normal :height 140 :width normal)))))
-#+END_SRC
-
-*** alarms
-    
-    Turning them off completely
-    #+BEGIN_SRC emacs-lisp
-    (setq ring-bell-function 'ignore)
-    #+END_SRC
-
-    #+RESULTS:
-    : ignore
-
-** Standard configuration
-   
-Removing splash screen
-Set line numbers in gutter
-All backup files are located in 1 directory
-Start emacs server so files can be opened in the running instance
-Set username and address
-
-#+BEGIN_SRC emacs-lisp
-  (setq inhibit-splash-screen t)
-  (global-linum-mode t)
-  (setq backup-directory-alist '(("." . "~/.saves")))
-  (server-start)
-  (setq user-full-name "Pieter Vercammen")
-  (setq user-mail-address "pieterv.sorano@gmail.com")
-#+END_SRC
-
-** Locale Settings
-
-#+BEGIN_SRC emacs-lisp
-   (set-language-environment 'utf-8)
-   (set-terminal-coding-system 'utf-8)
-   (setq locale-coding-system 'utf-8)
-   (set-default-coding-systems 'utf-8)
-   (set-selection-coding-system 'utf-8)
-   (prefer-coding-system 'utf-8)
-#+END_SRC
-** Global editor settings
-
-#+BEGIN_SRC emacs-lisp
-  (setq-default indent-tabs-mode nil) ;; don't use tabs
-  (setq-default tab-width 2) ;; use 2 space tabs
-  (global-hl-line-mode 1) ;; highlight current line
-  (show-paren-mode 1) ;; show matching parentheses
-  (tool-bar-mode -1) ;; no toolbar
-  (column-number-mode t)
-  (size-indication-mode) ;; show filesize
-  (fset 'yes-or-no-p 'y-or-n-p) ;; type y/n not yes/no
-#+END_SRC
-
-** Tramp
-
-   Make tramp use ssh, for multi hops
-   #+BEGIN_SRC emacs-lisp
-     (require 'tramp)
-     (setq tramp-default-method "ssh")
-   #+END_SRC
-
-   #+RESULTS:
-   : ssh
-
-   Add the needed hosts because mutli hop doesn't work with helm
-   Also because mutli hop is a lot of typing for hosts that are used all the time
-
-   Format of tripple is: HOST USER PROXY
-   #+BEGIN_SRC emacs-lisp
-          (add-to-list 'tramp-default-proxies-alist
-                    '("\\`192.168.1.2\\'" "\\`root\\'" "/ssh:sorano@%h:"))
-          (add-to-list 'tramp-default-proxies-alist
-                    '("\\`192.168.1.252\\'" "\\`root\\'" "/ssh:alarm@%h:"))
-   #+END_SRC
-
-   #+RESULTS:
-   | \`192.168.1.252\' | \`root\' | /ssh:alarm@%h:  |
-   | \`192.168.1.2\'   | \`root\' | /ssh:sorano@%h: |
-
-   Set the timout of ssh
-   #+BEGIN_SRC emacs-lisp
-     (setq password-cache-expiry 1200)
-   #+END_SRC
-   
 * Packages setup
 
 Initialize
@@ -176,198 +50,311 @@ Initialize
                           ("gnu" . "http://elpa.gnu.org/packages/")))
 #+END_SRC
 
+* UI configuration
+** General info
+   
+   #+BEGIN_SRC emacs-lisp
+  (tool-bar-mode -1) ;; no toolbar
+  (fset 'yes-or-no-p 'y-or-n-p) ;; type y/n not yes/no
+   #+END_SRC
+
+** mode line
+    
+    Standard configuration
+    
+    Set the file size on the mode line  
+    #+BEGIN_SRC emacs-lisp
+    (setq size-indication-mode t)
+    #+END_SRC
+
+    #+BEGIN_SRC emacs-lisp
+    (setq column-number-mode t)
+    (size-indication-mode) ;; show filesize
+    #+END_SRC
+    
+*** Powerline
+     
+     Activate powerline with the default theme
+
+     You need to use patched fonts -> 
+     git clone https://github.com/powerline/fonts
+
+     #+BEGIN_SRC emacs-lisp
+       (require 'powerline)
+       (powerline-default-theme)
+       (setq powerline-default-separator 'slant)
+     #+END_SRC
+
+     #+RESULTS:
+     : #cb4b16
+
+** Mini bufer
+
+   Turn ido mode on
+   Ido is a better autocomplete on the 
+
+   #+BEGIN_SRC emacs-lisp
+   (require 'ido)
+   (ido-mode t)
+   #+END_SRC
+
+   Turn on line numbers in the gutter
+
+** Text area
+
+    #+BEGIN_SRC emacs-lisp
+    (setq column-number-mode t)
+    #+END_SRC
+    
+** Fonts
+
+   Set the standard fonts for emacs and other componets
+   This is based on std configuration. So if emacs adds this again in init.el or .emacs things might break and this needs to be update manually
+
+    #+BEGIN_SRC emacs-lisp
+    (custom-set-faces
+     '(default ((t (:family "DejaVu Sans Mono for Powerline" :foundry "unknown" :slant normal :weight normal :height 140 :width normal))))
+     '(minimap-font-face ((t (:height 40 :family "DejaVu Sans Mono"))))
+     '(mode-line ((t (:family "DejaVu Sans Mono for Powerline" :foundry "unknown" :slant normal :weight normal :height 140 :width normal)))))
+    #+END_SRC
+
+** alarms
+    
+    Turning them off completely
+    #+BEGIN_SRC emacs-lisp
+    (setq ring-bell-function 'ignore)
+    #+END_SRC
+
+    #+RESULTS:
+    : ignore
+
+** Theme
+
+    This is based on the [[https://github.com/nashamri/spacemacs-theme][spacemacs]] with the colors of [[http://eclipsecolorthemes.org/?view%3Dtheme&id%3D1115][solarized]]
+
+    #+BEGIN_SRC emacs-lisp
+      (load-file "~/.emacs.d/soranomacs-theme/spacemacs-theme-autoloads.el")
+      (load-theme 'spacemacs-dark t)
+    #+END_SRC
+
+    #+RESULTS:
+    : t
+
+** Window configuration
+   
+*** Winner mode
+    Undo and redo the configuration of the windows
+
+    #+BEGIN_SRC emacs-lisp
+      (winner-mode 1) 
+      (windmove-default-keybindings) ;; Set S-<arrows> to move around the windows (S- <arrow> to move along windows)
+    #+END_SRC
+
+*** TODO Ace window
+    [[https://github.com/abo-abo/ace-window][on github]]
+    Do selective switching
+
+    #+BEGIN_SRC emacs-lisp
+    (global-set-key (kbd "<f12>") 'ace-window)
+    #+END_SRC
+
+* Basic configuration
+   
+   Removing splash screen
+   Set line numbers in gutter
+   All backup files are located in 1 directory
+   Start emacs server so files can be opened in the running instance
+   Set username and address
+
+   #+BEGIN_SRC emacs-lisp
+     (setq inhibit-splash-screen t)
+     (global-linum-mode t)
+     (setq backup-directory-alist '(("." . "~/.saves")))
+     (server-start)
+     (setq user-full-name "Pieter Vercammen")
+     (setq user-mail-address "pieterv.sorano@gmail.com")
+   #+END_SRC
+
+*** Locale Settings
+
+#+BEGIN_SRC emacs-lisp
+   (set-language-environment 'utf-8)
+   (set-terminal-coding-system 'utf-8)
+   (setq locale-coding-system 'utf-8)
+   (set-default-coding-systems 'utf-8)
+   (set-selection-coding-system 'utf-8)
+   (prefer-coding-system 'utf-8)
+#+END_SRC
+
+* Tramp
+
+   Make tramp use ssh, for multi hops
+   #+BEGIN_SRC emacs-lisp
+     (require 'tramp)
+     (setq tramp-default-method "ssh")
+   #+END_SRC
+
+   #+RESULTS:
+   : ssh
+
+   Add the needed hosts because mutli hop doesn't work with helm
+   Also because mutli hop is a lot of typing for hosts that are used all the time
+
+   Format of tripple is: HOST USER PROXY
+   #+BEGIN_SRC emacs-lisp
+          (add-to-list 'tramp-default-proxies-alist
+                    '("\\`192.168.1.2\\'" "\\`root\\'" "/ssh:sorano@%h:"))
+          (add-to-list 'tramp-default-proxies-alist
+                    '("\\`192.168.1.252\\'" "\\`root\\'" "/ssh:alarm@%h:"))
+   #+END_SRC
+
+   #+RESULTS:
+   | \`192.168.1.252\' | \`root\' | /ssh:alarm@%h:  |
+   | \`192.168.1.2\'   | \`root\' | /ssh:sorano@%h: |
+
+   Set the timout of ssh
+   #+BEGIN_SRC emacs-lisp
+     (setq password-cache-expiry 1200)
+   #+END_SRC
+   
 * CEDET
 ** Iinitialize CEDET
 
-Currently not loading cedet because I'm not using it
-
-#+BEGIN_SRC off
-(load-file "~/.emacs.d/cedet-bzr/trunk/cedet-devel-load.el") 
-(add-to-list 'semantic-default-submodes 'global-semantic-idle-summary-mode t)
-(add-to-list 'semantic-default-submodes 'global-semantic-idle-completions-mode t)
-(add-to-list 'semantic-default-submodes 'global-cedet-m3-minor-mode t)
-(add-to-list 'semantic-default-submodes 'global-semantic-highlight-func-mode t)
-(semantic-mode 1)                        ; Enable semantic
-
-;; load contrib library
-(load-file "~/.emacs.d/cedet-bzr/trunk/contrib/cedet-contrib-load.el")
-#+END_SRC
+    #+BEGIN_SRC off
+    (load-file "~/.emacs.d/cedet-bzr/trunk/cedet-devel-load.el") 
+    (add-to-list 'semantic-default-submodes 'global-semantic-idle-summary-mode t)
+    (add-to-list 'semantic-default-submodes 'global-semantic-idle-completions-mode t)
+    (add-to-list 'semantic-default-submodes 'global-cedet-m3-minor-mode t)
+    (add-to-list 'semantic-default-submodes 'global-semantic-highlight-func-mode t)
+    (semantic-mode 1)                        ; Enable semantic
+    
+    ;; load contrib library
+    (load-file "~/.emacs.d/cedet-bzr/trunk/contrib/cedet-contrib-load.el")
+    #+END_SRC
 
 * Org Mode
 ** General settings
 [[http://orgmode.org/manual/Conflicts.html][
-Confliction manual org-mode]]
-
-Make sure we don't have a conflict with S-arrow keys
-Now org mode S-arrows switches windows when there is no relevant action for the org-mode bound command
-#+BEGIN_SRC emacs-lisp
-  (setq org-replace-disputed-keys t)
-  (add-hook 'org-shiftup-final-hook 'windmove-up)
-  (add-hook 'org-shiftleft-final-hook 'windmove-left)
-  (add-hook 'org-shiftdown-final-hook 'windmove-down)
-  (add-hook 'org-shiftright-final-hook 'windmove-right)
-#+END_SRC
-
-#+RESULTS:
-| windmove-right |
+    Confliction manual org-mode]]
+    
+    Make sure we don't have a conflict with S-arrow keys
+    Now org mode S-arrows switches windows when there is no relevant action for the org-mode bound command
+    #+BEGIN_SRC emacs-lisp
+      (setq org-replace-disputed-keys t)
+      (add-hook 'org-shiftup-final-hook 'windmove-up)
+      (add-hook 'org-shiftleft-final-hook 'windmove-left)
+      (add-hook 'org-shiftdown-final-hook 'windmove-down)
+      (add-hook 'org-shiftright-final-hook 'windmove-right)
+    #+END_SRC
+    
+    #+RESULTS:
+    | windmove-right |
 
 ** Display settings
 
-#+BEGIN_SRC emacs-lisp
-  (setq org-src-fontify-natively t)
-#+END_SRC
+    #+BEGIN_SRC emacs-lisp
+      (setq org-src-fontify-natively t)
+    #+END_SRC
 
 ** Code blocks
 
-Set languages that can be executed
-
-#+BEGIN_SRC emacs-lisp
-  (org-babel-do-load-languages
-   'org-babel-load-languages
-   '((python . t)
-     (sh . t)
-     (emacs-lisp . t)
-     ))
-#+END_SRC
-
-Set it so that code executes without asking permission when pressing C-c C-c
-
-#+BEGIN_SRC emacs-lisp
-(setq org-confirm-babel-evaluate nil)
-#+END_SRC
-
-Set python version
-#+BEGIN_SRC emacs-lisp
-(setq org-babel-python-command "python2")
-#+END_SRC
+    Set languages that can be executed
+    
+    #+BEGIN_SRC emacs-lisp
+      (org-babel-do-load-languages
+       'org-babel-load-languages
+       '((python . t)
+         (sh . t)
+         (emacs-lisp . t)
+         ))
+    #+END_SRC
+    
+    Set it so that code executes without asking permission when pressing C-c C-c
+    
+    #+BEGIN_SRC emacs-lisp
+    (setq org-confirm-babel-evaluate nil)
+    #+END_SRC
+    
+    Set python version
+    #+BEGIN_SRC emacs-lisp
+    (setq org-babel-python-command "python2")
+    #+END_SRC
 
 ** Keymaps
 
-#+BEGIN_SRC emacs-lisp
-  (add-hook 'org-mode-hook
-            (lambda ()
-              (require 'hydra)
-              (defhydra hydra-org-navigation (org-mode-map "<f2>")
-                "Org navigation"
-                ("n" outline-next-visible-heading)
-                ("p" outline-previous-visible-heading)
-                ("f" org-forward-heading-same-level)
-                ("b" org-backward-heading-same-level))
-              (local-set-key (kbd "<f7>") 'org-mark-ring-push)
-              (local-set-key (kbd "C-<f7>") 'org-mark-ring-goto)))
-#+END_SRC
+    #+BEGIN_SRC emacs-lisp
+      (add-hook 'org-mode-hook
+                (lambda ()
+                  (require 'hydra)
+                  (defhydra hydra-org-navigation (org-mode-map "<f2>")
+                    "Org navigation"
+                    ("n" outline-next-visible-heading)
+                    ("p" outline-previous-visible-heading)
+                    ("f" org-forward-heading-same-level)
+                    ("b" org-backward-heading-same-level))
+                  (local-set-key (kbd "<f7>") 'org-mark-ring-push)
+                  (local-set-key (kbd "C-<f7>") 'org-mark-ring-goto)))
+    #+END_SRC
 
 #+RESULTS:
 | (lambda nil (require (quote hydra)) (defhydra hydra-org-navigation (global-map <f2>) zoom (quote ((n org-forward-element) (p org-backward-element) (f org-forward-heading-same-level) (b org-backward-heading-same-level)))) (local-set-key (kbd <f7>) (quote org-mark-ring-push)) (local-set-key (kbd C-<f7>) (quote org-mark-ring-goto))) | er/add-org-mode-expansions | (lambda nil (require (quote hydra)) (hydra-create <f2> (quote ((n org-forward-element) (p org-backward-element) (f org-forward-heading-same-level) (b org-backward-heading-same-level)))) (local-set-key (kbd <f7>) (quote org-mark-ring-push)) (local-set-key (kbd C-<f7>) (quote org-mark-ring-goto))) | (lambda nil (require (quote hydra)) (hydra-create <f1> (quote ((n org-forward-element) (p org-backward-element) (f org-forward-heading-same-level) (b org-backward-heading-same-level)))) (local-set-key (kbd <f7>) (quote org-mark-ring-push)) (local-set-key (kbd C-<f7>) (quote org-mark-ring-goto))) | #[nil \300\301\302\303\304$\207 [org-add-hook change-major-mode-hook org-show-block-all append local] 5] | #[nil \300\301\302\303\304$\207 [org-add-hook change-major-mode-hook org-babel-show-result-all append local] 5] | org-babel-result-hide-spec | org-babel-hide-all-hashes |
      
-** Nice bullets
+** TODO Nice bullets
 * helm
-[[http://tuhdo.github.io/helm-intro.html][Helm tutorial]]
-
-Helm is find first decide action later
-
-helm spotify
-
+[[http://tuhdo.github.io/helm-intro.html][    Helm tutorial]]
+    
 ** General config
 
-#+BEGIN_SRC emacs-lisp
-  (require 'helm-config)
-  (helm-mode 1)
+    #+BEGIN_SRC emacs-lisp
+      (require 'helm-config)
+      (helm-mode 1)
+    
+      (setq helm-split-window-in-side-p           t ; open helm buffer inside current window, not occupy whole other window
+            helm-move-to-line-cycle-in-source     t ; move to end or beginning of source when reaching top or bottom of source.
+            helm-ff-search-library-in-sexp        t ; search for library in `require' and `declare-function' sexp.
+            helm-scroll-amount                    8 ; scroll 8 lines other window using M-<next>/M-<prior>
+            helm-ff-file-name-history-use-recentf t)
+    
+      (helm-mode 1)
+    
+      (when (executable-find "curl")
+          (setq helm-google-suggest-use-curl-p t))
+    #+END_SRC
 
-  (setq helm-split-window-in-side-p           t ; open helm buffer inside current window, not occupy whole other window
-        helm-move-to-line-cycle-in-source     t ; move to end or beginning of source when reaching top or bottom of source.
-        helm-ff-search-library-in-sexp        t ; search for library in `require' and `declare-function' sexp.
-        helm-scroll-amount                    8 ; scroll 8 lines other window using M-<next>/M-<prior>
-        helm-ff-file-name-history-use-recentf t)
-
-  (helm-mode 1)
-
-  (when (executable-find "curl")
-      (setq helm-google-suggest-use-curl-p t))
-#+END_SRC
-
-#+RESULTS:
-: t
+    #+RESULTS:
+    : t
 
 ** Key bindings
 
-#+BEGIN_SRC emacs-lisp
-  (define-key helm-map (kbd "<tab>") 'helm-execute-persistent-action) ; rebind tab to run persistent action
-  (define-key helm-map (kbd "C-i") 'helm-execute-persistent-action) ; make TAB works in terminal
-  (define-key helm-map (kbd "C-z")  'helm-select-action) ; list actions using C-z
-  (global-set-key (kbd "C-x b") 'helm-mini)
-  (global-set-key (kbd "C-x C-f") 'helm-find-files)
-  (global-set-key (kbd "C-c h o") 'helm-occur)
-  (global-set-key (kbd "C-c h g") 'helm-google-suggest)
-  (global-set-key (kbd "M-x") 'helm-M-x)
-  (define-key helm-map (kbd "M-y") 'helm-show-kill-ring)
-#+END_SRC
+    #+BEGIN_SRC emacs-lisp
+      (define-key helm-map (kbd "<tab>") 'helm-execute-persistent-action) ; rebind tab to run persistent action
+      (define-key helm-map (kbd "C-i") 'helm-execute-persistent-action) ; make TAB works in terminal
+      (define-key helm-map (kbd "C-z")  'helm-select-action) ; list actions using C-z
+      (global-set-key (kbd "C-x b") 'helm-mini)
+      (global-set-key (kbd "C-x C-f") 'helm-find-files)
+      (global-set-key (kbd "C-c h o") 'helm-occur)
+      (global-set-key (kbd "C-c h g") 'helm-google-suggest)
+      (global-set-key (kbd "M-x") 'helm-M-x)
+      (define-key helm-map (kbd "M-y") 'helm-show-kill-ring)
+    #+END_SRC
+    
+    #+RESULTS:
+    : helm-show-kill-ring
 
-#+RESULTS:
-: helm-show-kill-ring
-
-* UI
-** Theme
-
-This is based on the [[https://github.com/nashamri/spacemacs-theme][spacemacs]] with the colors of [[http://eclipsecolorthemes.org/?view%3Dtheme&id%3D1115][solarized]]
-
-#+BEGIN_SRC emacs-lisp
-  (load-file "~/.emacs.d/soranomacs-theme/spacemacs-theme-autoloads.el")
-  (load-theme 'spacemacs-dark t)
-#+END_SRC
-
-#+RESULTS:
-: t
-
-
-** Powerline
-Activate powerline with the default theme
-
-You need to use patched fonts -> 
-git clone https://github.com/powerline/fonts
-
-#+BEGIN_SRC emacs-lisp
-  (require 'powerline)
-  (powerline-default-theme)
-  (setq powerline-default-separator 'slant)
-#+END_SRC
-
-#+RESULTS:
-: #cb4b16
-
-   
-** Window configuration
-   
-*** Winner mode
-Undo and redo configuration changes
-
-#+BEGIN_SRC emacs-lisp
-  (winner-mode 1) 
-  (windmove-default-keybindings) ;; Set S-<arrows> to move around the windows (S- <arrow> to move along windows)
-#+END_SRC
-
-*** Ace window
-[[https://github.com/abo-abo/ace-window][on github]]
-Do selective switching
-
-#+BEGIN_SRC emacs-lisp
-(global-set-key (kbd "<f12>") 'ace-window)
-#+END_SRC
-to
 * TODO Python
   The curren setup has too many issues. Try [[http://ericjmritz.name/2015/11/06/gnu-emacs-packages-for-python-programming/][this]]
 
-Setup python environment
+  Setup python environment
 
-Setting everything to use python 2
-#+BEGIN_SRC emacs-lisp
-  (setq python-version-checked t)
-  (setenv "PYMACS_PYTHON" "python2")
-  (setq python-python-command "python2")
-  (setq py-shell-name "/usr/bin/python2")
-  (setq py-python-command "/usr/bin/python2")
-  (setq python-environment-virtualenv (list "virtualenv2" "--system-site-packages" "--quiet"))
-#+END_SRC
+  Setting everything to use python 2
+  #+BEGIN_SRC emacs-lisp
+    (setq python-version-checked t)
+    (setenv "PYMACS_PYTHON" "python2")
+    (setq python-python-command "python2")
+    (setq py-shell-name "/usr/bin/python2")
+    (setq py-python-command "/usr/bin/python2")
+    (setq python-environment-virtualenv (list "virtualenv2" "--system-site-packages" "--quiet"))
+  #+END_SRC
 
 ** TODO Python version switch
 ** TODO Python virtualenv
@@ -452,7 +439,7 @@ Below should only be activated in a python file
    [[https://github.com/portante/pycscope][github]]
 
 * lua/awesome
-These are the customizations for lua. Especially for development of awesome
+  These are the customizations for lua. Especially for development of awesome
 
 ** Tools
 
@@ -471,7 +458,6 @@ These are the customizations for lua. Especially for development of awesome
 
    #+BEGIN_SRC emacs-lisp
      (load "~/.emacs.d/custom/lua-tests.el")
-
    #+END_SRC
 
    #+BEGIN_SRC emacs-lisp
@@ -487,7 +473,8 @@ These are the customizations for lua. Especially for development of awesome
    | lua-mode-config |
    
 * TODO Java
-https://github.com/jdee-emacs/jde
+  https://github.com/jdee-emacs/jde
+  http://www.skybert.net/emacs/java/
 * Navigation
 ** Beacon
 
@@ -502,27 +489,27 @@ https://github.com/jdee-emacs/jde
 
 ** avy (jump to x)
 
-avy lets you jump directrly to one or a combination of 2 characters or to a line
-Intialize avy
-https://github.com/abo-abo/avy
+   avy lets you jump directrly to one or a combination of 2 characters or to a line
+   Intialize avy
+   https://github.com/abo-abo/avy
 
-#+BEGIN_SRC emacs-lisp
-  (avy-setup-default)
-  (global-set-key (kbd "C-:") 'avy-goto-char)
-  (global-set-key (kbd "C-'") 'avy-goto-char-2)
-#+END_SRC
-
-#+RESULTS:
-: avy-goto-line
+   #+BEGIN_SRC emacs-lisp
+     (avy-setup-default)
+     (global-set-key (kbd "C-:") 'avy-goto-char)
+     (global-set-key (kbd "C-'") 'avy-goto-char-2)
+   #+END_SRC
+   
+   #+RESULTS:
+   : avy-goto-line
 
 ** sr-speedbar
 
-Speedbar is a tool that creates a window and shows speedbar inside
-Initialize sr-speedbar
+   Speedbar is a tool that creates a window and shows speedbar inside
+   Initialize sr-speedbar
 
-#+BEGIN_SRC emacs-lisp
-(require 'sr-speedbar)
-#+END_SRC
+   #+BEGIN_SRC emacs-lisp
+   (require 'sr-speedbar)
+   #+END_SRC
 
 ** Navigation keymaps
    
@@ -572,7 +559,15 @@ Initialize sr-speedbar
 * Blogging/writing
 ** olivetti mode
    on [[https://github.com/rnkn/olivetti][github]]   
-* Text  Editing
+* Text Editing
+** Standard editor settings
+   
+   #+BEGIN_SRC emacs-lisp
+  (setq-default indent-tabs-mode nil) ;; don't use tabs
+  (setq-default tab-width 2) ;; use 2 space tabs
+  (global-hl-line-mode 1) ;; highlight current line
+   #+END_SRC
+
 ** autocomplete
    
    hippie-expand to expand a sentence or a code block
@@ -593,11 +588,6 @@ Initialize sr-speedbar
    #+RESULTS:
    | company-shell | company-bbdb | company-nxml | company-css | company-eclim | company-semantic | company-clang | company-xcode | company-cmake | company-capf | company-files | (company-dabbrev-code company-gtags company-etags company-keywords) | company-oddmuse | company-dabbrev |
 
-   We still need the 'normal' auto-complete package because jedi depends on it.
-
-   #+RESULTS:
-   | global-company-mode | x-wm-set-size-hint |
-
 ** undo
 
    An advanced undo system
@@ -610,39 +600,37 @@ Initialize sr-speedbar
 
 ** parenthesis
    
-Automagically pair braces and quotes like TextMate
-#+BEGIN_SRC emacs-lisp
-  (electric-pair-mode)
-#+END_SRC
+   Automagically pair braces and quotes like TextMate
+   #+BEGIN_SRC emacs-lisp
+     (electric-pair-mode)
+   #+END_SRC
 
-Show matching parentheses
+   Show matching parentheses
 
-#+BEGIN_SRC emacs-lisp
-(setq show-paren-mode t)
-#+END_SRC
+   #+BEGIN_SRC emacs-lisp
+   (setq show-paren-mode t)
+   #+END_SRC
 
-I don't want numerous colors for every parenthesis.
-I only want to see the non matching parenthesis
+   I don't want numerous colors for every parenthesis.
+   I only want to see the non matching parenthesis
 
-#+BEGIN_SRC emacs-lisp
-  (add-hook 'prog-mode-hook 'rainbow-delimiters-mode)
-  (require 'rainbow-delimiters)
-  (setq rainbow-delimiters-max-face-count 1)
-  (set-face-attribute 'rainbow-delimiters-unmatched-face nil
-                      :foreground 'unspecified
-                      :inherit 'error)
-#+END_SRC
+   #+BEGIN_SRC emacs-lisp
+     (add-hook 'prog-mode-hook 'rainbow-delimiters-mode)
+     (require 'rainbow-delimiters)
+     (setq rainbow-delimiters-max-face-count 1)
+     (set-face-attribute 'rainbow-delimiters-unmatched-face nil
+                         :foreground 'unspecified
+                         :inherit 'error)
+   #+END_SRC
 
-#+RESULTS:
+   Move by parenthesis as per http://ergoemacs.org/emacs/emacs_navigating_keys_for_brackets.html
 
-Move by parenthesis as per http://ergoemacs.org/emacs/emacs_navigating_keys_for_brackets.html
-
-#+BEGIN_SRC emacs-lisp
-  (load "~/.emacs.d/custom/brackets-movement.el")
-
-  (global-set-key (kbd "C-(") 'xah-backward-left-bracket)
-  (global-set-key (kbd "C-)") 'xah-forward-right-bracket)
-#+END_SRC
+   #+BEGIN_SRC emacs-lisp
+     (load "~/.emacs.d/custom/brackets-movement.el")
+   
+     (global-set-key (kbd "C-(") 'xah-backward-left-bracket)
+     (global-set-key (kbd "C-)") 'xah-forward-right-bracket)
+   #+END_SRC
 
 #+RESULTS:
 : xah-forward-right-bracket
@@ -666,34 +654,35 @@ Mutliple cursors does what it says
 #+END_SRC
 
 ** Copy paste
-Custom el to change behavior of std copy/cut paste behavior
-Some code based on xah-lee's version on http://ergoemacs.org/emacs/emacs_copy_cut_current_line.html
+   Custom el to change behavior of std copy/cut paste behavior
+   Some code based on xah-lee's version on http://ergoemacs.org/emacs/emacs_copy_cut_current_line.html
 
-#+BEGIN_SRC emacs-lisp
-(load "~/.emacs.d/custom/copy-paste-behavior.el")
+   #+BEGIN_SRC emacs-lisp
+   (load "~/.emacs.d/custom/copy-paste-behavior.el")
+   
+   (global-set-key (kbd "C-w") 'custom-cut-line-or-region) ; cut
+   (global-set-key (kbd "M-w") 'custom-copy-line-or-region) ; copy
+   #+END_SRC
 
-(global-set-key (kbd "C-w") 'custom-cut-line-or-region) ; cut
-(global-set-key (kbd "M-w") 'custom-copy-line-or-region) ; copy
-#+END_SRC
 
-#+RESULTS:
-: xah-copy-line-or-region
+   #+RESULTS:
+   : xah-copy-line-or-region
 
 ** YaSnippet
 
-Enable yasnippet on startup for all mode
-#+BEGIN_SRC emacs-lisp
-  (yas-global-mode 1)
-#+END_SRC
+   Enable yasnippet on startup for all mode
+   #+BEGIN_SRC emacs-lisp
+     (yas-global-mode 1)
+   #+END_SRC
 
-** Spelling&autocorrect
+** Spelling and autocorrect
    
-For enabling spelling for a specific mode this is needed
-(add-hook 'text-mode-hook 'flyspell-mode)
+   For enabling spelling for a specific mode this is needed
+   (add-hook 'text-mode-hook 'flyspell-mode)
 
-#+BEGIN_SRC shell
-sudo pacman -S aspell-en
-#+END_SRC
+   #+BEGIN_SRC shell
+   sudo pacman -S aspell-en
+   #+END_SRC
 
 *** Typo correctors
     
@@ -716,7 +705,7 @@ Found at: http://endlessparentheses.com/ispell-and-abbrev-the-perfect-auto-corre
 #+RESULTS:
 : endless/ispell-word-then-abbrev
 
-** Replace
+** Query and Replace
 
 #+BEGIN_SRC emacs-lisp
   (global-anzu-mode)
@@ -729,7 +718,6 @@ Found at: http://endlessparentheses.com/ispell-and-abbrev-the-perfect-auto-corre
 
 *** TODO Replace should always start at the beginning of the buffer
     
-** Shortcuts
 ** Behavior
    
    subword-mode enables camel casing
@@ -740,10 +728,10 @@ Found at: http://endlessparentheses.com/ispell-and-abbrev-the-perfect-auto-corre
 
 * Search
   
-Find in file(s)
-- occur
-- helm-occur
-- helm-multi-occur
+  Find in file(s)
+  - occur
+  - helm-occur
+  - helm-multi-occur
    
 * Code
 ** Code checker
@@ -798,30 +786,34 @@ Find in file(s)
    [[https://github.com/Fuco1/litable][github page]]
     
 * Projects
-Projectile is the project mgmt tool
+  
+  Projectile is the project mgmt tool
 
 **  helm-projectile
-[[http://tuhdo.github.io/helm-projectile.html][helm projectile]]
 
-key bindingd
-#+BEGIN_SRC emacs-lisp
- (global-set-key (kbd "C-c r h") 'helm-projectile)
-#+END_SRC
+    [[http://tuhdo.github.io/helm-projectile.html][helm projectile]]
 
-#+RESULTS:
-: helm-projectile
+    key bindingd
+    #+BEGIN_SRC emacs-lisp
+     (global-set-key (kbd "C-c r h") 'helm-projectile)
+    #+END_SRC
+
+    #+RESULTS:
+    : helm-projectile
 
 * Eshell
-enable helm autocompletion
 
-#+BEGIN_SRC emacs-lisp
-  (add-hook 'eshell-mode-hook
-            '(lambda ()
-               (define-key eshell-mode-map (kbd "C-c C-l")  'helm-eshell-history)))
-#+END_SRC
+  enable helm autocompletion
 
-#+RESULTS:
-| lambda | nil | (define-key eshell-mode-map (kbd C-c C-l) (quote helm-eshell-history)) 
+  #+BEGIN_SRC emacs-lisp
+    (add-hook 'eshell-mode-hook
+              '(lambda ()
+                 (define-key eshell-mode-map (kbd "C-c C-l")  'helm-eshell-history)))
+  #+END_SRC
+
+  #+RESULTS:
+  | lambda | nil | (define-key eshell-mode-map (kbd C-c C-l) (quote helm-eshell-history)) |
+  |        |     |                                                                        |
 * Magit
   
   git tool for emacs [[https://github.com/magit/magit][on github]]
@@ -854,8 +846,8 @@ enable helm autocompletion
   | message-commit-setup |
 
 * Spreadsheet
-*.ses file
-[[https://www.gnu.org/software/emacs/manual/html_mono/ses.html#Quick-Tutorial][SES documentation]]
+  *.ses file
+  [[https://www.gnu.org/software/emacs/manual/html_mono/ses.html#Quick-Tutorial][SES documentation]]
 * TODO Evernote
 * Directories
   
@@ -863,7 +855,7 @@ enable helm autocompletion
   ztree is a tree browser
   
 * Files
-*** Edit current buffer as root
+** Edit current buffer as root
     
     find-file-at-point to find a file at point
  
@@ -883,22 +875,24 @@ enable helm autocompletion
 
 * Emacs general   
 ** Files
-
-When open files remain on exiting, pressing 'd' will show the diff
+   When open files remain on exiting, pressing 'd' will show the diff
 ** Characters and unicode
 
-#+BEGIN_SRC emacs-lisp
-  (require 'xah-math-input)
-  (define-key xah-math-input-keymap (kbd "C-<tab>") 'xah-math-input-change-to-symbol)
-#+END_SRC
+   #+BEGIN_SRC emacs-lisp
+     (require 'xah-math-input)
+     (define-key xah-math-input-keymap (kbd "C-<tab>") 'xah-math-input-change-to-symbol)
+   #+END_SRC
 
-#+RESULTS:
-: xah-math-input-change-to-symbol
+   #+RESULTS:
+   : xah-math-input-change-to-symbol
+
 ** Links
+
    [[http://emacs.sexy/][EmacsIsSexy]]
    
 ** Help
 *** which-key
+
     [[https://github.com/justbur/emacs-which-key#introduction][on github]]
 
     Automatically show the possible key completions in emacs
@@ -917,13 +911,14 @@ When open files remain on exiting, pressing 'd' will show the diff
   #+BEGIN_SRC emacs-lisp
   (pdf-tools-install)
   #+END_SRC
-r
+
 * SVN
 
   Initiate svn mode
   #+BEGIN_SRC emacs-lisp
   (require 'dsvn)
   #+END_SRC
+
 * Docker
 
   For manageing dockers there are 3 packages:
