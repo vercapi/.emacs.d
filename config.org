@@ -54,12 +54,29 @@ Initialize
 ** General info
    
    #+BEGIN_SRC emacs-lisp
-  (tool-bar-mode -1) ;; no toolbar
-  (fset 'yes-or-no-p 'y-or-n-p) ;; type y/n not yes/no
+     (tool-bar-mode -1) ;; no toolbar
+     (menu-bar-mode -1)
+     (toggle-scroll-bar -1)
+     (fset 'yes-or-no-p 'y-or-n-p) ;; type y/n not yes/no
    #+END_SRC
 
+   #+RESULTS:
+   : y-or-n-p
+
+** Theme
+
+    This is based on the [[https://github.com/nashamri/spacemacs-theme][spacemacs]] with the colors of [[http://eclipsecolorthemes.org/?view%3Dtheme&id%3D1115][solarized]]
+
+    #+BEGIN_SRC emacs-lisp
+      (load-file "~/.emacs.d/soranomacs-theme/spacemacs-theme-autoloads.el")
+      (load-theme 'spacemacs-dark t)
+    #+END_SRC
+
+    #+RESULTS:
+    : t
+
 ** mode line
-    
+   
     Standard configuration
     
     Set the file size on the mode line  
@@ -86,7 +103,7 @@ Initialize
      #+END_SRC
 
      #+RESULTS:
-     : #cb4b16
+     : slant
 
 ** Mini bufer
 
@@ -127,18 +144,6 @@ Initialize
 
     #+RESULTS:
     : ignore
-
-** Theme
-
-    This is based on the [[https://github.com/nashamri/spacemacs-theme][spacemacs]] with the colors of [[http://eclipsecolorthemes.org/?view%3Dtheme&id%3D1115][solarized]]
-
-    #+BEGIN_SRC emacs-lisp
-      (load-file "~/.emacs.d/soranomacs-theme/spacemacs-theme-autoloads.el")
-      (load-theme 'spacemacs-dark t)
-    #+END_SRC
-
-    #+RESULTS:
-    : t
 
 ** Window configuration
    
