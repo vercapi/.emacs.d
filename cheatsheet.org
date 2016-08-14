@@ -1,7 +1,7 @@
 #+TITLE: Emacs Cheatsheet
 
 * Text navigation
-
+  
   | Key       | Function                            |
   |-----------+-------------------------------------|
   | C-:       | Goto char                           |
@@ -142,6 +142,11 @@
 | Searching |                                                            |
 | C-c / R   | Regex search open all headers where occurences where found |
 |           |                                                            |
+| F2        | Hydra                                                      |
+| - n       | Next header                                                |
+| - p       | Previous header                                            |
+| - f       | Next header same level                                     |
+| - b       | Previous header same level                                 |
 
 * Helm
   

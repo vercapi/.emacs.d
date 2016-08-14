@@ -225,19 +225,21 @@ Initialize
 * CEDET
 ** Iinitialize CEDET
 
-    #+BEGIN_SRC off
-    (load-file "~/.emacs.d/cedet-bzr/trunk/cedet-devel-load.el") 
-    (add-to-list 'semantic-default-submodes 'global-semantic-idle-summary-mode t)
-    (add-to-list 'semantic-default-submodes 'global-semantic-idle-completions-mode t)
-    (add-to-list 'semantic-default-submodes 'global-cedet-m3-minor-mode t)
-    (add-to-list 'semantic-default-submodes 'global-semantic-highlight-func-mode t)
-    (semantic-mode 1)                        ; Enable semantic
-    
-    ;; load contrib library
-    (load-file "~/.emacs.d/cedet-bzr/trunk/contrib/cedet-contrib-load.el")
+    #+BEGIN_SRC emacs-lisp
+      ;;(load-file "~/.emacs.d/cedet-bzr/trunk/cedet-devel-load.el") 
+      ;;(add-to-list 'semantic-default-submodes 'global-semantic-idle-summary-mode t)
+      ;;(add-to-list 'semantic-default-submodes 'global-semantic-idle-completions-mode t)
+      ;;(add-to-list 'semantic-default-submodes 'global-cedet-m3-minor-mode t)
+      ;;(add-to-list 'semantic-default-submodes 'global-semantic-highlight-func-mode t)
+      ;;(semantic-mode 1)                        ; Enable semantic
+
+      ;; load contrib library
+      ;;(load-file "~/.emacs.d/cedet-bzr/trunk/contrib/cedet-contrib-load.el")
     #+END_SRC
 
-* Org Mode
+    #+RESULTS:
+
+x* Org Mode
 ** General settings
 [[http://orgmode.org/manual/Conflicts.html][
     Confliction manual org-mode]]

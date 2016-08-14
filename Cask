@@ -67,6 +67,7 @@
 (depends-on "syntax-subword")
 (depends-on "systemd")
 (depends-on "tablist")
+(depends-on "twittering-mode")
 (depends-on "undo-tree")
 (depends-on "use-package")
 (depends-on "web-mode")
