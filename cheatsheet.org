@@ -164,7 +164,7 @@
 | C-c r h      | Helm projectile                         |
 
 * Window manipulation
-
+** Windows
 | Key        | Function                                              |
 |------------+-------------------------------------------------------|
 | C-c <-     | Restore previous window configuration                 |
@@ -181,6 +181,13 @@
 |            | i - maximize window (select which window)             |
 |            | o - maximize current window                           |
 |            |                                                       |
+
+** Frames
+| Key     | Function         |
+|---------+------------------|
+| C-x 5 2 | Create new frame |
+| C-x 5 0 | Close frame      |
+| C-x 5 o | Switch frame     |
 
 * Python specific
 
@@ -306,3 +313,11 @@
   | k   | Discard uncommted change |
   |     |                          |
   
+* Package manager
+  
+  Within *Packages*
+| Key | Description                            |
+|-----+----------------------------------------|
+| U   | Mark all installed packages for update |
+| x   | Execute                                |
+
