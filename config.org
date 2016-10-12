@@ -932,3 +932,32 @@ Found at: http://endlessparentheses.com/ispell-and-abbrev-the-perfect-auto-corre
   - docker-mode for editing files
   - docker for managing docker (can use tramp, needed for root access, but can also be used on other hosts)
   - docker-tramp to have tramp like access to dockers /docker:<docker-name>:/home/
+
+* Ediff
+
+** Enable using both code blocks
+
+   #+BEGIN_SRC emacs-lisp
+     (defun ediff-copy-both-to-C ()
+       (interactive)
+       (ediff-copy-diff ediff-current-difference nil 'C nil
+                        (concat
+                         (ediff-get-region-contents ediff-current-difference 'A ediff-control-buffer)
+                         (ediff-get-region-contents ediff-current-difference 'B ediff-control-buffer))))
+
+     (defun ediff-copy-both-to-C-b-first ()
+       (interactive)
+       (ediff-copy-diff ediff-current-difference nil 'C nil
+                        (concat
+                         (ediff-get-region-contents ediff-current-difference 'B ediff-control-buffer)
+                         (ediff-get-region-contents ediff-current-difference 'A ediff-control-buffer))))
+
+     (defun add-d-to-ediff-mode-map ()
+       (define-key ediff-mode-map "d" 'ediff-copy-both-to-C)
+       (define-key ediff-mode-map "D" 'ediff-copy-both-to-C-b-first))
+     (add-hook 'ediff-keymap-setup-hook 'add-d-to-ediff-mode-map)
+   #+END_SRC
+
+   #+RESULTS:
+   | add-d-to-ediff-mode-map |
+
