@@ -3,6 +3,7 @@
 (source gnu)
 (source marmalade)
 
+(depends-on "ace-window")
 (depends-on "anzu")
 (depends-on "async")
 (depends-on "auto-complete")
@@ -58,6 +59,7 @@
 (depends-on "rainbow-delimiters")
 (depends-on "s")
 (depends-on "salt-mode")
+(depends-on "seq")
 (depends-on "smartparens")
 (depends-on "smex")
 (depends-on "sr-speedbar")
