@@ -2,7 +2,7 @@
 #+OPTIONS: toc:4 h:4m 
 
 * Packages setup
-
+  
 Initialize
 #+BEGIN_SRC emacs-lisp
 ;; activate all the packages (in particular autoloads)
@@ -49,6 +49,12 @@ Initialize
 
    To update run pallet-update
  
+** Custom tools
+
+   #+BEGIN_SRC emacs-lisp
+   (load "~/.emacs.d/custom/emacs-tools.el")
+   #+END_SRC
+
 * UI configuration
 ** General info
    
