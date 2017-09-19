@@ -17,7 +17,7 @@
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    (quote
-    (ace-window yasnippet xah-math-input which-key web-mode use-package undo-tree twittering-mode systemd syntax-subword sunrise-x-modeline sunrise-x-buttons sr-speedbar smex smartparens salt-mode rainbow-delimiters pymacs prodigy powerline popwin peep-dired pdf-tools pallet org-bullets nyan-mode multiple-cursors magit lua-mode jedi idle-highlight-mode hydra htmlize helm-spotify helm-projectile goto-chg git-gutter flycheck-pyflakes flycheck-cask expand-region exec-path-from-shell dsvn drag-stuff dockerfile-mode docker company-shell beacon avy anzu))))
+    (helm-swoop yasnippet xah-math-input which-key web-mode use-package undo-tree twittering-mode systemd syntax-subword sunrise-x-modeline sunrise-x-buttons sr-speedbar smex smartparens salt-mode rainbow-delimiters pymacs prodigy powerline popwin peep-dired pdf-tools pallet org-bullets nyan-mode multiple-cursors magit lua-mode jedi idle-highlight-mode hydra htmlize helm-spotify helm-projectile goto-chg git-gutter flycheck-pyflakes flycheck-cask expand-region exec-path-from-shell dsvn drag-stuff dockerfile-mode docker company-shell beacon avy anzu))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.

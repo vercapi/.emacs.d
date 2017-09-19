@@ -35,6 +35,7 @@
 (depends-on "helm-core")
 (depends-on "helm-projectile")
 (depends-on "helm-spotify")
+(depends-on "helm-swoop")
 (depends-on "htmlize")
 (depends-on "hydra")
 (depends-on "idle-highlight-mode")
