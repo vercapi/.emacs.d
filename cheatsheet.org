@@ -334,3 +334,9 @@
 | U   | Mark all installed packages for update |
 | x   | Execute                                |
 
+* Sys Admin
+
+  | Key           | Description         |
+  |---------------+---------------------|
+  | arch-packer-* | pacman within emacs |
+  |               |                     |

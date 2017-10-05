@@ -5,6 +5,7 @@
 
 (depends-on "ace-window")
 (depends-on "anzu")
+(depends-on "arch-packer")
 (depends-on "async")
 (depends-on "auto-complete")
 (depends-on "avy")
