@@ -38,14 +38,24 @@
    
 * Search
 
-| Key     | Function                    |
-|---------+-----------------------------|
-|         |                             |
-| C-s C-w | Search for word after point |
-| C-s C-s | Repeat last search          |
-| C-s M-y | Search last kill            |
-| C-u C-s | Regepx Search               |
-| C-u C-r | Reverse Regexp Search       |
+| Key            | Function                                                      |
+|----------------+---------------------------------------------------------------|
+|                |                                                               |
+| C-s C-w        | Search for word after point                                   |
+| C-s C-s        | Repeat last search                                            |
+| C-s M-y        | Search last kill                                              |
+| C-u C-s        | Regepx Search                                                 |
+| C-u C-r        | Reverse Regexp Search                                         |
+|                |                                                               |
+| regexp-builder | Visual tool for regexp                                        |
+|                |                                                               |
+| helm-swoop     | Get a search result overview with navigation in original file |
+| helm-ag        | Search in open buffers                                        |
+| helm-ag-r      | Use silver searcher recursivly                                |
+|                |                                                               |
+| how-many       |                                                               |
+|                |                                                               |
+| hl-anything    | minor mode for highlighting                                   |
 
 * Selection
 
@@ -99,6 +109,9 @@
 | x^{B}                | SupperScript                                                                     |
 |                      |                                                                                  |
 | S-SPACE              | Expand math symbols ([[http://ergoemacs.org/emacs/xmsi-math-symbols-input.html][xah-math-input]]) xah-math-input-mode                         |
+|                      |                                                                                  |
+| keep-lines           |                                                                                  |
+| flush-lines          |                                                                                  |
 
 * Correction
 
