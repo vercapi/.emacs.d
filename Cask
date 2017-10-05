@@ -50,6 +50,7 @@
 (depends-on "magit-popup")
 (depends-on "multiple-cursors")
 (depends-on "nyan-mode")
+(depends-on "ob-async")
 (depends-on "org-bullets")
 (depends-on "package-build")
 (depends-on "pallet")

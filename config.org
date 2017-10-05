@@ -292,6 +292,11 @@ Initialize
     (setq org-babel-python-command "python2")
     #+END_SRC
 
+    Enable async execution of babel code blocks
+    #+BEGIN_SRC emacs-lisp
+    (require 'ob-async)
+    #+END_SRC
+
 ** Keymaps
 
     #+BEGIN_SRC emacs-lisp
