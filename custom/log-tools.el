@@ -9,9 +9,9 @@
 
 (setq log-tools-servers (make-hash-table :test 'equal))
 
-(puthash "utastwlsprod6" (vector "utastwlsprod6a" "utastwlsprod6b") log-tools-servers)
-(puthash "utastwlsprod7" (vector "utastwlsprod7a" "utastwlsprod7b") log-tools-servers)
-(puthash "utastwlsprod8" (vector "utastwlsprod8a" "utastwlsprod8b") log-tools-servers)
+(puthash "utastwlsprod6" (vector "utastwlsprod6a" "utastwlsprod6b" "utastwlsprod6c" "utastwlsprod6d" "utastwlsprod6e") log-tools-servers)
+(puthash "utastwlsprod7" (vector "utastwlsprod7a" "utastwlsprod7b" "utastwlsprod7c" "utastwlsprod7d" "utastwlsprod7e") log-tools-servers)
+(puthash "utastwlsprod8" (vector "utastwlsprod8a" "utastwlsprod8b" "utastwlsprod8c" "utastwlsprod8d" "utastwlsprod8e") log-tools-servers)
 
 (defun log-tools-open-file-wls-kbvb (server-name  managed-server-name)
   "Effectively open files on machine with SERVER-NAME and for managed server with MANAGED-SERVER-NAME."
