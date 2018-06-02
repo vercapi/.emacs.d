@@ -816,7 +816,16 @@ Found at: http://endlessparentheses.com/ispell-and-abbrev-the-perfect-auto-corre
    
    autocompletion with litable
    [[https://github.com/Fuco1/litable][github page]]
-    
+
+** Completion LSP
+   
+   #+BEGIN_SRC emacs-lisp
+   (require 'lsp-java)
+   (add-hook 'java-mode-hook #'lsp-java-enable)
+   #+END_SRC
+
+   #+RESULTS:
+
 * Projects
   
   Projectile is the project mgmt tool
