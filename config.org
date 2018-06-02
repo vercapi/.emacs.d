@@ -3,57 +3,48 @@
 
 * Packages setup
   
-Initialize
-#+BEGIN_SRC emacs-lisp
-;; activate all the packages (in particular autoloads)
-(package-initialize)
-#+END_SRC
-  
+  Loading all the resources so the rest of the config has access to all these resoruces.
+
 ** Packages sources
 
-#+BEGIN_SRC emacs-lisp
- (setq package-archives '(("melpa" . "http://melpa.milkbox.net/packages/")
-                          ("marmalade" . "http://marmalade-repo.org/packages/")
-                          ("SC" . "http://joseito.republika.pl/sunrise-commander/")
-                          ("gnu" . "http://elpa.gnu.org/packages/")))
-#+END_SRC
-
-   
-** Cask buid tool setup
-   
-   #+BEGIN_SRC sh
-   curl -fsSL https://raw.githubusercontent.com/cask/cask/master/go | python
-   #+END_SRC
-
-   This needs to be included in ~/.bash_profile
-   export PATH="/home/vercapi/.cask/bin:$PATH"
-
-   Init cask
+   Configure all sources for packages to be used throughtout this config file.
    #+BEGIN_SRC emacs-lisp
-   (require 'cask "~/.cask/cask.el")
-   (cask-initialize)
+    (setq package-archives '(("melpa" . "http://melpa.milkbox.net/packages/")
+                             ("marmalade" . "http://marmalade-repo.org/packages/")
+                             ("SC" . "http://joseito.republika.pl/sunrise-commander/")
+                             ("gnu" . "http://elpa.gnu.org/packages/")))
    #+END_SRC
 
-   #+RESULTS:
-   : [cl-struct-cask-bundle nil nil nil ([cl-struct-cask-dependency yasnippet nil nil nil nil nil nil] [cl-struct-cask-dependency yaml-mode nil nil nil nil nil nil] [cl-struct-cask-dependency xah-math-input nil nil nil nil nil nil] [cl-struct-cask-dependency with-editor nil nil nil nil nil nil] [cl-struct-cask-dependency which-key nil nil nil nil nil nil] [cl-struct-cask-dependency web-mode nil nil nil nil nil nil] [cl-struct-cask-dependency use-package nil nil nil nil nil nil] [cl-struct-cask-dependency undo-tree nil nil nil nil nil nil] [cl-struct-cask-dependency twittering-mode nil nil nil nil nil nil] [cl-struct-cask-dependency tablist nil nil nil nil nil nil] [cl-struct-cask-dependency systemd nil nil nil nil nil nil] [cl-struct-cask-dependency syntax-subword nil nil nil nil nil nil] [cl-struct-cask-dependency sunrise-x-modeline nil nil nil nil nil nil] [cl-struct-cask-dependency sunrise-x-buttons nil nil nil nil nil nil] [cl-struct-cask-dependency sunrise-commander nil nil nil nil nil nil] [cl-struct-cask-dependency sr-speedbar nil nil nil nil nil nil] [cl-struct-cask-dependency smex nil nil nil nil nil nil] [cl-struct-cask-dependency smartparens nil nil nil nil nil nil] [cl-struct-cask-dependency seq nil nil nil nil nil nil] [cl-struct-cask-dependency salt-mode nil nil nil nil nil nil] [cl-struct-cask-dependency s nil nil nil nil nil nil] [cl-struct-cask-dependency rainbow-delimiters nil nil nil nil nil nil] [cl-struct-cask-dependency pymacs nil nil nil nil nil nil] [cl-struct-cask-dependency projectile nil nil nil nil nil nil] [cl-struct-cask-dependency prodigy nil nil nil nil nil nil] [cl-struct-cask-dependency powerline nil nil nil nil nil nil] [cl-struct-cask-dependency popwin nil nil nil nil nil nil] [cl-struct-cask-dependency popup nil nil nil nil nil nil] [cl-struct-cask-dependency peep-dired nil nil nil nil nil nil] [cl-struct-cask-dependency pdf-tools nil nil nil nil nil nil] [cl-struct-cask-dependency pallet nil nil nil nil nil nil] [cl-struct-cask-dependency package-build nil nil nil nil nil nil] [cl-struct-cask-dependency org-bullets nil nil nil nil nil nil] [cl-struct-cask-dependency nyan-mode nil nil nil nil nil nil] [cl-struct-cask-dependency multiple-cursors nil nil nil nil nil nil] [cl-struct-cask-dependency magit-popup nil nil nil nil nil nil] [cl-struct-cask-dependency magit nil nil nil nil nil nil] [cl-struct-cask-dependency lua-mode nil nil nil nil nil nil] [cl-struct-cask-dependency jedi-core nil nil nil nil nil nil] [cl-struct-cask-dependency jedi nil nil nil nil nil nil] [cl-struct-cask-dependency idle-highlight-mode nil nil nil nil nil nil] [cl-struct-cask-dependency hydra nil nil nil nil nil nil] [cl-struct-cask-dependency htmlize nil nil nil nil nil nil] [cl-struct-cask-dependency helm-swoop nil nil nil nil nil nil] [cl-struct-cask-dependency helm-spotify nil nil nil nil nil nil] [cl-struct-cask-dependency helm-projectile nil nil nil nil nil nil] [cl-struct-cask-dependency helm-core nil nil nil nil nil nil] [cl-struct-cask-dependency helm nil nil nil nil nil nil] [cl-struct-cask-dependency goto-chg nil nil nil nil nil nil] [cl-struct-cask-dependency git-gutter nil nil nil nil nil nil] [cl-struct-cask-dependency git-commit nil nil nil nil nil nil] [cl-struct-cask-dependency flycheck-pyflakes nil nil nil nil nil nil] [cl-struct-cask-dependency flycheck-cask nil nil nil nil nil nil] [cl-struct-cask-dependency flycheck nil nil nil nil nil nil] [cl-struct-cask-dependency f nil nil nil nil nil nil] [cl-struct-cask-dependency expand-region nil nil nil nil nil nil] [cl-struct-cask-dependency exec-path-from-shell nil nil nil nil nil nil] [cl-struct-cask-dependency dsvn nil nil nil nil nil nil] [cl-struct-cask-dependency drag-stuff nil nil nil nil nil nil] [cl-struct-cask-dependency dockerfile-mode nil nil nil nil nil nil] [cl-struct-cask-dependency docker-tramp nil nil nil nil nil nil] [cl-struct-cask-dependency docker nil nil nil nil nil nil] [cl-struct-cask-dependency diminish nil nil nil nil nil nil] [cl-struct-cask-dependency deferred nil nil nil nil nil nil] [cl-struct-cask-dependency dash nil nil nil nil nil nil] [cl-struct-cask-dependency concurrent nil nil nil nil nil nil] [cl-struct-cask-dependency company-shell nil nil nil nil nil nil] [cl-struct-cask-dependency company nil nil nil nil nil nil] [cl-struct-cask-dependency cask nil nil nil nil nil nil] [cl-struct-cask-dependency bind-key nil nil nil nil nil nil] [cl-struct-cask-dependency beacon nil nil nil nil nil nil] [cl-struct-cask-dependency avy nil nil nil nil nil nil] [cl-struct-cask-dependency auto-complete nil nil nil nil nil nil] [cl-struct-cask-dependency async nil nil nil nil nil nil] [cl-struct-cask-dependency anzu nil nil nil nil nil nil] [cl-struct-cask-dependency ace-window nil nil nil nil nil nil]) nil "/home/vercapi/.emacs.d/" nil ([cl-struct-cask-source "marmalade" "http://marmalade-repo.org/packages/"] [cl-struct-cask-source "gnu" "http://elpa.gnu.org/packages/"] [cl-struct-cask-source "SC" "http://joseito.republika.pl/sunrise-commander/"] [cl-struct-cask-source "melpa" "http://melpa.milkbox.net/packages/"])]
 
-   Init pallet, more info on [[https://github.com/rdallasgray/pallet][github]]
-   This makes sure that packages installed via the package manager are added to the Cask file
+** use-package bootstrap
+
+   Ensure that 'use-package' is installed.
    #+BEGIN_SRC emacs-lisp
-   (require 'pallet)
-   (pallet-mode t)
-   #+END_SRC
-
-   #+RESULTS:
-   : t
-
-   To update run pallet-update
+   (if (not (package-installed-p 'use-package))
+   (progn
+       (package-refresh-contents)
+       (package-install 'use-package)))
  
-** Custom tools
+    (require 'use-package)
+   #+END_SRC
+   
 
+** Iinitialize packages
+  
+   load all packages that are installed. 
+   #+BEGIN_SRC emacs-lisp
+   ;; activate all the packages (in particular autoloads)
+   (package-initialize)
+   #+END_SRC
+   
+
+** Load custom local code
+
+   All custom tooling that is available within this repository.
    #+BEGIN_SRC emacs-lisp
    (load "~/.emacs.d/custom/emacs-tools.el")
    #+END_SRC
+
 
 * UI configuration
 ** General info
