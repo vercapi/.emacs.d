@@ -117,5 +117,5 @@
         :buffer "*helm-message-history*")
   )
 
-(provide message-history)
+(provide 'message-history)
 ;;; message-history.el ends here
