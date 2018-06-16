@@ -111,4 +111,40 @@
 
     #+RESULTS:
 
+* Behavior
+** General behavior 
 
+    Turn of the bell alarm
+    #+BEGIN_SRC emacs-lisp
+    (setq ring-bell-function 'ignore)
+    #+END_SRC
+
+    #+RESULTS:
+    : ignore
+
+    
+
+** Window behavior
+
+   Winner mode to undo and redo window configuration
+   #+BEGIN_SRC emacs-lisp
+     (winner-mode 1)
+   #+END_SRC
+
+   #+RESULTS:
+   : t
+
+   Set S-<arrows> to move around the windows (S- <arrow> to move along windows)
+   And also ensure this works in org mode. See org-mode [[https://orgmode.org/manual/Conflicts.html][manual]] on 'Conflicts'
+   #+BEGIN_SRC emacs-lisp
+     (windmove-default-keybindings)
+
+     (setq org-replace-disputed-keys t)
+     (add-hook 'org-shiftup-final-hook 'windmove-up)
+     (add-hook 'org-shiftleft-final-hook 'windmove-left)
+     (add-hook 'org-shiftdown-final-hook 'windmove-down)
+     (add-hook 'org-shiftright-final-hook 'windmove-right)
+   #+END_SRC
+
+   #+RESULTS:
+   | windmove-right |
