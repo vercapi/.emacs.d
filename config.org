@@ -1,9 +1,4 @@
 #+TITLE: Emacs Configuration
-#+OPTIONS: toc:4 h:4m 
-
-   #+BEGIN_SRC emacs-lisp
-     (fset 'yes-or-no-p 'y-or-n-p) ;; type y/n not yes/no
-   #+END_SRC
 
 * Packages setup
   
@@ -48,3 +43,72 @@
    #+BEGIN_SRC emacs-lisp
    (load "~/.emacs.d/custom/emacs-tools.el")
    #+END_SRC
+
+* UI Configuration
+
+** Emacs frame appearance
+
+   #+BEGIN_SRC emacs-lisp
+     (tool-bar-mode -1) ;; no toolbar
+     (menu-bar-mode -1) ;; no menubar
+     (toggle-scroll-bar -1) ;; no scrollbar
+     (fset 'yes-or-no-p 'y-or-n-p) ;; type y/n not yes/no
+   #+END_SRC
+
+   #+RESULTS:
+   : y-or-n-p
+
+** mode line
+
+*** Standard configuration of the mode line
+    
+    Set the file size on the mode line  
+    #+BEGIN_SRC emacs-lisp
+    (setq size-indication-mode t)
+    #+END_SRC
+
+    #+RESULTS:
+    : t
+
+    #+BEGIN_SRC emacs-lisp
+    (setq column-number-mode t)
+    (size-indication-mode) ;; show filesize
+    #+END_SRC
+
+    #+RESULTS:
+    : t
+
+*** Powerline
+
+    Activate powerline with the default theme
+
+     You need to use patched fonts -> 
+     git clone https://github.com/powerline/fonts
+
+     #+BEGIN_SRC emacs-lisp
+       (use-package powerline
+	   :ensure t
+	   :config
+	   (powerline-default-theme)
+	   (setq powerline-default-separator 'slant))
+     #+END_SRC
+
+     #+RESULTS:
+     : t
+
+
+** Fonts
+
+   Set the standard fonts for emacs and other componets
+   This is based on std configuration. So if emacs adds this again in init.el or .emacs things might break and this needs to be update manually
+
+   #+BEGIN_SRC emacs-lisp
+     (custom-set-faces
+      '(default ((t (:family "DejaVu Sans Mono for Powerline" :foundry "unknown" :slant normal :weight normal :height 140 :width normal))))
+      '(minimap-font-face ((t (:height 40 :family "DejaVu Sans Mono"))))
+      '(mode-line ((t (:family "DejaVu Sans Mono for Powerline" :foundry "unknown" :slant normal :weight normal :height 140 :width normal)))))
+    #+END_SRC
+
+    #+RESULTS:
+
+
