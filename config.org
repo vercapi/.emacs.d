@@ -148,3 +148,37 @@
 
    #+RESULTS:
    | windmove-right |
+* Source control
+  
+  #+BEGIN_SRC emacs-lisp
+    (use-package magit
+      :ensure t
+      :bind ("C-x t" . magit-status))
+  #+END_SRC
+
+  #+RESULTS:
+  : magit-status
+
+* Helm
+
+  #+BEGIN_SRC emacs-lisp
+    (use-package helm
+      :ensure t
+      :config
+      (setq helm-split-window-in-side-p               t ; open helm buffer inside current window, not occupy whole other window
+		helm-move-to-line-cycle-in-source     t ; move to end or beginning of source when reaching top or bottom of source.
+		helm-ff-search-library-in-sexp        t ; search for library in `require' and `declare-function' sexp.
+		helm-scroll-amount                    8 ; scroll 8 lines other window using M-<next>/M-<prior>
+		helm-ff-file-name-history-use-recentf t)
+      :bind (("M-x" . helm-M-x)
+	     ("C-x b" . helm-mini)
+	     ("C-x C-f" . helm-find-files)
+	     ("C-c h o" . helm-occur)
+	     ("M-y" . helm-show-kill-ring)
+	     :map helm-map
+	     ("<tab>" . helm-execute-persistent-action)
+	     ("C-z" . helm-select-action)))
+  #+END_SRC
+
+  #+RESULTS:
+  : helm-select-action
