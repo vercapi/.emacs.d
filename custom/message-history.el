@@ -101,15 +101,15 @@
 
 (defun message-history/helm-search ()
   "Helper function to call the actual search function with parameter."
-  (message-history/show message-history/message-history-file)
-   )
+  (progn (message "In SEARCH !!!")
+  (message-history/show message-history/message-history-file))
+  )
 
 (defvar message-history/helm-sources
-  '((name . "Message history")
-    (candidates-process . message-history/helm-search)
-    (action . (("insert" . message-history/helm-insert)))
-    )
-  )
+  (helm-build-sync-source "Message history"
+    :candidates (message-history/helm-search)
+    :action (lambda (candidate) message-history/helm-insert "%S" candidate)))
+
 (defun message-history/helm ()
   "Bring up a helm interface for the message history."
   (interactive)
