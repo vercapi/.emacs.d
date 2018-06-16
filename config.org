@@ -155,11 +155,21 @@
   #+BEGIN_SRC emacs-lisp
     (use-package magit
       :ensure t
-      :bind ("C-x t" . magit-status))
+      :bind ("C-x t" . magit-status)
+      :hook (git-commit-mode-hook . message-commit-setup-magit)
+      :after (message-history)
+      :init
+      ;; Add message history to magit
+      ((defun message-add-magit ()
+	 "This is a helper method that already provides a file"
+	 (message-history/add message-history/message-history-file))
+   
+       (defun message-commit-setup-magit ()
+	 "This method needs to called in "
+	 (add-hook 'before-save-hook 'message-add-magit nil t))))
   #+END_SRC
 
   #+RESULTS:
-  : magit-status
 
 * Helm
 
@@ -184,3 +194,11 @@
 
   #+RESULTS:
   : helm-select-action
+* Libraries
+  
+  #+BEGIN_SRC emacs-lisp
+    (use-package message-history)
+  #+END_SRC
+
+  #+RESULTS:
+  : t
