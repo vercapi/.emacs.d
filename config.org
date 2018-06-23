@@ -1,5 +1,7 @@
 #+TITLE: Emacs Configuration
 
+
+
 * Packages setup
   
   Loading all the resources so the rest of the config has access to all these resoruces.
@@ -176,6 +178,16 @@
    #+RESULTS:
    : t
    
+** Buffer
+
+   Turn on line mode
+   #+BEGIN_SRC emacs-lisp
+     (add-hook 'prog-mode-hook #'display-line-numbers-mode)
+   #+END_SRC
+
+   #+RESULTS:
+   | display-line-numbers-mode |
+
 * Emacs Behavior
 ** General behavior 
 
@@ -184,9 +196,33 @@
     (setq ring-bell-function 'ignore)
     #+END_SRC
 
-    #+RESULTS:
-    : ignore
-    
+    Start the server
+    #+BEGIN_SRC emacs-lisp
+    (server-start)
+    #+END_SRC
+
+    No splash screen
+    #+BEGIN_SRC emacs-lisp
+    (setq inhibit-splash-screen t)
+    #+END_SRC
+
+    Set all encodings etc. to utf-8
+    #+BEGIN_SRC emacs-lisp
+   (set-language-environment 'utf-8)
+   (set-terminal-coding-system 'utf-8)
+   (setq locale-coding-system 'utf-8)
+   (set-default-coding-systems 'utf-8)
+   (set-selection-coding-system 'utf-8)
+   (prefer-coding-system 'utf-8)
+   #+END_SRC
+
+** Working with files  
+   
+   Backups of files
+   #+BEGIN_SRC emacs-lisp
+   (setq backup-directory-alist '(("." . "~/.saves")))
+   #+END_SRC
+   
 ** Window behavior
 
    Winner mode to undo and redo window configuration
