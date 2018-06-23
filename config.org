@@ -101,9 +101,9 @@
     #+RESULTS:
     : t
 
+    Add columns to the mode line
     #+BEGIN_SRC emacs-lisp
     (setq column-number-mode t)
-    (size-indication-mode) ;; show filesize
     #+END_SRC
 
     #+RESULTS:
@@ -121,7 +121,9 @@
 	   :ensure t
 	   :config
 	   (powerline-default-theme)
-	   (setq powerline-default-separator 'slant))
+	   (setq powerline-default-separator 'slant
+		 solarized-high-contrast-mode-line t)
+       )
      #+END_SRC
 
      #+RESULTS:
