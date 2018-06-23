@@ -15,7 +15,9 @@
    #+END_SRC
 
 
-** use-package bootstrap
+** use-package & quelpa bootstrap
+
+   These are the packages needed to manage the packages from the package repostiories or directly from git.
 
    Ensure that 'use-package' is installed.
    #+BEGIN_SRC emacs-lisp
@@ -26,6 +28,33 @@
  
     (require 'use-package)
    #+END_SRC
+
+   Ensure that 'quelpa' is installed, a dependency for quelpa-use-package the package we really want
+   Allows to Emacs Lisp packages built directly from source
+   #+BEGIN_SRC emacs-lisp
+     (if (not (package-installed-p 'quelpa))
+	 (progn
+	   (package-refresh-contents)
+	   (package-install 'quelpa)))
+
+     (require 'quelpa)
+   #+END_SRC
+
+   #+RESULTS:
+   : quelpa
+
+   Further install quelpa-use-package
+   This is the quelpa handle for use-package
+   #+BEGIN_SRC emacs-lisp
+     (quelpa
+      '(quelpa-use-package
+	:fetcher git
+	:url "https://framagit.org/steckerhalter/quelpa-use-package.git"))
+     (require 'quelpa-use-package)
+   #+END_SRC
+
+   #+RESULTS:
+   : quelpa-use-package
    
 
 ** Iinitialize packages
