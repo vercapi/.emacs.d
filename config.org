@@ -1,7 +1,5 @@
 #+TITLE: Emacs Configuration
 
-
-
 * Packages setup
   
   Loading all the resources so the rest of the config has access to all these resoruces.
@@ -191,23 +189,23 @@
 * Emacs Behavior
 ** General behavior 
 
-    Turn of the bell alarm
-    #+BEGIN_SRC emacs-lisp
-    (setq ring-bell-function 'ignore)
-    #+END_SRC
+   Turn of the bell alarm
+   #+BEGIN_SRC emacs-lisp
+   (setq ring-bell-function 'ignore)
+   #+END_SRC
 
-    Start the server
-    #+BEGIN_SRC emacs-lisp
-    (server-start)
-    #+END_SRC
+   Start the server
+   #+BEGIN_SRC emacs-lisp
+   (server-start)
+   #+END_SRC
 
-    No splash screen
-    #+BEGIN_SRC emacs-lisp
-    (setq inhibit-splash-screen t)
-    #+END_SRC
+   No splash screen
+   #+BEGIN_SRC emacs-lisp
+   (setq inhibit-splash-screen t)
+   #+END_SRC
 
-    Set all encodings etc. to utf-8
-    #+BEGIN_SRC emacs-lisp
+   Set all encodings etc. to utf-8
+   #+BEGIN_SRC emacs-lisp
    (set-language-environment 'utf-8)
    (set-terminal-coding-system 'utf-8)
    (setq locale-coding-system 'utf-8)
