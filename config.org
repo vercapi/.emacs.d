@@ -247,6 +247,21 @@
 
    #+RESULTS:
    | windmove-right |
+** Logins
+   
+   Set the time emacs caches a password in seconds, tramp, sudo, ...?
+   #+BEGIN_SRC emacs-lisp
+     (setq password-cache t
+	   password-cache-expiry 1200)
+   #+END_SRC
+
+   Ensure that emacs is actually using the eshell/sudo so that the cache above works
+   #+BEGIN_SRC emacs-lisp
+     (add-hook 'eshell-mode-hook
+	       (lambda ()
+		 (eshell/alias "sudo" "eshell/sudo $*")))
+   #+END_SRC
+
 * Source control
 
   Setting up the function to initialize the message-history and magit integration.
