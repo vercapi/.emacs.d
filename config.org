@@ -336,7 +336,17 @@
   #+BEGIN_SRC emacs-lisp
   (require 'ob-async)
   #+END_SRC
-  
+
+* Application Integration
+** Twitter
+   
+   #+BEGIN_SRC emacs-lisp
+     (use-package twittering-mode
+       :ensure t)
+   #+END_SRC
+
+   #+RESULTS:
+   
 * Libraries
   
   #+BEGIN_SRC emacs-lisp
