@@ -288,7 +288,17 @@
   #+END_SRC
 
   #+RESULTS:
-  : magit-status
+
+* Programming modes
+
+**  restclient
+
+   Install restclient
+   #+BEGIN_SRC emacs-lisp
+     (use-package restclient
+       :ensure t
+       :mode "\\.http\\'")
+   #+END_SRC
 
 * Helm
 
