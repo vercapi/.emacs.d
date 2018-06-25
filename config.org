@@ -259,7 +259,15 @@
 	       (lambda ()
 		 (eshell/alias "sudo" "eshell/sudo $*")))
    #+END_SRC
-
+** Navigation
+*** Cursor position
+    
+    Flash cursor whenever it jumps to another possition by any command
+    #+BEGIN_SRC emacs-lisp
+      (use-package beacon
+	:ensure t
+	:config (beacon-mode 1))
+    #+END_SRC
 * Source control
 
   Setting up the function to initialize the message-history and magit integration.
