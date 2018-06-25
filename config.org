@@ -293,6 +293,8 @@
 
 **  restclient
 
+   Do restcalls from witin an emacs buffer
+
    Install restclient
    #+BEGIN_SRC emacs-lisp
      (use-package restclient
