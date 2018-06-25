@@ -352,22 +352,32 @@
 	("a" helm-org-in-buffer-headings)
 	("u" outline-up-heading))
       (local-set-key (kbd "<f7>") 'org-mark-ring-push)
-      (local-set-key (kbd "C-<f7>") 'org-mark-ring-goto))))
+      (local-set-key (kbd "C-<f7>") 'org-mark-ring-goto))
   #+END_SRC
 
-  #+RESULTS:
-  : pve-org-nav-hydra
+  
+  #+BEGIN_SRC emacs-lisp
+    (defun pve-enable-org-bullets ()
+      (org-bullets-mode 1))
+  #+END_SRC
 
+  Actually configure org mode
   #+BEGIN_SRC emacs-lisp
     (use-package org-mode
       :config
       ((setq org-confirm-babel-evaluate nil) ;;No need to confirm executing babel code blocks
        (require 'ob-async) ;; Enable async execution of babel code blocks
        )
-      :hook (org-mode . pve-org-nav-hydra)
-      :after (hydra))
+      :hook 
+      ((org-mode . pve-org-nav-hydra)x
+       (org-mode . pve-enable-org-bullets))
+      :after (hydra org-bullets))
   #+END_SRC
 
+  #+BEGIN_SRC emacs-lisp
+    (use-package org-bullets
+      :ensure t)
+  #+END_SRC
 * Application Integration
 ** Twitter
    
