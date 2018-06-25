@@ -313,11 +313,20 @@
 
   #+RESULTS:
   : helm-select-action
+* Org Mode
+
+  No need to confirm executing babel code blocks
+  #+BEGIN_SRC emacs-lisp
+  (setq org-confirm-babel-evaluate nil)
+  #+END_SRC
+
+  Enable async execution of babel code blocks
+  #+BEGIN_SRC emacs-lisp
+  (require 'ob-async)
+  #+END_SRC
+  
 * Libraries
   
   #+BEGIN_SRC emacs-lisp
     (use-package message-history)
   #+END_SRC
-
-  #+RESULTS:
-  : t
