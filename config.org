@@ -298,21 +298,23 @@
 	    (add-hook 'before-save-hook 'message-add-magit nil t))))
   #+END_SRC
 
-  #+RESULTS:
-  : init-message-history-magit
-  
   Using magit for soruce control
   #+BEGIN_SRC emacs-lisp
-	(use-package magit
-	  :ensure t
-	  :bind ("C-x t" . magit-status)
-	  :hook (git-commit-mode . message-commit-setup-magit)
-	  :after (message-history)
-	  :init (init-message-history-magit))
+    (use-package magit
+      :ensure t
+      :bind ("C-x t" . magit-status)
+      :hook ((git-commit-mode . message-commit-setup-magit)
+	     (magit-mode . turn-on-magit-gitflow))
+      :after (message-history magit-gitflow)
+      :init (init-message-history-magit))
   #+END_SRC
 
-  #+RESULTS:
-
+  Add git flow extension to magit. This enables feature branches etc.
+  #+BEGIN_SRC emacs-lisp
+    (use-package magit-gitflow
+      :ensure t)
+  #+END_SRC
+  
 * Programming modes
 
 **  restclient
