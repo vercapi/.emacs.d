@@ -10,7 +10,6 @@
    #+BEGIN_SRC emacs-lisp
     (setq package-archives '(("melpa" . "http://melpa.milkbox.net/packages/")
                              ("marmalade" . "http://marmalade-repo.org/packages/")
-                             ("SC" . "http://joseito.republika.pl/sunrise-commander/")
                              ("gnu" . "http://elpa.gnu.org/packages/")))
    #+END_SRC
 
