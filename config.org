@@ -32,12 +32,8 @@
    Ensure that 'quelpa' is installed, a dependency for quelpa-use-package the package we really want
    Allows to Emacs Lisp packages built directly from source
    #+BEGIN_SRC emacs-lisp
-     (if (not (package-installed-p 'quelpa))
-	 (progn
-	   (package-refresh-contents)
-	   (package-install 'quelpa)))
-
-     (require 'quelpa)
+     (use-package quelpa
+       :ensure t)
    #+END_SRC
 
    #+RESULTS:
@@ -46,11 +42,9 @@
    Further install quelpa-use-package
    This is the quelpa handle for use-package
    #+BEGIN_SRC emacs-lisp
-     (quelpa
-      '(quelpa-use-package
-	:fetcher git
-	:url "https://framagit.org/steckerhalter/quelpa-use-package.git"))
-     (require 'quelpa-use-package)
+     (use-package quelpa-use-package
+       :ensure t
+       :after quelpa)
    #+END_SRC
 
    #+RESULTS:
