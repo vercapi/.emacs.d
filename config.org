@@ -261,6 +261,19 @@
 	:ensure t
 	:config (beacon-mode 1))
     #+END_SRC
+** Search  
+** Selection
+   
+   Expande selection by semantic units
+   #+BEGIN_SRC emacs-lisp
+     (use-package expand-region
+       :ensure t
+       :bind ("C-=" . er/expand-region))
+   #+END_SRC
+
+   #+RESULTS:
+   : er/expand-region
+   
 * Source control
 
   Setting up the function to initialize the message-history and magit integration.
