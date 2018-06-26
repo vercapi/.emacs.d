@@ -339,8 +339,6 @@
 	     ("C-z" . helm-select-action)))
   #+END_SRC
 
-  #+RESULTS:
-  : helm-select-action
 ** Hydra
    
    Navigation with keys
@@ -379,12 +377,11 @@
   Actually configure org mode
   #+BEGIN_SRC emacs-lisp
     (use-package org-mode
-      :config
-      ((setq org-confirm-babel-evaluate nil) ;;No need to confirm executing babel code blocks
-       (require 'ob-async) ;; Enable async execution of babel code blocks
-       )
+      :init
+      (setq org-confirm-babel-evaluate nil) ;;No need to confirm executing babel code blocks
+      (require 'ob-async)
       :hook 
-      ((org-mode . pve-org-nav-hydra)x
+      ((org-mode . pve-org-nav-hydra)
        (org-mode . pve-enable-org-bullets))
       :after (hydra org-bullets))
   #+END_SRC
