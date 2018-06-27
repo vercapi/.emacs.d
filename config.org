@@ -264,6 +264,7 @@
 ** Search  
 
    Helm swoop, a more dynamic version of hem-occur
+   Find all occurences in a/multiple file(s) follow along in the files while browsing the results.
    #+BEGIN_SRC emacs-lisp
      (use-package helm-swoop
        :ensure t
@@ -272,6 +273,7 @@
 	      ("C-c M-i" . helm-multi-swoop)
 	      ("C-x M-i" . helm-multi-swoop-all)))
    #+END_SRC
+
 ** Selection
    
    Expande selection by semantic units
@@ -283,6 +285,16 @@
 
    #+RESULTS:
    : er/expand-region
+   
+** Autocomplete
+
+   Company (complete anything) is the front end system to autocomplete. Has mutliple backends that can provide autocompletion
+   #+BEGIN_SRC emacs-lisp
+     (use-package company
+       :ensure t
+       :hook (after-init . global-company-mode)
+       :bind ("C-<tab>" . company-complete))
+   #+END_SRC
    
 * Source control
 
