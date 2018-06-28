@@ -357,9 +357,8 @@
       :ensure t)
   #+END_SRC
   
-* Programming modes
-
-**  restclient
+* Programming languages
+** restclient
 
    Do restcalls from witin an emacs buffer
 
@@ -368,6 +367,14 @@
      (use-package restclient
        :ensure t
        :mode "\\.http\\'")
+   #+END_SRC
+** javascript
+
+   Javascript mode
+   #+BEGIN_SRC emacs-lisp
+     (use-package js2-mode
+       :ensure t
+       :mode "\\.js\\")
    #+END_SRC
 
 * Utils
