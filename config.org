@@ -384,7 +384,11 @@
    #+BEGIN_SRC emacs-lisp
      (use-package js2-mode
        :mode "\\.js\\'"
-       :ensure t)
+       :ensure t
+       (setq-default js2-basic-offset 2
+		     js2-indent-switch-body t
+		     js2-auto-indent-p t
+		     js2-indent-on-enter-key t))
    #+END_SRC
 
 * Utils
