@@ -349,6 +349,14 @@
       :ensure t)
   #+END_SRC
   
+* Project management
+  
+  The base of projectmanangement is projectile
+  #+BEGIN_SRC emacs-lisp
+    (use-package projectile
+      :ensure t)
+  #+END_SRC
+  
 * Programming modes
 
 **  restclient
