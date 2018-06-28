@@ -207,6 +207,15 @@
    (prefer-coding-system 'utf-8)
    #+END_SRC
 
+   Show completion of keybindings
+   #+BEGIN_SRC emacs-lisp
+     (use-package which-key
+       :ensure t
+       :config (progn
+		 (which-key-mode)
+		 (which-key-setup-minibuffer)))
+   #+END_SRC
+
 ** Working with files  
    
    Backups of files
