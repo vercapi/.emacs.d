@@ -270,10 +270,12 @@
 
    Ensure that emacs is actually using the eshell/sudo so that the cache above works
    #+BEGIN_SRC emacs-lisp
+     (require 'em-tramp)
      (add-hook 'eshell-mode-hook
 	       (lambda ()
 		 (eshell/alias "sudo" "eshell/sudo $*")))
    #+END_SRC
+
 ** Navigation
 *** Cursor position
     
