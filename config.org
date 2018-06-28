@@ -409,9 +409,14 @@
      (defun pve-set-eshell-path-env ()
        "Settig the eshell-path-env"
        (if (pve-env/on-cygwin)
-	   (progn (setq eshell-path-env (concat "/cygdrive/c/Program Files/nodejs/:" eshell-path-env))
-		  (setenv "PATH" (concat "/cygdrive/c/Program Files/nodejs/:" (getenv "PATH"))))))
+	   (progn
+	     (setq cygwin-paths "/cygdrive/c/Program Files/nodejs/:")
+	     (setq eshell-path-env (concat cygwin-paths eshell-path-env))
+	     (setenv "PATH" (concat cygwin-paths (getenv "PATH"))))))
    #+END_SRC
+
+   #+RESULTS:
+   : pve-set-eshell-path-env
 
    Add hook to eshell to set paths when eshell starts
    #+BEGIN_SRC emacs-lisp
