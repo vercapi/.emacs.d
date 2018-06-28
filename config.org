@@ -318,6 +318,14 @@
        :bind ("C-<tab>" . company-complete))
    #+END_SRC
    
+** Syntax checking
+   
+   Using flycheck as the syntax checker
+   #+BEGIN_SRC emacs-lisp
+     (use-package flycheck
+       :ensure t
+       :init (global-flycheck-mode))
+   #+END_SRC
 * Source control
 
   Setting up the function to initialize the message-history and magit integration.
