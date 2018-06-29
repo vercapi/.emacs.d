@@ -328,6 +328,16 @@
        :ensure t
        :init (global-flycheck-mode))
    #+END_SRC
+** Selection
+
+   Enable multiple cursors
+   #+BEGIN_SRC emacs-lisp
+     (use-package multiple-cursors
+       :ensure t
+       :bind (("C->" . mc/mark-next-like-this)
+	      ("C-<" . mc/mark-previous-like-this)
+	      ("C-c C-<" . mc/mark-all-like-this)))
+   #+END_SRC
 * Source control
 
   Setting up the function to initialize the message-history and magit integration.
