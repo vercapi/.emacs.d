@@ -319,7 +319,14 @@
        :hook (after-init . global-company-mode)
        :bind ("C-<tab>" . company-complete))
    #+END_SRC
-   
+
+   LSP backen for company mode
+   #+BEGIN_SRC emacs-lisp
+     (use-package company-lsp
+       :ensure t
+       :config (push 'company-lsp company-backends))
+   #+END_SRC
+
 ** Syntax checking
    
    Using flycheck as the syntax checker
@@ -400,6 +407,22 @@
 		     js2-indent-switch-body t
 		     js2-auto-indent-p t
 		     js2-indent-on-enter-key t))
+   #+END_SRC
+** python
+   
+   Install langauge server for python
+   #+BEGIN_SRC sh
+   pacman -S python-language-server
+   #+END_SRC
+
+   #+BEGIN_SRC emacs-lisp
+     (use-package python-mode
+       :ensure t
+       :mode "\\.py\\'"
+       :config
+       (lsp-define-stdio-client lsp-python "python"
+				 #'projectile-project-root
+				 '("pyls")))
    #+END_SRC
 
 * Utils
@@ -518,3 +541,19 @@
   #+BEGIN_SRC emacs-lisp
     (use-package message-history)
   #+END_SRC
+
+  Language Server Protocol (LSP) integration into emacs.
+  This enables connections to LSP servers from emacs.
+  #+BEGIN_SRC emacs-lisp
+    (use-package lsp-mode
+      :ensure t)
+  #+END_SRC
+
+  LSP-UI higher level UI modules for LSP integration into emacs.
+  #+BEGIN_SRC emacs-lisp
+    (use-package lsp-ui
+      :ensure t
+      :config
+      (setq lsp-ui-sideline-ignore-duplicate t))
+  #+END_SRC  
+  
