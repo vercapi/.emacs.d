@@ -285,7 +285,7 @@
 	:ensure t
 	:config (beacon-mode 1))
     #+END_SRC
-** Search  
+** Search & Replace 
 
    Helm swoop, a more dynamic version of hem-occur
    Find all occurences in a/multiple file(s) follow along in the files while browsing the results.
@@ -296,6 +296,16 @@
 	      ("M-I" . helm-swoop-back-to-last-point)
 	      ("C-c M-i" . helm-multi-swoop)
 	      ("C-x M-i" . helm-multi-swoop-all)))
+   #+END_SRC
+
+   Visual-regexp gives visual feedback on the regexp
+   Key combination replace the regular query-regepx-replace
+   #+BEGIN_SRC emacs-lisp
+     (use-package visual-regexp
+       :ensure t
+       :bind (
+	      ("M-C-%" . vr/query-replace)
+	      ("C-c m" . vr/mc-mark)))
    #+END_SRC
 
 ** Selection
@@ -337,7 +347,7 @@
    #+END_SRC
 ** Selection
 
-   Enable multiple cursors
+   Enable multiple cursors.
    #+BEGIN_SRC emacs-lisp
      (use-package multiple-cursors
        :ensure t
@@ -345,6 +355,9 @@
 	      ("C-<" . mc/mark-previous-like-this)
 	      ("C-c C-<" . mc/mark-all-like-this)))
    #+END_SRC
+   
+   Visual regepx also has an extansion  to visually add multiple cursors
+   
 * Source control
 
   Setting up the function to initialize the message-history and magit integration.
