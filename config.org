@@ -535,7 +535,21 @@
    #+END_SRC
 
    #+RESULTS:
-   
+** Pocket
+
+   Simple client to show list of pocket items
+   #+BEGIN_SRC emacs-lisp
+     (use-package pocket-mode
+       :ensure t
+       :after (pocket-api))
+   #+END_SRC
+
+   Backend API to login into pocket and retrieive the (getpocket.com)
+  #+BEGIN_SRC emacs-lisp
+    (use-package pocket-api
+      :ensure t)
+  #+END_SRC
+
 * Libraries
   
   #+BEGIN_SRC emacs-lisp
