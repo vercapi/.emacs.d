@@ -308,18 +308,6 @@
 	      ("C-c m" . vr/mc-mark)))
    #+END_SRC
 
-** Selection
-   
-   Expande selection by semantic units
-   #+BEGIN_SRC emacs-lisp
-     (use-package expand-region
-       :ensure t
-       :bind ("C-=" . er/expand-region))
-   #+END_SRC
-
-   #+RESULTS:
-   : er/expand-region
-   
 ** Autocomplete
 
    Company (complete anything) is the front end system to autocomplete. Has mutliple backends that can provide autocompletion
@@ -354,9 +342,16 @@
        :bind (("C->" . mc/mark-next-like-this)
 	      ("C-<" . mc/mark-previous-like-this)
 	      ("C-c C-<" . mc/mark-all-like-this)))
-   #+END_SRC
-   
+   #+END_SRC   
    Visual regepx also has an extansion  to visually add multiple cursors
+
+   Expande selection by semantic units
+   #+BEGIN_SRC emacs-lisp
+     (use-package expand-region
+       :ensure t
+       :bind ("C-=" . er/expand-region))
+   #+END_SRC
+
    
 * Source control
 
@@ -583,4 +578,3 @@
       :config
       (setq lsp-ui-sideline-ignore-duplicate t))
   #+END_SRC  
-  
