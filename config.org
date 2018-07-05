@@ -170,7 +170,7 @@
 	)
     #+END_SRC
     
-** Theme
+** Theme/Syntax sugar
    
    Using solarized theme as base theme
    #+BEGIN_SRC emacs-lisp
@@ -179,8 +179,24 @@
        :config (load-theme 'solarized-dark t))
    #+END_SRC
 
-   #+RESULTS:
-   : t
+   Colorize delimters (,[,... different colors for every level
+   #+BEGIN_SRC emacs-lisp
+     (use-package rainbow-delimiters
+       :ensure t
+       :hook (prog-mode . rainbow-delimiters-mode))
+   #+END_SRC
+
+*** Pretiify Symbols
+
+   Change some code in more elegant symbols, per programming language
+
+   Configuration for lisp
+   #+BEGIN_SRC emacs-lisp
+     (add-hook 'emacs-lisp-mode-hook
+	       (lambda ()
+		 (push '("lambda" . ?λ) prettify-symbols-alist)))
+     (add-hook 'emacs-lisp-mode 'prettify-symbols-mode)
+   #+END_SRC
    
 ** Buffer
 
@@ -286,8 +302,7 @@
 		 (eshell/alias "sudo" "eshell/sudo $*")))
    #+END_SRC
 
-** Navigation
-*** Cursor position
+** Cursor Navigation
     
     Flash cursor whenever it jumps to another possition by any command
     #+BEGIN_SRC emacs-lisp
@@ -295,6 +310,12 @@
 	:ensure t
 	:config (beacon-mode 1))
     #+END_SRC
+
+    Highlight the current line
+    #+BEGIN_SRC emacs-lisp
+      (global-hl-line-mode)
+    #+END_SRC
+    
 ** Search & Replace 
 
    Helm swoop, a more dynamic version of hem-occur
@@ -343,6 +364,7 @@
        :ensure t
        :init (global-flycheck-mode))
    #+END_SRC
+
 ** Selection
 
    Enable multiple cursors.
@@ -370,7 +392,6 @@
        :bind ("C-x u" . undo-tree-visualize)
        )
    #+END_SRC
-
 * Source control
 
   Setting up the function to initialize the message-history and magit integration.
