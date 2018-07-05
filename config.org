@@ -391,8 +391,8 @@
   #+BEGIN_SRC emacs-lisp
     (use-package magit-gitflow
       :ensure t)
-  #+END_SRC
-  
+  #+END_SRC	    
+  		    
 * Project management
   
   The base of projectmanangement is projectile
@@ -400,8 +400,8 @@
     (use-package projectile
       :ensure t
       :hook (after-init . projectile-global-mode))
-  #+END_SRC
-  
+  #+END_SRC	       
+  		       
 * Programming languages
 ** restclient
 
@@ -463,7 +463,7 @@
        (setq lsp-enable-eldoc nil)
        :hook (python-mode . lsp-python-enable))
    #+END_SRC
-
+     
 * Utils
 ** Helm
 
@@ -485,7 +485,7 @@
 	     ("<tab>" . helm-execute-persistent-action)
 	     ("C-z" . helm-select-action)))
   #+END_SRC
-
+	
 ** Hydra
    
    Navigation with keys
@@ -495,7 +495,7 @@
    #+END_SRC
 
    #+RESULTS:
-
+	 
 ** Eshell
 
    Set paths depending on the environment we are running
@@ -516,7 +516,7 @@
    #+BEGIN_SRC emacs-lisp
      (add-hook 'eshell-mode-hook 'pve-set-eshell-path-env)
    #+END_SRC
-
+	   
 ** Treemacs
 
    Tree filesystem browser on one side of the editor cfr. visual studio code
@@ -576,6 +576,22 @@
        :ensure t)
    #+END_SRC
 
+** Artist mode
+	      
+   Artist mode doesn't work within org mode. This narrows the buffer to a place you want to work.
+   And then turns on artist mode. It is turned of and widens the buffer again
+   #+BEGIN_SRC emacs-lisp
+     (defun pve-artist-org-mode-on ()
+       (interactive)
+       (org-narrow-to-element)
+       (artist-mode))
+
+     (defun pve-artist-org-mode-off ()
+       (interactive)
+       (artist-mode)
+       (widen))
+   #+END_SRC
+   
 * Org Mode
 
   Hydra for setting up navigation between headers
