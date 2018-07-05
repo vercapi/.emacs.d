@@ -358,6 +358,13 @@ An elegant editor... for a more civilized age.
        :config (push 'company-lsp company-backends))
    #+END_SRC
 
+   Auto insert the other pair of a bracket
+   And the config for elements that are not supported by default
+   #+BEGIN_SRC emacs-lisp
+     (setq electric-pair-pairs '((?\{ . ?\})))
+     (electric-pair-mode 1)
+   #+END_SRC
+
 ** Syntax checking
    
    Using flycheck as the syntax checker
