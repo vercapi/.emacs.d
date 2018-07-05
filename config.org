@@ -262,9 +262,14 @@
      (add-hook 'org-shiftdown-final-hook 'windmove-down)
      (add-hook 'org-shiftright-final-hook 'windmove-right)
    #+END_SRC
+   
+   Eybrowse allows a virutal desktop like solution to be used within emacs.
+   #+BEGIN_SRC emacs-lisp
+     (use-package eyebrowse
+       :ensure t
+       :init (eyebrowse-mode t))
+   #+END_SRC
 
-   #+RESULTS:
-   | windmove-right |
 ** Logins
    
    Set the time emacs caches a password in seconds, tramp, sudo, ...?
