@@ -413,6 +413,23 @@
        :ensure t
        :mode "\\.http\\'")
    #+END_SRC
+
+   Setup auto completion for restclient
+   #+BEGIN_SRC emacs-lisp
+     (use-package company-restclient
+       :ensure t
+       :config (add-to-list 'company-backends 'company-restclient))
+   #+END_SRC
+
+   Add integration into org mode for restclient
+   #+BEGIN_SRC emacs-lisp
+     (use-package ob-restclient
+       :ensure t
+       :config (org-babel-do-load-languages
+		'org-babel-load-languages
+		'((restclient . t))))
+   #+END_SRC
+
 ** javascript
 
    Javascript mode
