@@ -1,5 +1,7 @@
 #+TITLE: Emacs Configuration
 
+An elegant editor... for a more civilized age.
+
 * Packages setup
   
   Loading all the resources so the rest of the config has access to all these resoruces.
