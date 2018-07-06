@@ -482,6 +482,7 @@ An elegant editor... for a more civilized age.
 		     js2-auto-indent-p t
 		     js2-indent-on-enter-key t))
    #+END_SRC
+
 ** python
    
    Install langauge server for python
@@ -563,9 +564,18 @@ An elegant editor... for a more civilized age.
      (use-package treemacs
        :ensure t
        :defer t
+       :after (all-the-icons)
        :init
        :config
        (progn
+	 ;; Map the icons of all-the-icons on to the icon mappings of treemacs
+	 (dolist (item all-the-icons-icon-alist)
+	   (let* ((extension (car item))
+		  (icon (apply (cdr item))))
+	     (ht-set! treemacs-icons-hash 
+		      (s-replace-all '(("\\" . "") ("$" . "") ("." . "")) extension)
+		      (concat icon " "))))
+	 ;; Set the differnt config options
 	 (setq treemacs-collapse-dirs              (if (executable-find "python") 3 0)
 	       treemacs-file-event-delay           5000
 	       treemacs-follow-after-init          t
@@ -614,6 +624,23 @@ An elegant editor... for a more civilized age.
        :after treemacs projectile
        :ensure t)
    #+END_SRC
+
+   When treemacs loads, set project (root), folder and normal text icons.ép
+   These were not coverd by the automatic mapping in the use-package section
+   #+BEGIN_SRC emacs-lisp
+     (with-eval-after-load "treemacs"
+       (setq treemacs-icon-open-png   (propertize (format "%s " (all-the-icons-material "folder_open"))
+						  'face 'treemacs-directory-face)
+	     treemacs-icon-closed-png (propertize (format "%s " (all-the-icons-material "folder"))
+						  'face 'treemacs-directory-collapsed-face)
+	     treemacs-icon-root-png (propertize (format "%s " (all-the-icons-material "apps"))
+						'face 'treemacs-root-face)
+	     treemacs-icon-text (propertize (format "%s " (all-the-icons-octicon "file-text"))
+						  'face 'treemacs-file-face)))
+
+   #+END_SRC
+
+   #+RESULTS:
 
 ** Artist mode
 	      
@@ -725,3 +752,11 @@ An elegant editor... for a more civilized age.
       ;; aut enable lsp-ui on lsp-mode
       :hook (lsp-mode . lsp-ui-mode))
   #+END_SRC  
+
+  Icon library with many unicode characters, icons, ...
+  #+BEGIN_SRC emacs-lisp
+    (use-package all-the-icons
+      :ensure t)
+  #+END_SRC
+  If the icons are not installed run 'all-the-icons-install-fonts'.
+
