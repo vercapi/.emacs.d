@@ -563,17 +563,32 @@ An elegant editor... for a more civilized age.
 	   (`(t . _)
 	    (treemacs-git-mode 'simple))))
        :bind
-       (:map global-map
-	     ("M-0"       . treemacs-select-window)
-	     ("C-x t 1"   . treemacs-delete-other-windows)
-	     ("C-x t t"   . treemacs)
-	     ("C-x t B"   . treemacs-bookmark)
-	     ("C-x t f" . treemacs-find-file)
-	     ("C-x t t" . treemacs-find-tag)))
+       (("M-0"       . treemacs-select-window)
+	("C-c t 1"   . treemacs-delete-other-windows)
+	("C-c t t"   . treemacs)
+	("C-c t B"   . treemacs-bookmark)
+	("C-c t f" . treemacs-find-file)
+	("C-c t t" . treemacs-find-tag)))
 
      (use-package treemacs-projectile
        :after treemacs projectile
        :ensure t)
+   #+END_SRC
+
+   #+BEGIN_SRC emacs-lisp
+     (custom-set-faces
+      '(treemacs-directory-face ((t :inherit default)))
+      '(treemacs-git-untracked-face ((t :inherit default))))
+
+     (defface pve-treemacs-directory-icon-face
+       '((t :inherit treemacs-directory-face :height 1.5))
+       "Face used for the folder icons, to make them bigger compared to other icons"
+       :group 'treemacs-faces)
+
+     (defface pve-treemacs-file-icon-face
+       '((t :inherit treemacs-file-face :height 1.5))
+       "Face used for the file icons, to make them bigger compared to other icons"
+       :group 'treemacs-faces)
    #+END_SRC
 
    When treemacs loads, set project (root), folder and normal text icons.ép
@@ -581,17 +596,15 @@ An elegant editor... for a more civilized age.
    #+BEGIN_SRC emacs-lisp
      (with-eval-after-load "treemacs"
        (setq treemacs-icon-open-png   (propertize (format "%s " (all-the-icons-material "folder_open"))
-						  'face 'treemacs-directory-face)
+						  'face 'pve-treemacs-directory-icon-face)
 	     treemacs-icon-closed-png (propertize (format "%s " (all-the-icons-material "folder"))
-						  'face 'treemacs-directory-collapsed-face)
+						  'face 'pve-treemacs-directory-icon-face)
 	     treemacs-icon-root-png (propertize (format "%s " (all-the-icons-material "apps"))
 						'face 'treemacs-root-face)
 	     treemacs-icon-text (propertize (format "%s " (all-the-icons-octicon "file-text"))
-						  'face 'treemacs-file-face)))
+						  'face 'pve-treemacs-file-icon-face)))
 
    #+END_SRC
-
-   #+RESULTS:
 
 * Utils
 ** Helm
