@@ -504,62 +504,13 @@ An elegant editor... for a more civilized age.
        :hook (python-mode . lsp-python-enable))
    #+END_SRC
      
-* Utils
-** Helm
+* File browsing
+** Side bar
 
-  #+BEGIN_SRC emacs-lisp
-    (use-package helm
-      :ensure t
-      :config
-      (setq helm-split-window-in-side-p               t ; open helm buffer inside current window, not occupy whole other window
-		helm-move-to-line-cycle-in-source     t ; move to end or beginning of source when reaching top or bottom of source.
-		helm-ff-search-library-in-sexp        t ; search for library in `require' and `declare-function' sexp.
-		helm-scroll-amount                    8 ; scroll 8 lines other window using M-<next>/M-<prior>
-		helm-ff-file-name-history-use-recentf t)
-      :bind (("M-x" . helm-M-x)
-	     ("C-x b" . helm-mini)
-	     ("C-x C-f" . helm-find-files)
-	     ("C-c h o" . helm-occur)
-	     ("M-y" . helm-show-kill-ring)
-	     :map helm-map
-	     ("<tab>" . helm-execute-persistent-action)
-	     ("C-z" . helm-select-action)))
-  #+END_SRC
-	
-** Hydra
+   For the side bar the package we use treemacs. 
+   It feels more like the side bar from vs code and other modern editors.
    
-   Navigation with keys
-   #+BEGIN_SRC emacs-lisp
-     (use-package hydra
-       :ensure t)
-   #+END_SRC
-
-   #+RESULTS:
-	 
-** Eshell
-
-   Set paths depending on the environment we are running
-   #+BEGIN_SRC emacs-lisp
-     (defun pve-set-eshell-path-env ()
-       "Settig the eshell-path-env"
-       (if (pve-env/on-cygwin)
-	   (progn
-	     (setq cygwin-paths "/cygdrive/c/Program Files/nodejs/:")
-	     (setq eshell-path-env (concat cygwin-paths eshell-path-env))
-	     (setenv "PATH" (concat cygwin-paths (getenv "PATH"))))))
-   #+END_SRC
-
-   #+RESULTS:
-   : pve-set-eshell-path-env
-
-   Add hook to eshell to set paths when eshell starts
-   #+BEGIN_SRC emacs-lisp
-     (add-hook 'eshell-mode-hook 'pve-set-eshell-path-env)
-   #+END_SRC
-	   
-** Treemacs
-
-   Tree filesystem browser on one side of the editor cfr. visual studio code
+   Install and config the treemacs package.
    #+BEGIN_SRC emacs-lisp
      (use-package treemacs
        :ensure t
@@ -642,6 +593,59 @@ An elegant editor... for a more civilized age.
 
    #+RESULTS:
 
+* Utils
+** Helm
+
+  #+BEGIN_SRC emacs-lisp
+    (use-package helm
+      :ensure t
+      :config
+      (setq helm-split-window-in-side-p               t ; open helm buffer inside current window, not occupy whole other window
+		helm-move-to-line-cycle-in-source     t ; move to end or beginning of source when reaching top or bottom of source.
+		helm-ff-search-library-in-sexp        t ; search for library in `require' and `declare-function' sexp.
+		helm-scroll-amount                    8 ; scroll 8 lines other window using M-<next>/M-<prior>
+		helm-ff-file-name-history-use-recentf t)
+      :bind (("M-x" . helm-M-x)
+	     ("C-x b" . helm-mini)
+	     ("C-x C-f" . helm-find-files)
+	     ("C-c h o" . helm-occur)
+	     ("M-y" . helm-show-kill-ring)
+	     :map helm-map
+	     ("<tab>" . helm-execute-persistent-action)
+	     ("C-z" . helm-select-action)))
+  #+END_SRC
+	
+** Hydra
+   
+   Navigation with keys
+   #+BEGIN_SRC emacs-lisp
+     (use-package hydra
+       :ensure t)
+   #+END_SRC
+
+   #+RESULTS:
+	 
+** Eshell
+
+   Set paths depending on the environment we are running
+   #+BEGIN_SRC emacs-lisp
+     (defun pve-set-eshell-path-env ()
+       "Settig the eshell-path-env"
+       (if (pve-env/on-cygwin)
+	   (progn
+	     (setq cygwin-paths "/cygdrive/c/Program Files/nodejs/:")
+	     (setq eshell-path-env (concat cygwin-paths eshell-path-env))
+	     (setenv "PATH" (concat cygwin-paths (getenv "PATH"))))))
+   #+END_SRC
+
+   #+RESULTS:
+   : pve-set-eshell-path-env
+
+   Add hook to eshell to set paths when eshell starts
+   #+BEGIN_SRC emacs-lisp
+     (add-hook 'eshell-mode-hook 'pve-set-eshell-path-env)
+   #+END_SRC
+	   
 ** Artist mode
 	      
    Artist mode doesn't work within org mode. This narrows the buffer to a place you want to work.
