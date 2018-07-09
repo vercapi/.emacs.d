@@ -458,7 +458,7 @@ An elegant editor... for a more civilized age.
    #+BEGIN_SRC emacs-lisp
      (use-package restclient
        :ensure t
-       :mode "\\.http\\'")
+       :mode ("\\.http\\'" . restclient-mode))
    #+END_SRC
 
    Setup auto completion for restclient
