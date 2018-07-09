@@ -81,9 +81,6 @@ An elegant editor... for a more civilized age.
 
   #+END_SRC
 
-  #+RESULTS:
-  : pve-env/on-cygwin
-
 * UI Configuration
 ** Emacs frame appearance
 
@@ -204,17 +201,13 @@ An elegant editor... for a more civilized age.
 		 (push '("lambda" . 955) prettify-symbols-alist)))
      (add-hook 'emacs-lisp-mode-hook 'prettify-symbols-mode)
    #+END_SRC
-
-   
+ 
 ** Buffer
 
-   Turn on line mode
+   Turn on line mode, show the line numbers in the gutter
    #+BEGIN_SRC emacs-lisp
      (add-hook 'prog-mode-hook #'display-line-numbers-mode)
    #+END_SRC
-
-   #+RESULTS:
-   | display-line-numbers-mode |
 
 * Emacs Behavior
 ** General behavior 
