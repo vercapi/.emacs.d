@@ -323,6 +323,16 @@ An elegant editor... for a more civilized age.
     #+BEGIN_SRC emacs-lisp
       (global-hl-line-mode)
     #+END_SRC
+
+    Jump to anywhere you can see.
+    Also enables jumping back from where you jumped from
+    #+BEGIN_SRC emacs-lisp
+      (use-package ace-jump-mode
+	:ensure t
+	:bind (("C-:" . ace-jump-mode)
+	       ("C-;" . ace-jump-mode-pop-mark))
+	:config (ace-jump-mode-enable-mark-sync))
+    #+END_SRC
     
 ** Search & Replace 
 
