@@ -444,7 +444,7 @@ An elegant editor... for a more civilized age.
       :hook (after-init . projectile-global-mode))
   #+END_SRC	       
   		       
-* Programming languages
+* Programming environments
 ** restclient
 
    Do restcalls from witin an emacs buffer
@@ -507,6 +507,20 @@ An elegant editor... for a more civilized age.
        :hook (python-mode . lsp-python-enable))
    #+END_SRC
      
+** Docker
+
+   Manage dockers from within emacs.
+   #+BEGIN_SRC emacs-lisp
+     (use-package docker
+       :ensure t)
+   #+END_SRC
+
+   Mode for editing docker files
+   #+BEGIN_SRC emacs-lisp
+     (use-package dockerfile-mode
+       :ensure t)
+   #+END_SRC
+
 * File browsing
 ** Side bar
 
