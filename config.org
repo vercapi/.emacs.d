@@ -201,9 +201,10 @@ An elegant editor... for a more civilized age.
    #+BEGIN_SRC emacs-lisp
      (add-hook 'emacs-lisp-mode-hook
 	       (lambda ()
-		 (push '("lambda" . ?λ) prettify-symbols-alist)))
-     (add-hook 'emacs-lisp-mode 'prettify-symbols-mode)
+		 (push '("lambda" . 955) prettify-symbols-alist)))
+     (add-hook 'emacs-lisp-mode-hook 'prettify-symbols-mode)
    #+END_SRC
+
    
 ** Buffer
 
