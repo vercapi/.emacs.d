@@ -351,6 +351,13 @@ An elegant editor... for a more civilized age.
 	:bind ("C-. " . goto-last-change))
     #+END_SRC
 
+    Parentheses navigation as done by [[http://ergoemacs.org/emacs/emacs_navigating_keys_for_brackets.html][ergo-emacs]]
+    #+BEGIN_SRC emacs-lisp
+      (load "~/.emacs.d/custom/brackets-movement.el")
+      (global-set-key (kbd "C-(") 'xah-backward-left-bracket)
+      (global-set-key (kbd "C-)") 'xah-forward-right-bracket)
+    #+END_SRC
+
     Bookmarks
     #+BEGIN_SRC emacs-lisp
       (use-package bm
