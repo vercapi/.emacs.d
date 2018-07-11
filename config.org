@@ -490,6 +490,15 @@ An elegant editor... for a more civilized age.
        :ensure t
        :config (clipmon-mode))
    #+END_SRC
+
+   Custom el to change behavior of std copy/cut paste behavior
+   Some code based on xah-lee's version on http://ergoemacs.org/emacs/emacs_copy_cut_current_line.html
+
+   #+BEGIN_SRC emacs-lisp
+   (load "~/.emacs.d/custom/copy-paste-behavior.el")
+   (global-set-key (kbd "C-w") 'custom-cut-line-or-region) ; cut
+   (global-set-key (kbd "M-w") 'custom-copy-line-or-region) ; copy
+   #+END_SRC
    
 ** Undo
 
