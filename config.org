@@ -500,6 +500,14 @@ An elegant editor... for a more civilized age.
        :bind ("C-x u" . undo-tree-visualize)
        )
    #+END_SRC
+** Text format
+
+   Indent with 2 spaces, no tabs
+   #+BEGIN_SRC emacs-lisp
+     (setq-default indent-tabs-mode nil) ;; don't use tabs
+     (setq-default tab-width 2) ;; use 2 space tabs
+   #+END_SRC
+   
 * Source control
 
   Setting up the function to initialize the message-history and magit integration.
