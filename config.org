@@ -457,6 +457,17 @@ An elegant editor... for a more civilized age.
        :ensure t
        :bind ("C-=" . er/expand-region))
    #+END_SRC
+** Clipboard
+   
+   Use emacs as a clipbaord manger for the OS.
+   Removes the issues with copying from OS and the kill ring like overwriting the past from the OS
+   Also makes the kill ring system of emacs avialable for the OS via emacs interface
+   #+BEGIN_SRC emacs-lisp
+     (use-package clipmon
+       :ensure t
+       :config (clipmon-mode))
+   #+END_SRC
+   
 ** Undo
 
    Visual aid to see all undo history in a tree
