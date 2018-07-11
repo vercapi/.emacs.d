@@ -81,7 +81,7 @@ An elegant editor... for a more civilized age.
 
   #+END_SRC
 
-* UI Configuration
+* Visual Configuration
 ** Emacs frame appearance
 
    #+BEGIN_SRC emacs-lisp
@@ -202,7 +202,7 @@ An elegant editor... for a more civilized age.
      (add-hook 'emacs-lisp-mode-hook 'prettify-symbols-mode)
    #+END_SRC
  
-** Buffer
+** Buffer/window
 
    Turn on line mode, show the line numbers in the gutter
    #+BEGIN_SRC emacs-lisp
@@ -381,7 +381,7 @@ An elegant editor... for a more civilized age.
     #+END_SRC
     
 ** Search & Replace 
-
+   
    Helm swoop, a more dynamic version of hem-occur
    Find all occurences in a/multiple file(s) follow along in the files while browsing the results.
    #+BEGIN_SRC emacs-lisp
