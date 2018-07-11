@@ -764,6 +764,13 @@ An elegant editor... for a more civilized age.
    #+BEGIN_SRC emacs-lisp
      (add-hook 'eshell-mode-hook 'pve-set-eshell-path-env)
    #+END_SRC
+
+   Enable eshell history to be accessses by helm instead of the static history
+   #+BEGIN_SRC emacs-lisp
+     (add-hook 'eshell-mode-hook
+	       '(lambda ()
+		  (define-key eshell-mode-map (kbd "C-c C-l")  'helm-eshell-history)))
+    #+END_SRC
 	   
 ** Artist mode
 	      
