@@ -1,997 +1,965 @@
 #+TITLE: Emacs Configuration
-#+OPTIONS: toc:4 h:4m 
+
+An elegant editor... for a more civilized age.
 
 * Packages setup
   
-Initialize
-#+BEGIN_SRC emacs-lisp
-;; activate all the packages (in particular autoloads)
-(package-initialize)
-#+END_SRC
-  
+  Loading all the resources so the rest of the config has access to all these resoruces.
+
 ** Packages sources
 
-#+BEGIN_SRC emacs-lisp
- (setq package-archives '(("melpa" . "http://melpa.milkbox.net/packages/")
-                          ("marmalade" . "http://marmalade-repo.org/packages/")
-                          ("SC" . "http://joseito.republika.pl/sunrise-commander/")
-                          ("gnu" . "http://elpa.gnu.org/packages/")))
-#+END_SRC
-
+<<<<<<< HEAD
    
 ** Cask buid tool setup
    
    #+BEGIN_SRC shell
    curl -fsSL https://raw.githubusercontent.com/cask/cask/master/go | python
-   #+END_SRC
-
-   This needs to be included in ~/.bash_profile
-   export PATH="/home/vercapi/.cask/bin:$PATH"
-
-   Init cask
+=======
+   Configure all sources for packages to be used throughtout this config file.
    #+BEGIN_SRC emacs-lisp
-   (require 'cask "~/.cask/cask.el")
-   (cask-initialize)
+    (setq package-archives '(("melpa" . "http://melpa.milkbox.net/packages/")
+                             ("marmalade" . "http://marmalade-repo.org/packages/")
+                             ("gnu" . "http://elpa.gnu.org/packages/")))
+>>>>>>> use_package
    #+END_SRC
 
-   #+RESULTS:
-   : [cl-struct-cask-bundle nil nil nil ([cl-struct-cask-dependency yasnippet nil nil nil nil nil nil] [cl-struct-cask-dependency yaml-mode nil nil nil nil nil nil] [cl-struct-cask-dependency xah-math-input nil nil nil nil nil nil] [cl-struct-cask-dependency with-editor nil nil nil nil nil nil] [cl-struct-cask-dependency which-key nil nil nil nil nil nil] [cl-struct-cask-dependency web-mode nil nil nil nil nil nil] [cl-struct-cask-dependency use-package nil nil nil nil nil nil] [cl-struct-cask-dependency undo-tree nil nil nil nil nil nil] [cl-struct-cask-dependency twittering-mode nil nil nil nil nil nil] [cl-struct-cask-dependency tablist nil nil nil nil nil nil] [cl-struct-cask-dependency systemd nil nil nil nil nil nil] [cl-struct-cask-dependency syntax-subword nil nil nil nil nil nil] [cl-struct-cask-dependency sunrise-x-modeline nil nil nil nil nil nil] [cl-struct-cask-dependency sunrise-x-buttons nil nil nil nil nil nil] [cl-struct-cask-dependency sunrise-commander nil nil nil nil nil nil] [cl-struct-cask-dependency sr-speedbar nil nil nil nil nil nil] [cl-struct-cask-dependency smex nil nil nil nil nil nil] [cl-struct-cask-dependency smartparens nil nil nil nil nil nil] [cl-struct-cask-dependency seq nil nil nil nil nil nil] [cl-struct-cask-dependency salt-mode nil nil nil nil nil nil] [cl-struct-cask-dependency s nil nil nil nil nil nil] [cl-struct-cask-dependency rainbow-delimiters nil nil nil nil nil nil] [cl-struct-cask-dependency pymacs nil nil nil nil nil nil] [cl-struct-cask-dependency projectile nil nil nil nil nil nil] [cl-struct-cask-dependency prodigy nil nil nil nil nil nil] [cl-struct-cask-dependency powerline nil nil nil nil nil nil] [cl-struct-cask-dependency popwin nil nil nil nil nil nil] [cl-struct-cask-dependency popup nil nil nil nil nil nil] [cl-struct-cask-dependency peep-dired nil nil nil nil nil nil] [cl-struct-cask-dependency pdf-tools nil nil nil nil nil nil] [cl-struct-cask-dependency pallet nil nil nil nil nil nil] [cl-struct-cask-dependency package-build nil nil nil nil nil nil] [cl-struct-cask-dependency org-bullets nil nil nil nil nil nil] [cl-struct-cask-dependency nyan-mode nil nil nil nil nil nil] [cl-struct-cask-dependency multiple-cursors nil nil nil nil nil nil] [cl-struct-cask-dependency magit-popup nil nil nil nil nil nil] [cl-struct-cask-dependency magit nil nil nil nil nil nil] [cl-struct-cask-dependency lua-mode nil nil nil nil nil nil] [cl-struct-cask-dependency jedi-core nil nil nil nil nil nil] [cl-struct-cask-dependency jedi nil nil nil nil nil nil] [cl-struct-cask-dependency idle-highlight-mode nil nil nil nil nil nil] [cl-struct-cask-dependency hydra nil nil nil nil nil nil] [cl-struct-cask-dependency htmlize nil nil nil nil nil nil] [cl-struct-cask-dependency helm-swoop nil nil nil nil nil nil] [cl-struct-cask-dependency helm-spotify nil nil nil nil nil nil] [cl-struct-cask-dependency helm-projectile nil nil nil nil nil nil] [cl-struct-cask-dependency helm-core nil nil nil nil nil nil] [cl-struct-cask-dependency helm nil nil nil nil nil nil] [cl-struct-cask-dependency goto-chg nil nil nil nil nil nil] [cl-struct-cask-dependency git-gutter nil nil nil nil nil nil] [cl-struct-cask-dependency git-commit nil nil nil nil nil nil] [cl-struct-cask-dependency flycheck-pyflakes nil nil nil nil nil nil] [cl-struct-cask-dependency flycheck-cask nil nil nil nil nil nil] [cl-struct-cask-dependency flycheck nil nil nil nil nil nil] [cl-struct-cask-dependency f nil nil nil nil nil nil] [cl-struct-cask-dependency expand-region nil nil nil nil nil nil] [cl-struct-cask-dependency exec-path-from-shell nil nil nil nil nil nil] [cl-struct-cask-dependency dsvn nil nil nil nil nil nil] [cl-struct-cask-dependency drag-stuff nil nil nil nil nil nil] [cl-struct-cask-dependency dockerfile-mode nil nil nil nil nil nil] [cl-struct-cask-dependency docker-tramp nil nil nil nil nil nil] [cl-struct-cask-dependency docker nil nil nil nil nil nil] [cl-struct-cask-dependency diminish nil nil nil nil nil nil] [cl-struct-cask-dependency deferred nil nil nil nil nil nil] [cl-struct-cask-dependency dash nil nil nil nil nil nil] [cl-struct-cask-dependency concurrent nil nil nil nil nil nil] [cl-struct-cask-dependency company-shell nil nil nil nil nil nil] [cl-struct-cask-dependency company nil nil nil nil nil nil] [cl-struct-cask-dependency cask nil nil nil nil nil nil] [cl-struct-cask-dependency bind-key nil nil nil nil nil nil] [cl-struct-cask-dependency beacon nil nil nil nil nil nil] [cl-struct-cask-dependency avy nil nil nil nil nil nil] [cl-struct-cask-dependency auto-complete nil nil nil nil nil nil] [cl-struct-cask-dependency async nil nil nil nil nil nil] [cl-struct-cask-dependency anzu nil nil nil nil nil nil] [cl-struct-cask-dependency ace-window nil nil nil nil nil nil]) nil "/home/vercapi/.emacs.d/" nil ([cl-struct-cask-source "marmalade" "http://marmalade-repo.org/packages/"] [cl-struct-cask-source "gnu" "http://elpa.gnu.org/packages/"] [cl-struct-cask-source "SC" "http://joseito.republika.pl/sunrise-commander/"] [cl-struct-cask-source "melpa" "http://melpa.milkbox.net/packages/"])]
 
-   Init pallet, more info on [[https://github.com/rdallasgray/pallet][github]]
-   This makes sure that packages installed via the package manager are added to the Cask file
+** use-package & quelpa bootstrap
+
+   These are the packages needed to manage the packages from the package repostiories or directly from git.
+
+   Ensure that 'use-package' is installed.
    #+BEGIN_SRC emacs-lisp
-   (require 'pallet)
-   (pallet-mode t)
-   #+END_SRC
-
-   #+RESULTS:
-   : t
-
-   To update run pallet-update
+   (if (not (package-installed-p 'use-package))
+   (progn
+       (package-refresh-contents)
+       (package-install 'use-package)))
  
-** Custom tools
-
-   #+BEGIN_SRC emacs-lisp
-   (load "~/.emacs.d/custom/emacs-tools.el")
+    (require 'use-package)
    #+END_SRC
 
-* UI configuration
-** General info
+   Ensure that 'quelpa' is installed, a dependency for quelpa-use-package the package we really want
+   Allows to Emacs Lisp packages built directly from source
+   #+BEGIN_SRC emacs-lisp
+     (use-package quelpa
+       :ensure t)
+   #+END_SRC
+
+   #+RESULTS:
+   : quelpa
+
+   Further install quelpa-use-package
+   This is the quelpa handle for use-package
+   #+BEGIN_SRC emacs-lisp
+     (use-package quelpa-use-package
+       :ensure t
+       :after quelpa)
+   #+END_SRC
+
+   #+RESULTS:
+   : quelpa-use-package
    
+
+** Iinitialize packages
+  
+   load all packages that are installed. 
+   #+BEGIN_SRC emacs-lisp
+   ;; activate all the packages (in particular autoloads)
+   (package-initialize)
+   #+END_SRC
+   
+
+** Load custom local code
+
+   All custom tooling that is available within this repository.
+   #+BEGIN_SRC emacs-lisp
+   (add-to-list 'load-path "~/.emacs.d/custom/")
+   #+END_SRC
+
+   #+RESULTS:
+   | ~/.emacs.d/custom/ | /home/vercapi/.emacs.d/elpa/powerline-20180321.1948 | /home/vercapi/.emacs.d/elpa/use-package-20180613.2219 | /home/vercapi/.emacs.d/elpa/bind-key-20180512.2130 | /usr/share/emacs/26.1/site-lisp | /usr/share/emacs/site-lisp | /usr/share/emacs/26.1/lisp | /usr/share/emacs/26.1/lisp/vc | /usr/share/emacs/26.1/lisp/url | /usr/share/emacs/26.1/lisp/textmodes | /usr/share/emacs/26.1/lisp/progmodes | /usr/share/emacs/26.1/lisp/play | /usr/share/emacs/26.1/lisp/org | /usr/share/emacs/26.1/lisp/nxml | /usr/share/emacs/26.1/lisp/net | /usr/share/emacs/26.1/lisp/mh-e | /usr/share/emacs/26.1/lisp/mail | /usr/share/emacs/26.1/lisp/leim | /usr/share/emacs/26.1/lisp/language | /usr/share/emacs/26.1/lisp/international | /usr/share/emacs/26.1/lisp/image | /usr/share/emacs/26.1/lisp/gnus | /usr/share/emacs/26.1/lisp/eshell | /usr/share/emacs/26.1/lisp/erc | /usr/share/emacs/26.1/lisp/emulation | /usr/share/emacs/26.1/lisp/emacs-lisp | /usr/share/emacs/26.1/lisp/cedet | /usr/share/emacs/26.1/lisp/calendar | /usr/share/emacs/26.1/lisp/calc | /usr/share/emacs/26.1/lisp/obsolete |
+
+* Environment
+  
+  Check where we are running
+  #+BEGIN_SRC emacs-lisp
+    (defun pve-env/on-cygwin ()
+      "Return true if we are on cygwin"
+      (string-equal system-type "cygwin"))
+
+  #+END_SRC
+
+* Visual Configuration
+** Emacs frame appearance
+
    #+BEGIN_SRC emacs-lisp
      (tool-bar-mode -1) ;; no toolbar
-     (menu-bar-mode -1)
-     (toggle-scroll-bar -1)
+     (menu-bar-mode -1) ;; no menubar
+     (toggle-scroll-bar -1) ;; no scrollbar
      (fset 'yes-or-no-p 'y-or-n-p) ;; type y/n not yes/no
    #+END_SRC
 
    #+RESULTS:
    : y-or-n-p
 
-** Theme
-
-    This is based on the [[https://github.com/nashamri/spacemacs-theme][spacemacs]] with the colors of [[http://eclipsecolorthemes.org/?view%3Dtheme&id%3D1115][solarized]]
-
-    #+BEGIN_SRC emacs-lisp
-      (load-file "~/.emacs.d/soranomacs-theme/spacemacs-theme-autoloads.el")
-      (load-theme 'spacemacs-dark t)
-    #+END_SRC
-
-    #+RESULTS:
-    : t
-
 ** mode line
-   
-    Standard configuration
+
+*** Standard configuration of the mode line
     
     Set the file size on the mode line  
     #+BEGIN_SRC emacs-lisp
     (setq size-indication-mode t)
     #+END_SRC
 
+    #+RESULTS:
+    : t
+
+    Add columns to the mode line
     #+BEGIN_SRC emacs-lisp
     (setq column-number-mode t)
-    (size-indication-mode) ;; show filesize
     #+END_SRC
-    
+
+    #+RESULTS:
+    : t
+
 *** Powerline
-     
-     Activate powerline with the default theme
+
+    Activate powerline with the default theme
 
      You need to use patched fonts -> 
      git clone https://github.com/powerline/fonts
 
      #+BEGIN_SRC emacs-lisp
-       (require 'powerline)
-       (powerline-default-theme)
-       (setq powerline-default-separator 'slant)
+       (use-package powerline
+	   :ensure t
+	   :config
+	   (powerline-default-theme)
+	   (setq powerline-default-separator 'slant
+		 solarized-high-contrast-mode-line t)
+       )
      #+END_SRC
 
      #+RESULTS:
-     : slant
+     : t
 
-** Mini bufer
-
-   Turn ido mode on
-   Ido is a better autocomplete on the 
-
-   #+BEGIN_SRC emacs-lisp
-   (require 'ido)
-   (ido-mode t)
-   #+END_SRC
-
-** Text area
-
-   Turn on line numbers in the gutter
-    #+BEGIN_SRC emacs-lisp
-    (setq column-number-mode t)
-    #+END_SRC
-    
 ** Fonts
 
    Set the standard fonts for emacs and other componets
    This is based on std configuration. So if emacs adds this again in init.el or .emacs things might break and this needs to be update manually
 
-    #+BEGIN_SRC emacs-lisp
-    (custom-set-faces
-     '(default ((t (:family "DejaVu Sans Mono for Powerline" :foundry "unknown" :slant normal :weight normal :height 140 :width normal))))
-     '(minimap-font-face ((t (:height 40 :family "DejaVu Sans Mono"))))
-     '(mode-line ((t (:family "DejaVu Sans Mono for Powerline" :foundry "unknown" :slant normal :weight normal :height 140 :width normal)))))
-    #+END_SRC
-
-** alarms
-    
-    Turning them off completely
-    #+BEGIN_SRC emacs-lisp
-    (setq ring-bell-function 'ignore)
+   #+BEGIN_SRC emacs-lisp
+     (custom-set-faces
+      '(default ((t (:family "DejaVu Sans Mono for Powerline" :foundry "unknown" :slant normal :weight normal :height 140 :width normal))))
+      '(minimap-font-face ((t (:height 40 :family "DejaVu Sans Mono"))))
+      '(mode-line ((t (:family "DejaVu Sans Mono for Powerline" :foundry "unknown" :slant normal :weight normal :height 140 :width normal)))))
     #+END_SRC
 
     #+RESULTS:
-    : ignore
 
-** Window configuration
-   
-*** Winner mode
-    Undo and redo the configuration of the windows
-
+    Simple shortcuts to switch between to common used font sizes
     #+BEGIN_SRC emacs-lisp
-      (winner-mode 1) 
-      (windmove-default-keybindings) ;; Set S-<arrows> to move around the windows (S- <arrow> to move along windows)
+      (defun pve-small-fonts ()
+	"Set font to work on desktop screens."
+	(interactive)
+	(pve-set-fonts 100)
+	)
+
+      (defun pve-big-fonts ()
+	"Set font for use on laptop screens."
+	(interactive)
+	(pve-set-fonts 140)
+	)
+
+      (defun pve-set-fonts (font-height)
+	"Set size of fonts to FONT-HEIGHT, and only the size of the fonts."
+	(set-face-attribute 'default nil :height font-height)
+	(set-face-attribute 'mode-line nil :height font-height)
+	)
     #+END_SRC
-
-*** Ace window
-    [[https://github.com/abo-abo/ace-window][on github]]
-    Do selective switching
-
-    #+BEGIN_SRC emacs-lisp
-    (global-set-key (kbd "<f12>") 'ace-window)
-    #+END_SRC
-
-* Basic configuration
+    
+** Theme/Syntax sugar
    
-   Removing splash screen
-   Set line numbers in gutter
-   All backup files are located in 1 directory
-   Start emacs server so files can be opened in the running instance
-   Set username and address
-
+   Using solarized theme as base theme
    #+BEGIN_SRC emacs-lisp
-     (setq inhibit-splash-screen t)
-     (global-linum-mode t)
-     (setq backup-directory-alist '(("." . "~/.saves")))
-     (server-start)
-     (setq user-full-name "Pieter Vercammen")
-     (setq user-mail-address "pieterv.sorano@gmail.com")
+     (use-package solarized-theme
+       :ensure t
+       :config (load-theme 'solarized-dark t))
    #+END_SRC
 
-*** Locale Settings
+   Colorize delimters (,[,... different colors for every level
+   #+BEGIN_SRC emacs-lisp
+     (use-package rainbow-delimiters
+       :ensure t
+       :hook (prog-mode . rainbow-delimiters-mode))
+   #+END_SRC
 
-#+BEGIN_SRC emacs-lisp
+   Highlight the other parentheses
+   #+BEGIN_SRC emacs-lisp
+     (add-hook 'prog-mode-hook (lambda () (show-paren-mode 1)))
+   #+END_SRC
+
+*** Pretiify Symbols
+
+   Change some code in more elegant symbols, per programming language
+
+   Configuration for lisp
+   #+BEGIN_SRC emacs-lisp
+     (add-hook 'emacs-lisp-mode-hook
+	       (lambda ()
+		 (push '("lambda" . 955) prettify-symbols-alist)))
+     (add-hook 'emacs-lisp-mode-hook 'prettify-symbols-mode)
+   #+END_SRC
+ 
+** Buffer/window
+
+   Turn on line mode, show the line numbers in the gutter
+   #+BEGIN_SRC emacs-lisp
+     (add-hook 'prog-mode-hook #'display-line-numbers-mode)
+   #+END_SRC
+
+* Emacs Behavior
+** General behavior 
+
+   Turn of the bell alarm
+   #+BEGIN_SRC emacs-lisp
+   (setq ring-bell-function 'ignore)
+   #+END_SRC
+
+   Start the server
+   #+BEGIN_SRC emacs-lisp
+   (server-start)
+   #+END_SRC
+
+   No splash screen
+   #+BEGIN_SRC emacs-lisp
+   (setq inhibit-splash-screen t)
+   #+END_SRC
+
+   Set all encodings etc. to utf-8
+   #+BEGIN_SRC emacs-lisp
    (set-language-environment 'utf-8)
    (set-terminal-coding-system 'utf-8)
    (setq locale-coding-system 'utf-8)
    (set-default-coding-systems 'utf-8)
    (set-selection-coding-system 'utf-8)
    (prefer-coding-system 'utf-8)
-#+END_SRC
+   #+END_SRC
 
-* Tramp
-
-   Make tramp use ssh, for multi hops
+   Show completion of keybindings
    #+BEGIN_SRC emacs-lisp
-     (require 'tramp)
-     (setq tramp-default-method "ssh")
+     (use-package which-key
+       :ensure t
+       :config (progn
+		 (which-key-mode)
+		 (which-key-setup-minibuffer)))
+   #+END_SRC
+
+** Working with files  
+   
+   Backups of files
+   #+BEGIN_SRC emacs-lisp
+     (setq backup-directory-alist '(("." . "~/.saves")))
+   #+END_SRC
+
+   Disable lock files
+   #+BEGIN_SRC emacs-lisp
+     (setq create-lockfiles nil)
+   #+END_SRC
+
+   Edit file as root
+   #+BEGIN_SRC emacs-lisp
+     (defun sudo-edit (&optional arg)
+       "Edit currently visited file as root. With a prefix ARG prompt for a file to visit. Will also prompt for a file to visit if current buffer is not visiting a file."
+       (interactive "P")
+       (if (or arg (not buffer-file-name))
+	   (find-file (concat "/sudo:root@localhost:" (ido-read-file-name "Find file(as root): ")))
+	 (find-alternate-file (concat "/sudo:root@localhost:" buffer-file-name))))
+    #+END_SRC
+   
+** Window behavior
+
+   Winner mode to undo and redo window configuration
+   #+BEGIN_SRC emacs-lisp
+     (winner-mode 1)
    #+END_SRC
 
    #+RESULTS:
-   : ssh
+   : t
 
-   Add the needed hosts because mutli hop doesn't work with helm
-   Also because mutli hop is a lot of typing for hosts that are used all the time
-
-   Format of tripple is: HOST USER PROXY
+   Set S-<arrows> to move around the windows (S- <arrow> to move along windows)
+   And also ensure this works in org mode. See org-mode [[https://orgmode.org/manual/Conflicts.html][manual]] on 'Conflicts'
    #+BEGIN_SRC emacs-lisp
-          (add-to-list 'tramp-default-proxies-alist
-                    '("\\`192.168.1.2\\'" "\\`root\\'" "/ssh:sorano@%h:"))
-          (add-to-list 'tramp-default-proxies-alist
-                    '("\\`192.168.1.252\\'" "\\`root\\'" "/ssh:alarm@%h:"))
-   #+END_SRC
+     (windmove-default-keybindings)
 
-   #+RESULTS:
-   | \`192.168.1.252\' | \`root\' | /ssh:alarm@%h:  |
-   | \`192.168.1.2\'   | \`root\' | /ssh:sorano@%h: |
-
-   Set the timout of ssh
-   #+BEGIN_SRC emacs-lisp
-     (setq password-cache-expiry 1200)
+     (setq org-replace-disputed-keys t)
+     (add-hook 'org-shiftup-final-hook 'windmove-up)
+     (add-hook 'org-shiftleft-final-hook 'windmove-left)
+     (add-hook 'org-shiftdown-final-hook 'windmove-down)
+     (add-hook 'org-shiftright-final-hook 'windmove-right)
    #+END_SRC
    
-* CEDET
-** Iinitialize CEDET
+   Eybrowse allows a virutal desktop like solution to be used within emacs.
+   #+BEGIN_SRC emacs-lisp
+     (use-package eyebrowse
+       :ensure t
+       :init (eyebrowse-mode t))
+   #+END_SRC
 
-    #+BEGIN_SRC emacs-lisp
-      ;;(load-file "~/.emacs.d/cedet-bzr/trunk/cedet-devel-load.el") 
-      ;;(add-to-list 'semantic-default-submodes 'global-semantic-idle-summary-mode t)
-      ;;(add-to-list 'semantic-default-submodes 'global-semantic-idle-completions-mode t)
-      ;;(add-to-list 'semantic-default-submodes 'global-cedet-m3-minor-mode t)
-      ;;(add-to-list 'semantic-default-submodes 'global-semantic-highlight-func-mode t)
-      ;;(semantic-mode 1)                        ; Enable semantic
+   Scroll without moving cursor
+   #+BEGIN_SRC emacs-lisp
+     (global-set-key (kbd "M-n") (kbd "C-u 1 C-v"))
+     (global-set-key (kbd "M-p") (kbd "C-u 1 M-v"))
+   #+END_SRC
 
-      ;; load contrib library
-      ;;(load-file "~/.emacs.d/cedet-bzr/trunk/contrib/cedet-contrib-load.el")
-    #+END_SRC
+** Logins
+   
+   Set the time emacs caches a password in seconds, tramp, sudo, ...?
+   #+BEGIN_SRC emacs-lisp
+     (setq password-cache t
+	   password-cache-expiry 1200)
+   #+END_SRC
 
-    #+RESULTS:
+   Ensure that emacs is actually using the eshell/sudo so that the cache above works
+   #+BEGIN_SRC emacs-lisp
+     (require 'em-tramp)
+     (add-hook 'eshell-mode-hook
+	       (lambda ()
+		 (eshell/alias "sudo" "eshell/sudo $*")))
+   #+END_SRC
 
-* Org Mode
-** General settings
-[[http://orgmode.org/manual/Conflicts.html][
-    Confliction manual org-mode]]
+** Cursor Navigation
     
-    Make sure we don't have a conflict with S-arrow keys
-    Now org mode S-arrows switches windows when there is no relevant action for the org-mode bound command
+    Flash cursor whenever it jumps to another possition by any command
     #+BEGIN_SRC emacs-lisp
-      (setq org-replace-disputed-keys t)
-      (add-hook 'org-shiftup-final-hook 'windmove-up)
-      (add-hook 'org-shiftleft-final-hook 'windmove-left)
-      (add-hook 'org-shiftdown-final-hook 'windmove-down)
-      (add-hook 'org-shiftright-final-hook 'windmove-right)
-    #+END_SRC
-    
-    #+RESULTS:
-    | windmove-right |
-
-    Introduce some backward compatibility
-    #+BEGIN_SRC emacs-lisp
-    (define-obsolete-function-alias 'org-define-error 'define-error)
-    #+END_SRC
-
-    #+RESULTS:
-    : org-define-error
-
-** Display settings
-
-    #+BEGIN_SRC emacs-lisp
-      (setq org-src-fontify-natively t)
-    #+END_SRC
-
-** Code blocks
-
-    Set languages that can be executed
-    
-    #+BEGIN_SRC emacs-lisp
+<<<<<<< HEAD
       (org-babel-do-load-languages
        'org-babel-load-languages
        '((python . t)
          (shell . t)
          (emacs-lisp . t)
          ))
+=======
+      (use-package beacon
+	:ensure t
+	:config (beacon-mode 1))
+>>>>>>> use_package
     #+END_SRC
-    
-    Set it so that code executes without asking permission when pressing C-c C-c
-    
+
+    Highlight the current line
     #+BEGIN_SRC emacs-lisp
-    (setq org-confirm-babel-evaluate nil)
+      (global-hl-line-mode)
     #+END_SRC
-    
-    Set python version
+
+    Jump to anywhere you can see.
+    Also enables jumping back from where you jumped from
     #+BEGIN_SRC emacs-lisp
-    (setq org-babel-python-command "python2")
+      (use-package ace-jump-mode
+	:ensure t
+	:bind (("C-:" . ace-jump-mode)
+	       ("C-;" . ace-jump-mode-pop-mark))
+	:config (ace-jump-mode-enable-mark-sync))
     #+END_SRC
 
-    Enable async execution of babel code blocks
+    Navigate back to previous changes
     #+BEGIN_SRC emacs-lisp
-    (require 'ob-async)
+      (use-package goto-last-change
+	:ensure t
+	:after ace-jump-mode
+	:bind ("C-. " . goto-last-change))
     #+END_SRC
 
-** Keymaps
-
+    Parentheses navigation as done by [[http://ergoemacs.org/emacs/emacs_navigating_keys_for_brackets.html][ergo-emacs]]
     #+BEGIN_SRC emacs-lisp
-      (add-hook 'org-mode-hook
-                (lambda ()
-                  (require 'hydra)
-                  (defhydra hydra-org-navigation (org-mode-map "<f2>")
-                    "Org navigation"
-                    ("n" outline-next-visible-heading)
-                    ("p" outline-previous-visible-heading)
-                    ("f" org-forward-heading-same-level)
-                    ("b" org-backward-heading-same-level)
-                    ("a" helm-org-in-buffer-headings)
-                    ("u" outline-up-heading))
-                  (local-set-key (kbd "<f7>") 'org-mark-ring-push)
-                  (local-set-key (kbd "C-<f7>") 'org-mark-ring-goto)))
+      (load "~/.emacs.d/custom/brackets-movement.el")
+      (global-set-key (kbd "C-(") 'xah-backward-left-bracket)
+      (global-set-key (kbd "C-)") 'xah-forward-right-bracket)
     #+END_SRC
 
-#+RESULTS:
-| (lambda nil (require (quote hydra)) (defhydra hydra-org-navigation (org-mode-map <f2>) Org navigation (n outline-next-visible-heading) (p outline-previous-visible-heading) (f org-forward-heading-same-level) (b org-backward-heading-same-level) (a helm-org-in-buffer-headings) (u outline-p-heading)) (local-set-key (kbd <f7>) (quote org-mark-ring-push)) (local-set-key (kbd C-<f7>) (quote org-mark-ring-goto))) | er/add-org-mode-expansions | (lambda nil (require (quote hydra)) (progn (set (defvar hydra-org-navigation/keymap nil Keymap for hydra-org-navigation.) (quote (keymap (97 . hydra-org-navigation/helm-org-in-buffer-headings) (98 . hydra-org-navigation/org-backward-heading-same-level) (102 . hydra-org-navigation/org-forward-heading-same-level) (112 . hydra-org-navigation/outline-previous-visible-heading) (110 . hydra-org-navigation/outline-next-visible-heading) (kp-subtract . hydra--negative-argument) (kp-9 . hydra--digit-argument) (kp-8 . hydra--digit-argument) (kp-7 . hydra--digit-argument) (kp-6 . hydra--digit-argument) (kp-5 . hydra--digit-argument) (kp-4 . hydra--digit-argument) (kp-3 . hydra--digit-argument) (kp-2 . hydra--digit-argument) (kp-1 . hydra--digit-argument) (kp-0 . hydra--digit-argument) (57 . hydra--digit-argument) (56 . hydra--digit-argument) (55 . hydra--digit-argument) (54 . hydra--digit-argument) (53 . hydra--digit-argument) (52 . hydra--digit-argument) (51 . hydra--digit-argument) (50 . hydra--digit-argument) (49 . hydra--digit-argument) (48 . hydra--digit-argument) (45 . hydra--negative-argument) (21 . hydra--universal-argument)))) (set (defvar hydra-org-navigation/heads nil Heads for hydra-org-navigation.) (quote ((n outline-next-visible-heading  :exit nil) (p outline-previous-visible-heading  :exit nil) (f org-forward-heading-same-level  :exit nil) (b org-backward-heading-same-level  :exit nil) (a helm-org-in-buffer-headings  :exit nil)))) (set (defvar hydra-org-navigation/hint nil Dynamic hint for hydra-org-navigation.) (quote (format Org navigation: n, p, f, b, a.))) (defalias (quote hydra-org-navigation/outline-next-visible-heading) (function (lambda nil Create a hydra with a "<f2>" body and the heads:\n\n"n":    `outline-next-visible-heading',\n"p":    `outline-previous-visible-heading',\n"f":    `org-forward-heading-same-level',\n"b":    `org-backward-heading-same-level',\n"a":    `helm-org-in-buffer-headings'\n\nThe body can be accessed via `hydra-org-navigation/body'.\n\nCall the head: `outline-next-visible-heading'. (interactive) (hydra-default-pre) (let ((hydra--ignore t)) (hydra-keyboard-quit) (setq hydra-curr-body-fn (quote hydra-org-navigation/body))) (condition-case err (progn (setq this-command (quote outline-next-visible-heading)) (hydra--call-interactively-remap-maybe (function outline-next-visible-heading))) ((quit error) (message (error-message-string err)) (if hydra-lv nil (sit-for 0.8)))) (hydra-show-hint hydra-org-navigation/hint (quote hydra-org-navigation)) (hydra-set-transient-map hydra-org-navigation/keymap (function (lambda nil (hydra-keyboard-quit) nil)) nil)))) (defalias (quote hydra-org-navigation/outline-previous-visible-heading) (function (lambda nil Create a hydra with a "<f2>" body and the heads:\n\n"n":    `outline-next-visible-heading',\n"p":    `outline-previous-visible-heading',\n"f":    `org-forward-heading-same-level',\n"b":    `org-backward-heading-same-level',\n"a":    `helm-org-in-buffer-headings'\n\nThe body can be accessed via `hydra-org-navigation/body'.\n\nCall the head: `outline-previous-visible-heading'. (interactive) (hydra-default-pre) (let ((hydra--ignore t)) (hydra-keyboard-quit) (setq hydra-curr-body-fn (quote hydra-org-navigation/body))) (condition-case err (progn (setq this-command (quote outline-previous-visible-heading)) (hydra--call-interactively-remap-maybe (function outline-previous-visible-heading))) ((quit error) (message (error-message-string err)) (if hydra-lv nil (sit-for 0.8)))) (hydra-show-hint hydra-org-navigation/hint (quote hydra-org-navigation)) (hydra-set-transient-map hydra-org-navigation/keymap (function (lambda nil (hydra-keyboard-quit) nil)) nil)))) (defalias (quote hydra-org-navigation/org-forward-heading-same-level) (function (lambda nil Create a hydra with a "<f2>" body and the heads:\n\n"n":    `outline-next-visible-heading',\n"p":    `outline-previous-visible-heading',\n"f":    `org-forward-heading-same-level',\n"b":    `org-backward-heading-same-level',\n"a":    `helm-org-in-buffer-headings'\n\nThe body can be accessed via `hydra-org-navigation/body'.\n\nCall the head: `org-forward-heading-same-level'. (interactive) (hydra-default-pre) (let ((hydra--ignore t)) (hydra-keyboard-quit) (setq hydra-curr-body-fn (quote hydra-org-navigation/body))) (condition-case err (progn (setq this-command (quote org-forward-heading-same-level)) (hydra--call-interactively-remap-maybe (function org-forward-heading-same-level))) ((quit error) (message (error-message-string err)) (if hydra-lv nil (sit-for 0.8)))) (hydra-show-hint hydra-org-navigation/hint (quote hydra-org-navigation)) (hydra-set-transient-map hydra-org-navigation/keymap (function (lambda nil (hydra-keyboard-quit) nil)) nil)))) (defalias (quote hydra-org-navigation/org-backward-heading-same-level) (function (lambda nil Create a hydra with a "<f2>" body and the heads:\n\n"n":    `outline-next-visible-heading',\n"p":    `outline-previous-visible-heading',\n"f":    `org-forward-heading-same-level',\n"b":    `org-backward-heading-same-level',\n"a":    `helm-org-in-buffer-headings'\n\nThe body can be accessed via `hydra-org-navigation/body'.\n\nCall the head: `org-backward-heading-same-level'. (interactive) (hydra-default-pre) (let ((hydra--ignore t)) (hydra-keyboard-quit) (setq hydra-curr-body-fn (quote hydra-org-navigation/body))) (condition-case err (progn (setq this-command (quote org-backward-heading-same-level)) (hydra--call-interactively-remap-maybe (function org-backward-heading-same-level))) ((quit error) (message (error-message-string err)) (if hydra-lv nil (sit-for 0.8)))) (hydra-show-hint hydra-org-navigation/hint (quote hydra-org-navigation)) (hydra-set-transient-map hydra-org-navigation/keymap (function (lambda nil (hydra-keyboard-quit) nil)) nil)))) (defalias (quote hydra-org-navigation/helm-org-in-buffer-headings) (function (lambda nil Create a hydra with a "<f2>" body and the heads:\n\n"n":    `outline-next-visible-heading',\n"p":    `outline-previous-visible-heading',\n"f":    `org-forward-heading-same-level',\n"b":    `org-backward-heading-same-level',\n"a":    `helm-org-in-buffer-headings'\n\nThe body can be accessed via `hydra-org-navigation/body'.\n\nCall the head: `helm-org-in-buffer-headings'. (interactive) (hydra-default-pre) (let ((hydra--ignore t)) (hydra-keyboard-quit) (setq hydra-curr-body-fn (quote hydra-org-navigation/body))) (condition-case err (progn (setq this-command (quote helm-org-in-buffer-headings)) (hydra--call-interactively-remap-maybe (function helm-org-in-buffer-headings))) ((quit error) (message (error-message-string err)) (if hydra-lv nil (sit-for 0.8)))) (hydra-show-hint hydra-org-navigation/hint (quote hydra-org-navigation)) (hydra-set-transient-map hydra-org-navigation/keymap (function (lambda nil (hydra-keyboard-quit) nil)) nil)))) (if (keymapp (lookup-key org-mode-map (kbd <f2>))) nil (define-key org-mode-map (kbd <f2>) nil)) (define-key org-mode-map [f2 110] (quote hydra-org-navigation/outline-next-visible-heading)) (define-key org-mode-map [f2 112] (quote hydra-org-navigation/outline-previous-visible-heading)) (define-key org-mode-map [f2 102] (quote hydra-org-navigation/org-forward-heading-same-level)) (define-key org-mode-map [f2 98] (quote hydra-org-navigation/org-backward-heading-same-level)) (define-key org-mode-map [f2 97] (quote hydra-org-navigation/helm-org-in-buffer-headings)) (defalias (quote hydra-org-navigation/body) (function (lambda nil Create a hydra with a "<f2>" body and the heads:\n\n"n":    `outline-next-visible-heading',\n"p":    `outline-previous-visible-heading',\n"f":    `org-forward-heading-same-level',\n"b":    `org-backward-heading-same-level',\n"a":    `helm-org-in-buffer-headings'\n\nThe body can be accessed via `hydra-org-navigation/body'. (interactive) (hydra-default-pre) (let ((hydra--ignore nil)) (hydra-keyboard-quit) (setq hydra-curr-body-fn (quote hydra-org-navigation/body))) (hydra-show-hint hydra-org-navigation/hint (quote hydra-org-navigation)) (hydra-set-transient-map hydra-org-navigation/keymap (function (lambda nil (hydra-keyboard-quit) nil)) nil) (setq prefix-arg current-prefix-arg))))) (local-set-key (kbd <f7>) (quote org-mark-ring-push)) (local-set-key (kbd C-<f7>) (quote org-mark-ring-goto))) | #[nil \300\301\302\303\304$\207 [org-add-hook change-major-mode-hook org-show-block-all append local] 5] | #[nil \300\301\302\303\304$\207 [org-add-hook change-major-mode-hook org-babel-show-result-all append local] 5] | org-babel-result-hide-spec | org-babel-hide-all-hashes |
-     
-** TODO Nice bullets
-* helm
-[[http://tuhdo.github.io/helm-intro.html][    Helm tutorial]]
-    
-** General config
-
+    Bookmarks
     #+BEGIN_SRC emacs-lisp
-      (require 'helm-config)
-      (helm-mode 1)
-    
-      (setq helm-split-window-in-side-p           t ; open helm buffer inside current window, not occupy whole other window
-            helm-move-to-line-cycle-in-source     t ; move to end or beginning of source when reaching top or bottom of source.
-            helm-ff-search-library-in-sexp        t ; search for library in `require' and `declare-function' sexp.
-            helm-scroll-amount                    8 ; scroll 8 lines other window using M-<next>/M-<prior>
-            helm-ff-file-name-history-use-recentf t)
-    
-      (helm-mode 1)
-    
-      (when (executable-find "curl")
-          (setq helm-google-suggest-use-curl-p t))
+      (use-package bm
+	   :ensure t
+	   :demand t
+	   :init
+	   (setq bm-restore-repository-on-load t) ;; restore on load (even before you require bm)
+	   :config
+	   (setq bm-cycle-all-buffers nil  ;; Don't llow cross-buffer 'next'
+		 bm-repository-file "~/.emacs.d/bm-repository")
+	   (setq-default bm-buffer-persistence t)  ;; save bookmarks
+	   ;; Loading the repository from file when on start up.
+	   (add-hook' after-init-hook 'bm-repository-load)
+	   ;; Restoring bookmarks when on file find.
+	   (add-hook 'find-file-hooks 'bm-buffer-restore)
+	   ;; Saving bookmarks
+	   (add-hook 'kill-buffer-hook #'bm-buffer-save)
+	   ;; Saving the repository to file when on exit.
+	   ;; kill-buffer-hook is not called when Emacs is killed, so we
+	   ;; must save all bookmarks first.
+	   (add-hook 'kill-emacs-hook #'(lambda nil
+					    (bm-buffer-save-all)
+					    (bm-repository-save)))
+	   ;; The `after-save-hook' is not necessary to use to achieve persistence,
+	   ;; but it makes the bookmark data in repository more in sync with the file
+	   ;; state.
+	   (add-hook 'after-save-hook #'bm-buffer-save)
+	   ;; Restoring bookmarks
+	   (add-hook 'find-file-hooks   #'bm-buffer-restore)
+	   (add-hook 'after-revert-hook #'bm-buffer-restore)
+	   ;; The `after-revert-hook' is not necessary to use to achieve persistence,
+	   ;; but it makes the bookmark data in repository more in sync with the file
+	   ;; state. This hook might cause trouble when using packages
+	   ;; that automatically reverts the buffer (like vc after a check-in).
+	   ;; This can easily be avoided if the package provides a hook that is
+	   ;; called before the buffer is reverted (like `vc-before-checkin-hook').
+	   ;; Then new bookmarks can be saved before the buffer is reverted.
+	   ;; Make sure bookmarks is saved before check-in (and revert-buffer)
+	   (add-hook 'vc-before-checkin-hook #'bm-buffer-save)
+	   :bind (("C-c b" . bm-next)
+		  ("C-c B" . bm-previous)
+		  ("C-c m" . bm-toggle))
+	   )
     #+END_SRC
-
-    #+RESULTS:
-    : t
-
-** Key bindings
-
-    #+BEGIN_SRC emacs-lisp
-      (define-key helm-map (kbd "<tab>") 'helm-execute-persistent-action) ; rebind tab to run persistent action
-      (define-key helm-map (kbd "C-i") 'helm-execute-persistent-action) ; make TAB works in terminal
-      (define-key helm-map (kbd "C-z")  'helm-select-action) ; list actions using C-z
-      (global-set-key (kbd "C-x b") 'helm-mini)
-      (global-set-key (kbd "C-x C-f") 'helm-find-files)
-      (global-set-key (kbd "C-c h o") 'helm-occur)
-      (global-set-key (kbd "C-c h g") 'helm-google-suggest)
-      (global-set-key (kbd "M-x") 'helm-M-x)
-      (define-key helm-map (kbd "M-y") 'helm-show-kill-ring)
-    #+END_SRC
     
-    #+RESULTS:
-    : helm-show-kill-ring
+** Search & Replace 
+   
+   Helm swoop, a more dynamic version of hem-occur
+   Find all occurences in a/multiple file(s) follow along in the files while browsing the results.
+   #+BEGIN_SRC emacs-lisp
+     (use-package helm-swoop
+       :ensure t
+       :bind (("M-i" . helm-swoop)
+	      ("M-I" . helm-swoop-back-to-last-point)
+	      ("C-c M-i" . helm-multi-swoop)
+	      ("C-x M-i" . helm-multi-swoop-all)))
+   #+END_SRC
 
-* TODO Python
-  The curren setup has too many issues. Try [[http://ericjmritz.name/2015/11/06/gnu-emacs-packages-for-python-programming/][this]]
+   Visual-regexp gives visual feedback on the regexp
+   Key combination replace the regular query-regepx-replace
+   #+BEGIN_SRC emacs-lisp
+     (use-package visual-regexp
+       :ensure t
+       :bind (
+	      ("M-C-%" . vr/query-replace)
+	      ("C-c m" . vr/mc-mark)))
+   #+END_SRC
 
-  Setup python environment
+** Autocomplete
 
-  Setting everything to use python 2
+   Company (complete anything) is the front end system to autocomplete. Has mutliple backends that can provide autocompletion
+   #+BEGIN_SRC emacs-lisp
+     (use-package company
+       :ensure t
+       :hook (after-init . global-company-mode)
+       :bind ("C-<tab>" . company-complete)
+       :init (setq company-minimum-prefix-length 2
+		   company-dabbrev-downcase 0
+		   company-idle-delay 0))
+   #+END_SRC
+
+   LSP backen for company mode
+   #+BEGIN_SRC emacs-lisp
+     (use-package company-lsp
+       :ensure t
+       :config (push 'company-lsp company-backends))
+   #+END_SRC
+
+   Auto insert the other pair of a bracket
+   And the config for elements that are not supported by default
+   #+BEGIN_SRC emacs-lisp
+     (setq electric-pair-pairs '((?\{ . ?\})))
+     (electric-pair-mode 1)
+   #+END_SRC
+
+** Syntax checking
+   
+   Using flycheck as the syntax checker
+   #+BEGIN_SRC emacs-lisp
+     (use-package flycheck
+       :ensure t
+       :init (global-flycheck-mode))
+   #+END_SRC
+
+** Selection
+
+   Enable multiple cursors.
+   #+BEGIN_SRC emacs-lisp
+     (use-package multiple-cursors
+       :ensure t
+       :bind (("C->" . mc/mark-next-like-this)
+	      ("C-<" . mc/mark-previous-like-this)
+	      ("C-c C-<" . mc/mark-all-like-this)
+	      ("C-M->" . mc/unmark-next-like-this)
+	      ("C-M-<" . 'mc/unmark-previous-like-this)))
+   #+END_SRC   
+   Visual regepx also has an extansion  to visually add multiple cursors
+
+   Expande selection by semantic units
+   #+BEGIN_SRC emacs-lisp
+     (use-package expand-region
+       :ensure t
+       :bind ("C-=" . er/expand-region))
+   #+END_SRC
+** Clipboard
+   
+   Use emacs as a clipbaord manger for the OS.
+   Removes the issues with copying from OS and the kill ring like overwriting the past from the OS
+   Also makes the kill ring system of emacs avialable for the OS via emacs interface
+   #+BEGIN_SRC emacs-lisp
+     (use-package clipmon
+       :ensure t
+       :config (clipmon-mode))
+   #+END_SRC
+
+   Custom el to change behavior of std copy/cut paste behavior
+   Some code based on xah-lee's version on http://ergoemacs.org/emacs/emacs_copy_cut_current_line.html
+
+   #+BEGIN_SRC emacs-lisp
+   (load "~/.emacs.d/custom/copy-paste-behavior.el")
+   (global-set-key (kbd "C-w") 'custom-cut-line-or-region) ; cut
+   (global-set-key (kbd "M-w") 'custom-copy-line-or-region) ; copy
+   #+END_SRC
+   
+** Undo
+
+   Visual aid to see all undo history in a tree
+   #+BEGIN_SRC emacs-lisp
+     (use-package undo-tree
+       :ensure t
+       :bind ("C-x u" . undo-tree-visualize)
+       :config (setq undo-tree-visualizer-relative-timestamps t
+		     undo-tree-visualizer-timestamps t))
+   #+END_SRC
+** Text format
+
+   Indent with 2 spaces, no tabs
+   #+BEGIN_SRC emacs-lisp
+     (setq-default indent-tabs-mode nil) ;; don't use tabs
+     (setq-default tab-width 2) ;; use 2 space tabs
+   #+END_SRC
+   
+* Source control
+
+  Setting up the function to initialize the message-history and magit integration.
   #+BEGIN_SRC emacs-lisp
-    (setq python-version-checked t)
-    (setenv "PYMACS_PYTHON" "python2")
-    (setq python-python-command "python2")
-    (setq py-shell-name "/usr/bin/python2")
-    (setq py-python-command "/usr/bin/python2")
-    (setq python-environment-virtualenv (list "virtualenv2" "--system-site-packages" "--quiet"))
+    (defun init-message-history-magit ()
+	(progn
+	  (defun message-add-magit ()
+	    "This is a helper method that already provides a file"
+	    (message-history/add message-history/message-history-file))
+	  (defun message-commit-setup-magit ()
+	    "This method needs to called for setting up the git-commit-mode hook it will set up a hook only when the magit commit buffer is activated"
+	    (add-hook 'before-save-hook 'message-add-magit nil t))))
   #+END_SRC
 
-  #+RESULTS:
-  | virtualenv | --system-site-packages | --quiet |
+  Using magit for soruce control
+  #+BEGIN_SRC emacs-lisp
+    (use-package magit
+      :ensure t
+      :bind ("C-x t" . magit-status)
+      :hook ((git-commit-mode . message-commit-setup-magit)
+	     (magit-mode . turn-on-magit-gitflow))
+      :after (message-history magit-gitflow)
+      :init (init-message-history-magit))
+  #+END_SRC
 
-** TODO Python version switch
-** TODO Python virtualenv
-** Python code assist
-*** pymacs
-
-Initialize pymacs
-Pymacs is an interface between emacs and python.
-
-#+BEGIN_SRC emacs-lisp
-(autoload 'pymacs-apply "pymacs")
-(autoload 'pymacs-call "pymacs")
-(autoload 'pymacs-eval "pymacs" nil t)
-(autoload 'pymacs-exec "pymacs" nil t)
-(autoload 'pymacs-load "pymacs" nil t)
-(autoload 'pymacs-autoload "pymacs")
-#+END_SRC
-
-*** ropemacs 
-
-intialize ropemacs
-ropemacs is a refactoring framework for python
-
-#+BEGIN_SRC emacs-lisp
-(pymacs-load "ropemacs" "rope-")
-#+END_SRC
-
-*** TODO Generating code
-    [[https://github.com/JackCrawley/pygen][pygen]] 
-** jedi
-
-Initalize jedi
-Jedi is an autocomplete tool for python
-
-#+BEGIN_SRC emacs-lisp
-(require 'jedi)
-(add-hook 'python-mode-hook 'jedi:setup)
-#+END_SRC
-
-This actually makes sure jedi uses the "two" virtual env. Because this is a python 2 environment we need to use the virtualenv2 command.
-Directory: ~/.emacs.d/.python-environments/two
-Create virtualenv with: "virtualenv2 --system-site-packages two" in the "~/.emacs.d/.python-environments" directory
-When switching environments execute "jedi:install-server" again in emacs
-
-#+BEGIN_SRC emacs-lisp
-(setq jedi:environment-root "two")
-(setq jedi:environment-virtualenv
-      (append "virtualenv2"
-              '("--python" "/usr/bin/python2")))
-#+END_SRC
-
-** TODO py-tests, this should become nose
-Custom el code to run standard tests right from emacs
-
-#+BEGIN_SRC emacs-lisp
-(load "~/.emacs.d/custom/py-tests.el")
-#+END_SRC
-
-** python-tools
-
-Some random collection of tools to use with python
-
-#+BEGIN_SRC emacs-lisp
-(load "~/.emacs.d/custom/py-tests.el")
-#+END_SRC
-
-#+RESULTS:
-: t
-
-** TODO python keymaps, hook to python mode
-
-Below should only be activated in a python file
-#+BEGIN_SRC emacs-lisp
-  (global-set-key (kbd "C-c j") 'jedi:goto-definition)
-  (global-set-key (kbd "C-c d") 'jedi:show-doc)
-  (global-set-key (kbd "<C-tab>") 'company-jedi)
-  (global-set-key (kbd "C-c h p") 'helm-pydoc)
-#+END_SRC
-
-#+RESULTS:
-: helm-pydoc
-
-** TODO check pycscope
-   Inside and navigation into python code
-   [[https://github.com/portante/pycscope][github]]
-
-* lua/awesome
-  These are the customizations for lua. Especially for development of awesome
-
-** Tools
-
-   Tools for writing lua
-
-   #+BEGIN_SRC emacs-lisp
-   (load "~/.emacs.d/custom/lua-tools.el")   
-   #+END_SRC
-
-   #+RESULTS:
-   : t
-
-** Tests
+  Add git flow extension to magit. This enables feature branches etc.
+  #+BEGIN_SRC emacs-lisp
+    (use-package magit-gitflow
+      :ensure t)
+  #+END_SRC	    
+  		    
+* Project management
   
-   Depends on [[https://github.com/siffiejoe/lua-testy][lua-testy]]
+  The base of projectmanangement is projectile
+  #+BEGIN_SRC emacs-lisp
+    (use-package projectile
+      :ensure t
+      :hook (after-init . projectile-global-mode))
+  #+END_SRC	       
+  		       
+* Programming environments
+** restclient
 
+   Do restcalls from witin an emacs buffer
+
+   Install restclient
    #+BEGIN_SRC emacs-lisp
-     (load "~/.emacs.d/custom/lua-tests.el")
+     (use-package restclient
+       :ensure t
+       :mode ("\\.http\\'" . restclient-mode))
    #+END_SRC
 
+   Setup auto completion for restclient
+   #+BEGIN_SRC emacs-lisp
+     (use-package company-restclient
+       :ensure t
+       :config (add-to-list 'company-backends 'company-restclient))
+   #+END_SRC
+
+   Add integration into org mode for restclient
+   #+BEGIN_SRC emacs-lisp
+     (use-package ob-restclient
+       :ensure t
+       :config (org-babel-do-load-languages
+		'org-babel-load-languages
+		'((restclient . t))))
+   #+END_SRC
+
+** javascript
+
+   Javascript mode
+   #+BEGIN_SRC emacs-lisp
+     (use-package js2-mode
+       :mode "\\.js\\'"
+       :ensure t
+       :init
+       (setq-default js2-basic-offset 2
+		     js2-indent-switch-body t
+		     js2-auto-indent-p t
+		     js2-indent-on-enter-key t))
+   #+END_SRC
+
+** python
+   
+   Install langauge server for python
+   #+BEGIN_SRC sh
+   pacman -S python-language-server
+   #+END_SRC
+
+   #+BEGIN_SRC emacs-lisp
+     (use-package python-mode
+       :ensure t
+       :mode "\\.py\\'"
+       :config
+       ;; Create lsp-python-enable to start lsp mode for python
+       (lsp-define-stdio-client lsp-python "python"
+				 #'projectile-project-root
+				 '("pyls"))
+       ;; Disable eldoc, we see the info with lsp-ui
+       (setq lsp-enable-eldoc nil)
+       :hook (python-mode . lsp-python-enable))
+   #+END_SRC
+     
+** Docker
+
+   Manage dockers from within emacs.
+   #+BEGIN_SRC emacs-lisp
+     (use-package docker
+       :ensure t)
+   #+END_SRC
+
+   Mode for editing docker files
+   #+BEGIN_SRC emacs-lisp
+     (use-package dockerfile-mode
+       :ensure t)
+   #+END_SRC
+
+** LUA
+
+   LUA mode
+   #+BEGIN_SRC emacs-lisp
+     (use-package lua-mode
+       :ensure t)
+   #+END_SRC
+
+   
    #+BEGIN_SRC emacs-lisp
      (defun lua-mode-config ()
        "Change some settings when lua mode is loaded"
        (local-set-key (kbd "C-c C-t") 'lua-test)
        )
 
+     ;; Ensure function is ecxecuted when lua mode loads
      (add-hook 'lua-mode-hook 'lua-mode-config)
    #+END_SRC
+* File browsing
+** Side bar
 
-   #+RESULTS:
-   | lua-mode-config |
+   For the side bar the package we use treemacs. 
+   It feels more like the side bar from vs code and other modern editors.
    
-* TODO Java
-  https://github.com/jdee-emacs/jde
-  http://www.skybert.net/emacs/java/
-* Navigation
-** Beacon
+   Install and config the treemacs package.
+   #+BEGIN_SRC emacs-lisp
+     (use-package treemacs
+       :ensure t
+       :defer t
+       :after (all-the-icons)
+       :init
+       :config
+       (progn
+	 ;; Map the icons of all-the-icons on to the icon mappings of treemacs
+	 (dolist (item all-the-icons-icon-alist)
+	   (let* ((extension (car item))
+		  (icon (apply (cdr item))))
+	     (ht-set! treemacs-icons-hash 
+		      (s-replace-all '(("\\" . "") ("$" . "") ("." . "")) extension)
+		      (concat icon " "))))
+	 ;; Set the differnt config options
+	 (setq treemacs-collapse-dirs              (if (executable-find "python") 3 0)
+	       treemacs-file-event-delay           5000
+	       treemacs-follow-after-init          t
+	       treemacs-follow-recenter-distance   0.1
+	       treemacs-goto-tag-strategy          'refetch-index
+	       treemacs-indentation                2
+	       treemacs-indentation-string         " "
+	       treemacs-is-never-other-window      nil
+	       treemacs-no-png-images              nil
+	       treemacs-project-follow-cleanup     nil
+	       treemacs-persist-file               (expand-file-name ".cache/treemacs-persist" user-emacs-directory)
+	       treemacs-recenter-after-file-follow nil
+	       treemacs-recenter-after-tag-follow  nil
+	       treemacs-show-hidden-files          t
+	       treemacs-silent-filewatch           nil
+	       treemacs-silent-refresh             nil
+	       treemacs-sorting                    'alphabetic-desc
+	       treemacs-space-between-root-nodes   t
+	       treemacs-tag-follow-cleanup         t
+	       treemacs-tag-follow-delay           1.5
+	       treemacs-width                      35)
 
-   Enable beacon a flash when your cursor jumps [[https://github.com/Malabarba/beacon][on github]]
+	 ;; The default width and height of the icons is 22 pixels. If you are
+	 ;; using a Hi-DPI display, uncomment this to double the icon size.
+	 ;;(treemacs-resize-icons 44)
+
+	 (treemacs-follow-mode t)
+	 (treemacs-filewatch-mode t)
+	 (treemacs-fringe-indicator-mode t)
+	 (pcase (cons (not (null (executable-find "git")))
+		      (not (null (executable-find "python3"))))
+	   (`(t . t)
+	    (treemacs-git-mode 'extended))
+	   (`(t . _)
+	    (treemacs-git-mode 'simple))))
+       :bind
+       (("M-0"       . treemacs-select-window)
+	("C-c t 1"   . treemacs-delete-other-windows)
+	("C-c t t"   . treemacs)
+	("C-c t B"   . treemacs-bookmark)
+	("C-c t f" . treemacs-find-file)
+	("C-c t t" . treemacs-find-tag)))
+
+     (use-package treemacs-projectile
+       :after treemacs projectile
+       :ensure t)
+   #+END_SRC
+
+   #+BEGIN_SRC emacs-lisp
+     (custom-set-faces
+      '(treemacs-directory-face ((t :inherit default)))
+      '(treemacs-git-untracked-face ((t :inherit default))))
+
+     (defface pve-treemacs-directory-icon-face
+       '((t :inherit treemacs-directory-face :height 1.5))
+       "Face used for the folder icons, to make them bigger compared to other icons"
+       :group 'treemacs-faces)
+
+     (defface pve-treemacs-file-icon-face
+       '((t :inherit treemacs-file-face :height 1.5))
+       "Face used for the file icons, to make them bigger compared to other icons"
+       :group 'treemacs-faces)
+   #+END_SRC
+
+   When treemacs loads, set project (root), folder and normal text icons.ép
+   These were not coverd by the automatic mapping in the use-package section
+   #+BEGIN_SRC emacs-lisp
+     (with-eval-after-load "treemacs"
+       (setq treemacs-icon-open-png   (propertize (format "%s " (all-the-icons-material "folder_open"))
+						  'face 'pve-treemacs-directory-icon-face)
+	     treemacs-icon-closed-png (propertize (format "%s " (all-the-icons-material "folder"))
+						  'face 'pve-treemacs-directory-icon-face)
+	     treemacs-icon-root-png (propertize (format "%s " (all-the-icons-material "apps"))
+						'face 'treemacs-root-face)
+	     treemacs-icon-text (propertize (format "%s " (all-the-icons-octicon "file-text"))
+						  'face 'pve-treemacs-file-icon-face)))
+
+   #+END_SRC
+
+* Utils
+** Helm
+
+  #+BEGIN_SRC emacs-lisp
+    (use-package helm
+      :ensure t
+      :config
+      (setq helm-split-window-in-side-p               t ; open helm buffer inside current window, not occupy whole other window
+		helm-move-to-line-cycle-in-source     t ; move to end or beginning of source when reaching top or bottom of source.
+		helm-ff-search-library-in-sexp        t ; search for library in `require' and `declare-function' sexp.
+		helm-scroll-amount                    8 ; scroll 8 lines other window using M-<next>/M-<prior>
+		helm-ff-file-name-history-use-recentf t)
+      :bind (("M-x" . helm-M-x)
+	     ("C-x b" . helm-mini)
+	     ("C-x C-f" . helm-find-files)
+	     ("C-c h o" . helm-occur)
+	     ("M-y" . helm-show-kill-ring)
+	     :map helm-map
+	     ("<tab>" . helm-execute-persistent-action)
+	     ("C-z" . helm-select-action)))
+  #+END_SRC
+	
+** Hydra
    
+   Navigation with keys
    #+BEGIN_SRC emacs-lisp
-     (beacon-mode 1)
-   #+END_SRC
-
-   #+RESULTS:
-   : t
-
-** avy (jump to x)
-
-   avy lets you jump directrly to one or a combination of 2 characters or to a line
-   Intialize avy
-   https://github.com/abo-abo/avy
-
-   #+BEGIN_SRC emacs-lisp
-     (avy-setup-default)
-     (global-set-key (kbd "C-:") 'avy-goto-char)
-     (global-set-key (kbd "C-'") 'avy-goto-char-2)
-   #+END_SRC
-   
-   #+RESULTS:
-   : avy-goto-line
-
-** sr-speedbar
-
-   Speedbar is a tool that creates a window and shows speedbar inside
-   Initialize sr-speedbar
-
-   #+BEGIN_SRC emacs-lisp
-   (require 'sr-speedbar)
-   #+END_SRC
-
-** Navigation keymaps
-   
-   Some global keymaps
-   
-   Keybindings for scrolling without moving the cursor
-   
-   #+BEGIN_SRC emacs-lisp
-   (global-set-key (kbd "M-n") (kbd "C-u 1 C-v"))
-   (global-set-key (kbd "M-p") (kbd "C-u 1 M-v"))
-   #+END_SRC
-   
-** Goto-change
-   
-   #+BEGIN_SRC emacs-lisp
-     (require 'goto-chg)
-     (global-set-key (kbd "C-c p") 'goto-last-change)
-     (global-set-key (kbd "C-c n") 'goto-last-change-reverse)
-   #+END_SRC
-
-   #+RESULTS:
-   : goto-last-change-reverse
-
-** Go back
-
-   Ensure that going back using C-U C-SPC actually moves to a different location every time it is invoked
-   #+BEGIN_SRC emacs-lisp
-     (defun my/multi-pop-to-mark (orig-fun &rest args)
-       "Call ORIG-FUN until the cursor moves.
-        Try the repeated popping up to 10 times."
-       (let ((p (point)))
-         (dotimes (i 10)
-           (when (= p (point))
-             (apply orig-fun args)))))
-     (advice-add 'pop-to-mark-command :around
-                 #'my/multi-pop-to-mark)
-   #+END_SRC
-
-   Make repeating C-u C-SPC, C-u C-SPC like C-u C-SPC, C-SPC
-   #+BEGIN_SRC emacs-lisp
-   (setq set-mark-command-repeat-pop t)
-   #+END_SRC
-
-   #+RESULTS:
-   : t
-
-* Blogging/writing
-** olivetti mode
-   on [[https://github.com/rnkn/olivetti][github]]   
-* Text Editing
-** Standard editor settings
-   
-   #+BEGIN_SRC emacs-lisp
-  (setq-default indent-tabs-mode nil) ;; don't use tabs
-  (setq-default tab-width 2) ;; use 2 space tabs
-  (global-hl-line-mode 1) ;; highlight current line
-   #+END_SRC
-
-** autocomplete
-   
-   hippie-expand to expand a sentence or a code block
-   
-   auto complete is done by company-mode
-   [[http://company-mode.github.io/][Documentation]]
-
-   #+BEGIN_SRC emacs-lisp
-    (add-hook 'after-init-hook 'global-company-mode)
-   #+END_SRC
-
-   Company mode backends
-   #+BEGIN_SRC emacs-lisp
-     (with-eval-after-load 'company
-       (add-to-list 'company-backends 'company-shell))
-   #+END_SRC
-
-   #+RESULTS:
-   | company-shell | company-bbdb | company-nxml | company-css | company-eclim | company-semantic | company-clang | company-xcode | company-cmake | company-capf | company-files | (company-dabbrev-code company-gtags company-etags company-keywords) | company-oddmuse | company-dabbrev |
-
-** undo
-
-   An advanced undo system
-
-   #+BEGIN_SRC emacs-lisp
-   (global-undo-tree-mode t)
-   (setq undo-tree-visualizer-relative-timestamps t)
-   (setq undo-tree-visualizer-timestamps t)
-   #+END_SRC
-
-** parenthesis
-   
-   Automagically pair braces and quotes like TextMate
-   #+BEGIN_SRC emacs-lisp
-     (electric-pair-mode)
-   #+END_SRC
-
-   Show matching parentheses
-
-   #+BEGIN_SRC emacs-lisp
-   (setq show-paren-mode t)
-   #+END_SRC
-
-   I don't want numerous colors for every parenthesis.
-   I only want to see the non matching parenthesis
-
-   #+BEGIN_SRC emacs-lisp
-     (add-hook 'prog-mode-hook 'rainbow-delimiters-mode)
-     (require 'rainbow-delimiters)
-     (setq rainbow-delimiters-max-face-count 1)
-     (set-face-attribute 'rainbow-delimiters-unmatched-face nil
-                         :foreground 'unspecified
-                         :inherit 'error)
-   #+END_SRC
-
-   Move by parenthesis as per http://ergoemacs.org/emacs/emacs_navigating_keys_for_brackets.html
-
-   #+BEGIN_SRC emacs-lisp
-     (load "~/.emacs.d/custom/brackets-movement.el")
-   
-     (global-set-key (kbd "C-(") 'xah-backward-left-bracket)
-     (global-set-key (kbd "C-)") 'xah-forward-right-bracket)
-   #+END_SRC
-
-#+RESULTS:
-: xah-forward-right-bracket
-
-** Multiple cursors
-
-Mutliple cursors does what it says
-
-#+BEGIN_SRC emacs-lisp
-  (global-set-key (kbd "C->") 'mc/mark-next-like-this)
-  (global-set-key (kbd "C-M->") 'mc/unmark-next-like-this)
-  (global-set-key (kbd "C-<") 'mc/mark-previous-like-this)
-  (global-set-key (kbd "C-M-<") 'mc/unmark-previous-like-this)
-  (global-set-key (kbd "C-c C-<") 'mc/mark-all-like-this)
-#+END_SRC
-
-** Selection
-
-#+BEGIN_SRC emacs-lisp
-(global-set-key (kbd "C-=") 'er/expand-region)
-#+END_SRC
-
-** Copy paste
-   Custom el to change behavior of std copy/cut paste behavior
-   Some code based on xah-lee's version on http://ergoemacs.org/emacs/emacs_copy_cut_current_line.html
-
-   #+BEGIN_SRC emacs-lisp
-   (load "~/.emacs.d/custom/copy-paste-behavior.el")
-   
-   (global-set-key (kbd "C-w") 'custom-cut-line-or-region) ; cut
-   (global-set-key (kbd "M-w") 'custom-copy-line-or-region) ; copy
-   #+END_SRC
-
-
-   #+RESULTS:
-   : xah-copy-line-or-region
-
-** YaSnippet
-
-   Enable yasnippet on startup for all mode
-   #+BEGIN_SRC emacs-lisp
-     (yas-global-mode 1)
-   #+END_SRC
-
-** Spelling and autocorrect
-   
-   For enabling spelling for a specific mode this is needed
-   (add-hook 'text-mode-hook 'flyspell-mode)
-
-   #+BEGIN_SRC shell
-   sudo pacman -S aspell-en
-   #+END_SRC
-
-*** Typo correctors
-    
-Enable auto correction for dubble typed CApitals
-Found on stack exchange ...
-#+BEGIN_SRC emacs-lisp
-  (load "~/.emacs.d/custom/typo-correct.el")
-  (dubcaps-mode)
-#+END_SRC
-
-#+RESULTS:
-: t
-
-Enable autocorrect with suggestions to correct instea of retyping
-Found at: http://endlessparentheses.com/ispell-and-abbrev-the-perfect-auto-correct.html
-#+BEGIN_SRC emacs-lisp
-  (global-set-key (kbd "C-c c") 'endless/ispell-word-then-abbrev)
-#+END_SRC
-
-#+RESULTS:
-: endless/ispell-word-then-abbrev
-
-** Query and Replace
-
-#+BEGIN_SRC emacs-lisp
-  (global-anzu-mode)
-  (global-set-key (kbd "M-%") 'anzu-query-replace)
-  (global-set-key (kbd "C-M-%") 'anzu-query-replace-regexp)
-#+END_SRC
-
-#+RESULTS:
-: anzu-query-replace-regexp
-
-*** TODO Replace should always start at the beginning of the buffer
-    
-** Behavior
-   
-   subword-mode enables camel casing
-
-   #+BEGIN_SRC emacs-lisp
-     (global-syntax-subword-mode)
-   #+END_SRC
-
-* Search
-  
-  Find in file(s)
-  - occur
-  - helm-occur
-  - helm-multi-occur
-   
-* Code
-** Code checker
-   Changed the default flymake with flycheck on [[https://github.com/flycheck/flycheck][github]]
-   
-   enable it
-   #+BEGIN_SRC emacs-lisp
-   (add-hook 'after-init-hook #'global-flycheck-mode)
+     (use-package hydra
+       :ensure t)
    #+END_SRC
 
    #+RESULTS:
-   | global-flycheck-mode | global-company-mode | x-wm-set-size-hint |
+	 
+** Eshell
 
-** Comments
-  
-   Comments line and regions without breaking the line. And it can uncomment again.
-   Soruce: [[http://endlessparentheses.com/implementing-comment-line.html][blog]]
+   Set paths depending on the environment we are running
    #+BEGIN_SRC emacs-lisp
-     (defun endless/comment-line-or-region (n)
-       "Comment or uncomment current line and leave point after it.
-        With positive prefix, apply to N lines including current one.
-        With negative prefix, apply to -N lines above.
-        If region is active, apply to active region instead."
-       (interactive "p")
-       (if (use-region-p)
-           (comment-or-uncomment-region
-            (region-beginning) (region-end))
-         (let ((range
-                (list (line-beginning-position)
-                      (goto-char (line-end-position n)))))
-           (comment-or-uncomment-region
-            (apply #'min range)
-            (apply #'max range)))
-         (forward-line 1)
-         (back-to-indentation)))
+     (defun pve-set-eshell-path-env ()
+       "Settig the eshell-path-env"
+       (if (pve-env/on-cygwin)
+	   (progn
+	     (setq cygwin-paths "/cygdrive/c/Program Files/nodejs/:")
+	     (setq eshell-path-env (concat cygwin-paths eshell-path-env))
+	     (setenv "PATH" (concat cygwin-paths (getenv "PATH"))))))
    #+END_SRC
 
    #+RESULTS:
-   : endless/comment-line-or-region
+   : pve-set-eshell-path-env
 
-   Set keyboard binding
+   Add hook to eshell to set paths when eshell starts
    #+BEGIN_SRC emacs-lisp
-   (global-set-key (kbd "C-;") #'endless/comment-line-or-region)
+     (add-hook 'eshell-mode-hook 'pve-set-eshell-path-env)
    #+END_SRC
 
-   #+RESULTS:
-   : endless/comment-line-or-region
-
-** elisp
-   
-   autocompletion with litable
-   [[https://github.com/Fuco1/litable][github page]]
-
-** Completion LSP
-   
+   Enable eshell history to be accessses by helm instead of the static history
    #+BEGIN_SRC emacs-lisp
-   (require 'lsp-java)
-   (add-hook 'java-mode-hook #'lsp-java-enable)
-   #+END_SRC
-
-   #+RESULTS:
-
-* Projects
-  
-  Projectile is the project mgmt tool
-
-**  helm-projectile
-
-    [[http://tuhdo.github.io/helm-projectile.html][helm projectile]]
-
-    key bindingd
-    #+BEGIN_SRC emacs-lisp
-     (global-set-key (kbd "C-c r h") 'helm-projectile)
+     (add-hook 'eshell-mode-hook
+	       '(lambda ()
+		  (define-key eshell-mode-map (kbd "C-c C-l")  'helm-eshell-history)))
     #+END_SRC
-
-    #+RESULTS:
-    : helm-projectile
-
-* Eshell
-
-  enable helm autocompletion
-
-  #+BEGIN_SRC emacs-lisp
-    (add-hook 'eshell-mode-hook
-              '(lambda ()
-                 (define-key eshell-mode-map (kbd "C-c C-l")  'helm-eshell-history)))
-  #+END_SRC
-
-  #+RESULTS:
-  | lambda | nil | (define-key eshell-mode-map (kbd C-c C-l) (quote helm-eshell-history)) |
-  |        |     |                                                                        |
-* Magit
-  
-  git tool for emacs [[https://github.com/magit/magit][on github]]
-  
-  #+BEGIN_SRC emacs-lisp
-    (global-set-key (kbd "C-x t") 'magit-status)
-  #+END_SRC
-
-  #+RESULTS:
-  : magit-status
-  
-  Saving typed messages
-
-  #+BEGIN_SRC emacs-lisp
-    (load-file "~/.emacs.d/custom/message-history.el")
-
-    (defun message-add ()
-      "Actually add the message"
-      (message-history/add message-history/message-history-file))
-
-    (defun message-commit-setup ()
-      "Setting up the buffer so that it will save the messages"
-      (add-hook 'before-save-hook 'message-add nil t)
-      )
-
-    (add-hook 'git-commit-mode-hook 'message-commit-setup)
-  #+END_SRC
-
-  #+RESULTS:
-  | message-commit-setup |
-
-* Spreadsheet
-  *.ses file
-  [[https://www.gnu.org/software/emacs/manual/html_mono/ses.html#Quick-Tutorial][SES documentation]]
-* TODO Evernote
-* Directories
-  
-  Dired is the standard in emacs
-  ztree is a tree browser
-  
-* Files
-** Edit current buffer as root
-    
-    find-file-at-point to find a file at point
- 
-    #+BEGIN_SRC emacs-lisp
-      (defun sudo-edit (&optional arg)
-        "Edit currently visited file as root. With a prefix ARG prompt for a file to visit. Will also prompt for a file to visit if current buffer is not visiting a file."
-        (interactive "P")
-        (if (or arg (not buffer-file-name))
-            (find-file (concat "/sudo:root@localhost:" (ido-read-file-name "Find file(as root): ")))
-          (find-alternate-file (concat "/sudo:root@localhost:" buffer-file-name))
-          )
-        )
-    #+END_SRC
-
-    #+RESULTS:
-    : sudo-edit
-
-* Emacs general   
-** Files
-   When open files remain on exiting, pressing 'd' will show the diff
-** Characters and unicode
-
+	   
+** Artist mode
+	      
+   Artist mode doesn't work within org mode. This narrows the buffer to a place you want to work.
+   And then turns on artist mode. It is turned of and widens the buffer again
    #+BEGIN_SRC emacs-lisp
-     (require 'xah-math-input)
-     (define-key xah-math-input-keymap (kbd "C-<tab>") 'xah-math-input-change-to-symbol)
-   #+END_SRC
-
-   #+RESULTS:
-   : xah-math-input-change-to-symbol
-
-** Links
-
-   [[http://emacs.sexy/][EmacsIsSexy]]
-   
-** Help
-*** which-key
-
-    [[https://github.com/justbur/emacs-which-key#introduction][on github]]
-
-    Automatically show the possible key completions in emacs
-    
-    #+BEGIN_SRC emacs-lisp
-    (which-key-mode)
-    #+END_SRC
-
-    #+RESULTS:
-    : t
-
-* PDF
-
-  On [[https://github.com/politza/pdf-tools][github]]. Additional installation steps and dependencies are needed (pdf-tools-install)
-  
-  #+BEGIN_SRC emacs-lisp
-  (pdf-tools-install)
-  #+END_SRC
-
-* SVN
-
-  Initiate svn mode
-  #+BEGIN_SRC emacs-lisp
-  (require 'dsvn)
-  #+END_SRC
-
-* Docker
-
-  For manageing dockers there are 3 packages:
-  - docker-mode for editing files
-  - docker for managing docker (can use tramp, needed for root access, but can also be used on other hosts)
-  - docker-tramp to have tramp like access to dockers /docker:<docker-name>:/home/
-
-* Ediff
-
-** Enable using both code blocks
-
-   #+BEGIN_SRC emacs-lisp
-     (defun ediff-copy-both-to-C ()
+     (defun pve-artist-org-mode-on ()
        (interactive)
-       (ediff-copy-diff ediff-current-difference nil 'C nil
-                        (concat
-                         (ediff-get-region-contents ediff-current-difference 'A ediff-control-buffer)
-                         (ediff-get-region-contents ediff-current-difference 'B ediff-control-buffer))))
+       (org-narrow-to-element)
+       (artist-mode))
 
-     (defun ediff-copy-both-to-C-b-first ()
+     (defun pve-artist-org-mode-off ()
        (interactive)
-       (ediff-copy-diff ediff-current-difference nil 'C nil
-                        (concat
-                         (ediff-get-region-contents ediff-current-difference 'B ediff-control-buffer)
-                         (ediff-get-region-contents ediff-current-difference 'A ediff-control-buffer))))
+       (artist-mode)
+       (widen))
+   #+END_SRC
+   
+** PDF
+   
+   Enable viewing and working with PDFs inside emacs
+   #+BEGIN_SRC emacs-lisp
+     (use-package pdf-tools
+       :ensure t
+       :config
+       (pdf-tools-install)
+       (setq-default pdf-view-display-size 'fit-page))
+   #+END_SRC
+* Org Mode
 
-     (defun add-d-to-ediff-mode-map ()
-       (define-key ediff-mode-map "d" 'ediff-copy-both-to-C)
-       (define-key ediff-mode-map "D" 'ediff-copy-both-to-C-b-first))
-     (add-hook 'ediff-keymap-setup-hook 'add-d-to-ediff-mode-map)
+  Hydra for setting up navigation between headers
+  and for setting up bookmarkds
+  #+BEGIN_SRC emacs-lisp
+    (defun pve-org-nav-hydra ()
+      (require 'hydra)
+      (defhydra hydra-org-navigation (org-mode-map "<f2>")
+	"Org navigation"
+	("n" outline-next-visible-heading)
+	("p" outline-previous-visible-heading)
+	("f" org-forward-heading-same-level)
+	("b" org-backward-heading-same-level)
+	("a" helm-org-in-buffer-headings)
+	("u" outline-up-heading))
+      (local-set-key (kbd "<f7>") 'org-mark-ring-push)
+      (local-set-key (kbd "C-<f7>") 'org-mark-ring-goto))
+  #+END_SRC
+
+  
+  #+BEGIN_SRC emacs-lisp
+    (defun pve-enable-org-bullets ()
+      (org-bullets-mode 1))
+  #+END_SRC
+
+  Actually configure org mode
+  #+BEGIN_SRC emacs-lisp
+    (use-package org-mode
+      :init
+      (setq org-confirm-babel-evaluate nil) ;;No need to confirm executing babel code blocks
+      (require 'ob-async)
+      :hook
+      ((org-mode . pve-org-nav-hydra)
+       (org-mode . pve-enable-org-bullets))
+      :after (hydra org-bullets ob-async))
+  #+END_SRC
+
+  Show bullets as images not just '*'s
+  #+BEGIN_SRC emacs-lisp
+    (use-package org-bullets
+      :ensure t)
+  #+END_SRC
+
+  This package enables asynchronous org babel evaluation
+  #+BEGIN_SRC emacs-lisp
+    (use-package ob-async
+      :ensure t)
+  #+END_SRC
+* Application Integration
+** Twitter
+   
+   #+BEGIN_SRC emacs-lisp
+     (use-package twittering-mode
+       :ensure t)
    #+END_SRC
 
    #+RESULTS:
-   | add-d-to-ediff-mode-map |
+** Pocket
+
+   Simple client to show list of pocket items
+   #+BEGIN_SRC emacs-lisp
+     (use-package pocket-mode
+       :ensure t
+       :after (pocket-api))
+   #+END_SRC
+
+   Backend API to login into pocket and retrieive the (getpocket.com)
+  #+BEGIN_SRC emacs-lisp
+    (use-package pocket-api
+      :ensure t)
+  #+END_SRC
+
+* Libraries
+  
+  #+BEGIN_SRC emacs-lisp
+    (use-package message-history)
+  #+END_SRC
+
+  Language Server Protocol (LSP) integration into emacs.
+  This enables connections to LSP servers from emacs.
+  #+BEGIN_SRC emacs-lisp
+    (use-package lsp-mode
+      :ensure t)
+  #+END_SRC
+
+  LSP-UI higher level UI modules for LSP integration into emacs.
+  #+BEGIN_SRC emacs-lisp
+    (use-package lsp-ui
+      :ensure t
+      :config
+      (setq lsp-ui-sideline-ignore-duplicate t)
+      ;; aut enable lsp-ui on lsp-mode
+      :hook (lsp-mode . lsp-ui-mode))
+  #+END_SRC  
+
+  Icon library with many unicode characters, icons, ...
+  #+BEGIN_SRC emacs-lisp
+    (use-package all-the-icons
+      :ensure t)
+  #+END_SRC
+  If the icons are not installed run 'all-the-icons-install-fonts'.
+  
 
