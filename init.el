@@ -17,7 +17,7 @@
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    (quote
-    (lsp-ui lsp-java company-lsp ob-async arch-packer hl-anything helm-ag-r helm-ag yasnippet xah-math-input which-key web-mode use-package undo-tree twittering-mode systemd syntax-subword sunrise-x-modeline sunrise-x-buttons sr-speedbar smex smartparens salt-mode rainbow-delimiters pymacs prodigy powerline popwin peep-dired pdf-tools pallet org-bullets nyan-mode multiple-cursors magit lua-mode jedi idle-highlight-mode hydra htmlize helm-spotify helm-projectile goto-chg git-gutter flycheck-pyflakes flycheck-cask expand-region exec-path-from-shell dsvn drag-stuff dockerfile-mode docker company-shell beacon avy anzu))))
+    (clipmon bm goto-last-change eaf eaf-mode ace-jump-mode highlight-parentheses all-the-icons visual-regexp pocket-mode pocket-api lsp-mode lsp-ui lsp-java company-lsp ob-async arch-packer hl-anything helm-ag-r helm-ag yasnippet xah-math-input which-key web-mode use-package undo-tree twittering-mode systemd syntax-subword sunrise-x-modeline sunrise-x-buttons sr-speedbar smex smartparens salt-mode rainbow-delimiters pymacs prodigy powerline popwin peep-dired pdf-tools pallet org-bullets nyan-mode multiple-cursors magit lua-mode jedi idle-highlight-mode hydra htmlize helm-spotify helm-projectile goto-chg git-gutter flycheck-pyflakes flycheck-cask expand-region exec-path-from-shell dsvn drag-stuff dockerfile-mode docker company-shell beacon avy anzu))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -25,5 +25,7 @@
  ;; If there is more than one, they won't work right.
  '(default ((t (:family "DejaVu Sans Mono for Powerline" :foundry "unknown" :slant normal :weight normal :height 140 :width normal))))
  '(minimap-font-face ((t (:height 40 :family "DejaVu Sans Mono"))))
- '(mode-line ((t (:family "DejaVu Sans Mono for Powerline" :foundry "unknown" :slant normal :weight normal :height 140 :width normal)))))
+ '(mode-line ((t (:family "DejaVu Sans Mono for Powerline" :foundry "unknown" :slant normal :weight normal :height 140 :width normal))))
+ '(treemacs-directory-face ((t :inherit default)))
+ '(treemacs-git-untracked-face ((t :inherit default))))
 (put 'narrow-to-region 'disabled nil)
