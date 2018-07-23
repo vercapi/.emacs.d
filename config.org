@@ -539,6 +539,30 @@ An elegant editor... for a more civilized age.
      (setq-default indent-tabs-mode nil) ;; don't use tabs
      (setq-default tab-width 2) ;; use 2 space tabs
    #+END_SRC
+** Folding
+
+   Set Folding characters for every programming mode
+   #+BEGIN_SRC emacs-lisp
+     (defvar hs-special-modes-alist
+       (mapcar 'purecopy
+               '((c-mode "{" "}" "/[*/]" nil nil)
+                 (c++-mode "{" "}" "/[*/]" nil nil)
+                 (bibtex-mode ("@\\S(*\\(\\s(\\)" 1))
+                 (java-mode "{" "}" "/[*/]" nil nil)
+                 (js-mode "{" "}" "/[*/]" nil))))
+   #+END_SRC
+
+   Enable Folding in programming modes
+   #+BEGIN_SRC emacs-lisp
+     (add-hook 'prog-mode-hook 'hs-minor-mode)
+   #+END_SRC
+
+   Visual aids for code folding in programming modes
+   #+BEGIN_SRC emacs-lisp
+     (use-package hideshowvis
+       :ensure t
+       :hook (prog-mode . hideshowvis-minor-mode))
+   #+END_SRC
    
 * Source control
 
