@@ -664,7 +664,6 @@ An elegant editor... for a more civilized age.
      (use-package lua-mode
        :ensure t)
    #+END_SRC
-
    
    #+BEGIN_SRC emacs-lisp
      (defun lua-mode-config ()
@@ -675,6 +674,25 @@ An elegant editor... for a more civilized age.
      ;; Ensure function is ecxecuted when lua mode loads
      (add-hook 'lua-mode-hook 'lua-mode-config)
    #+END_SRC
+
+** Java
+   
+   Download [[http://download.eclipse.org/jdtls/snapshots/jdt-language-server-latest.tar.gz][latest]] Eclipse JDT language server to ~/.emacs.d/eclipse.jdt.ls/server/
+
+   #+BEGIN_SRC emacs-lisp
+     (use-package lsp-java
+       :ensure t
+       :config
+       (add-hook 'java-mode-hook  'lsp-java-enable)
+       (add-hook 'java-mode-hook  'flycheck-mode)
+       (add-hook 'java-mode-hook  'company-mode)
+       (add-hook 'java-mode-hook  (lambda () (lsp-ui-flycheck-enable t)))
+       (add-hook 'java-mode-hook  'lsp-ui-sideline-mode)
+       (setq lsp-java--workspace-folders (list "/home/vercapi/Documents/projects/authenticationTests/OAuthProvider/")))
+   #+END_SRC
+
+   #+RESULTS:
+   
 * File browsing
 ** Side bar
 
