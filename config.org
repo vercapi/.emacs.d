@@ -712,7 +712,8 @@ An elegant editor... for a more civilized age.
        (add-hook 'java-mode-hook  'company-mode)
        (add-hook 'java-mode-hook  (lambda () (lsp-ui-flycheck-enable t)))
        (add-hook 'java-mode-hook  'lsp-ui-sideline-mode)
-       (setq lsp-java--workspace-folders (list "/home/vercapi/Documents/projects/authenticationTests/OAuthProvider/")))
+       (setq lsp-java--workspace-folders (list "/home/vercapi/Documents/projects/authenticationTests/OAuthProvider/"
+                                               "/home/vercapi/Documents/projects/authenticationTests/OAuthEndpoint/")))
    #+END_SRC
 
    #+RESULTS:
