@@ -340,7 +340,8 @@ An elegant editor... for a more civilized age.
    #+END_SRC
 
 ** Cursor Navigation
-    
+
+*** Visual awareness
     Flash cursor whenever it jumps to another possition by any command
     #+BEGIN_SRC emacs-lisp
       (use-package beacon
@@ -352,6 +353,8 @@ An elegant editor... for a more civilized age.
     #+BEGIN_SRC emacs-lisp
       (global-hl-line-mode)
     #+END_SRC
+
+*** Jumping
 
     Jump to anywhere you can see.
     Also enables jumping back from where you jumped from
@@ -378,7 +381,7 @@ An elegant editor... for a more civilized age.
       (global-set-key (kbd "C-)") 'xah-forward-right-bracket)
     #+END_SRC
 
-    Bookmarks
+*** Bookmarks
     #+BEGIN_SRC emacs-lisp
       (use-package bm
 	   :ensure t
