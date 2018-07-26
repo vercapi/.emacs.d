@@ -1007,19 +1007,26 @@ An elegant editor... for a more civilized age.
 
   Language Server Protocol (LSP) integration into emacs.
   This enables connections to LSP servers from emacs.
+  It also creates a new prefix "C-l" to house all LSP key bindings
   #+BEGIN_SRC emacs-lisp
     (use-package lsp-mode
-      :ensure t)
+      :ensure t
+      :init (progn
+              (define-prefix-command 'ctl-l-map)
+              (global-set-key (kbd "C-l") 'ctl-l-map))
+      :bind (("C-l r" . lsp-rename)))
   #+END_SRC
 
   LSP-UI higher level UI modules for LSP integration into emacs.
   #+BEGIN_SRC emacs-lisp
     (use-package lsp-ui
       :ensure t
+      :after (lsp-mode)
       :config
       (setq lsp-ui-sideline-ignore-duplicate t)
       ;; aut enable lsp-ui on lsp-mode
-      :hook (lsp-mode . lsp-ui-mode))
+      :hook (lsp-mode . lsp-ui-mode)
+      :bind ("C-l j" . lsp-ui-peek-find-definitions))
   #+END_SRC  
 
   Icon library with many unicode characters, icons, ...
