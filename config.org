@@ -1037,7 +1037,9 @@ An elegant editor... for a more civilized age.
       (setq lsp-ui-sideline-ignore-duplicate t)
       ;; aut enable lsp-ui on lsp-mode
       :hook (lsp-mode . lsp-ui-mode)
-      :bind ("C-l j" . lsp-ui-peek-find-definitions))
+      :bind (("C-l f" . lsp-ui-peek-find-references)
+             ("C-l j" . lsp-ui-peek-find-definitions)
+             ("C-l i" . helm-imenu)))
   #+END_SRC  
 
   Icon library with many unicode characters, icons, ...
@@ -1048,3 +1050,4 @@ An elegant editor... for a more civilized age.
   If the icons are not installed run 'all-the-icons-install-fonts'.
   
 
+  
