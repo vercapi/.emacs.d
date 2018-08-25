@@ -466,8 +466,8 @@ An elegant editor... for a more civilized age.
        :hook (after-init . global-company-mode)
        :bind ("C-<tab>" . company-complete)
        :init (setq company-minimum-prefix-length 2
-		   company-dabbrev-downcase 0
-		   company-idle-delay 0))
+       company-dabbrev-downcase nil
+       company-idle-delay 0))
    #+END_SRC
 
    LSP backen for company mode
