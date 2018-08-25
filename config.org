@@ -737,7 +737,7 @@ An elegant editor... for a more civilized age.
      #+BEGIN_SRC emacs-lisp
        (defun awesome-awmtt (arguments)
          "run awmt command with arguments, assuming script is available in project directory"
-         (shell-command (format "%sawmtt %s" (projectile-project-root) arguments)))
+         (async-shell-command (format "%sawmtt %s" (projectile-project-root) arguments)))
 
        (defun awesome-run ()
          "run the rc.lua in project directory"
