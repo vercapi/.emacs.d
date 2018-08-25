@@ -733,13 +733,26 @@ An elegant editor... for a more civilized age.
 
 **** Awesome integration
      
+     Functions to control the awesome wm testing util awmtt (xephyr).
      #+BEGIN_SRC emacs-lisp
-       (defun awesome-awmtt (config-params)
-         (shell-command (format "%sawmtt %s" (projectile-project-root) config-params)))
+       (defun awesome-awmtt (arguments)
+         "run awmt command with arguments, assuming script is available in project directory"
+         (shell-command (format "%sawmtt %s" (projectile-project-root) arguments)))
 
        (defun awesome-run ()
+         "run the rc.lua in project directory"
          (interactive)
          (awesome-awmtt (format "start -C %src.lua" (projectile-project-root))))
+
+       (defun awesome-stop ()
+         "Stop all awmtt xephyr instances"
+         (interactive)
+         (awesome-awmtt "stop all"))
+
+       (defun awesome-restart ()
+         "restart all awmtt xephyr instances"
+         (interactive)
+         (awesome-awmtt "restart"))
      #+END_SRC
 
 ** Java
