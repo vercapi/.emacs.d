@@ -976,6 +976,11 @@ An elegant editor... for a more civilized age.
       (local-set-key (kbd "C-<f7>") 'org-mark-ring-goto))
   #+END_SRC
 
+  #+BEGIN_SRC emacs-lisp
+    (org-babel-do-load-languages
+     'org-babel-load-languages
+     '((shell . t)))
+  #+END_SRC
   
   #+BEGIN_SRC emacs-lisp
     (defun pve-enable-org-bullets ()
