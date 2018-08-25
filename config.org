@@ -710,6 +710,38 @@ An elegant editor... for a more civilized age.
      (add-hook 'lua-mode-hook 'lua-mode-config)
    #+END_SRC
 
+*** Awesome WM
+
+    Awesome WM uses LUA to create a window manager.
+
+**** Dependencies
+
+     Install testing tools that emacs can use to run tests
+ 
+    Install xephyr 
+    #+BEGIN_SRC shell
+    pacman -S xorg-server-xephyr
+    #+END_SRC
+    xephyr can show a x server inside of a window.
+
+    Get the testing tool [[https://github.com/serialoverflow/awmtt][awmtt]]
+    #+BEGIN_SRC sh
+    wget -O ./awmtt  https://raw.githubusercontent.com/mikar/awmtt/master/awmtt.sh
+    chmod u+x ./awmtt
+    #+END_SRC
+
+
+**** Awesome integration
+     
+     #+BEGIN_SRC emacs-lisp
+       (defun awesome-awmtt (config-params)
+         (shell-command (format "%sawmtt %s" (projectile-project-root) config-params)))
+
+       (defun awesome-run ()
+         (interactive)
+         (awesome-awmtt (format "start -C %src.lua" (projectile-project-root))))
+     #+END_SRC
+
 ** Java
    
    Download [[http://download.eclipse.org/jdtls/snapshots/jdt-language-server-latest.tar.gz][latest]] Eclipse JDT language server to ~/.emacs.d/eclipse.jdt.ls/server/
