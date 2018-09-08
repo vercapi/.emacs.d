@@ -206,6 +206,25 @@ An elegant editor... for a more civilized age.
      (add-hook 'prog-mode-hook #'display-line-numbers-mode)
    #+END_SRC
 
+   This function wil setup the emacs with a standard layout of windows and buffers
+   - treemacs file browser on the left
+   - eshell in a window at the botom
+   
+   All this is setup in the eyebrowse window config 0
+   #+BEGIN_SRC emacs-lisp
+     (defun pve-startup ()
+       (interactive)
+        (progn (eyebrowse-init)
+               (eyebrowse-switch-to-window-config-0)
+               (split-window-vertically)
+               (with-selected-window (nth 1 (window-list))
+                 (progn
+                   (window-resize (selected-window) (- 15 (window-total-height)) nil t nil)
+                   (set-window-parameter (selected-window) 'no-other-window t)
+                   (eshell)))
+               (treemacs)))
+   #+END_SRC
+
 * Emacs Behavior
 ** General behavior 
 
