@@ -690,12 +690,14 @@ An elegant editor... for a more civilized age.
        :config
        ;; Create lsp-python-enable to start lsp mode for python
        (lsp-define-stdio-client lsp-python "python"
-				 #'projectile-project-root
-				 '("pyls"))
+         #'projectile-project-root
+         '("pyls"))
        ;; Disable eldoc, we see the info with lsp-ui
-       (setq lsp-enable-eldoc nil)
+       (setq lsp-enable-eldoc nil
+             python-shell-completion-native-enable nil)
        :hook (python-mode . lsp-python-enable))
    #+END_SRC
+   Disabled the standard completion method for python shell. It opens a new window gets in the way and doesn't do completion very well.
      
 ** Docker
 
