@@ -229,7 +229,6 @@ An elegant editor... for a more civilized age.
    All this is setup in the eyebrowse window config 0
    #+BEGIN_SRC emacs-lisp
      (defun pve-startup ()
-       (interactive)
         (progn (eyebrowse-init)
                (eyebrowse-switch-to-window-config-0)
                (split-window-vertically)
@@ -240,6 +239,16 @@ An elegant editor... for a more civilized age.
                    (eshell)))
                (treemacs)))
    #+END_SRC
+
+      Ensure windows are dedicated to defined subset of buffers.
+   #+BEGIN_SRC emacs-lisp
+     (use-package window-purpose
+       :ensure t
+       :config (progn
+                 (purpose-mode)
+                 (add-to-list 'purpose-user-mode-purposes '(eshell-mode . eshell))))
+   #+END_SRC
+
 
 * Emacs Behavior
 ** General behavior 
@@ -933,6 +942,14 @@ An elegant editor... for a more civilized age.
 	     :map helm-map
 	     ("<tab>" . helm-execute-persistent-action)
 	     ("C-z" . helm-select-action)))
+  #+END_SRC
+
+  Add helm interface for (window) purpose
+  #+BEGIN_SRC emacs-lisp
+    (use-package helm-purpose
+      :ensure t
+      :after (window-purpose)
+      :config (helm-purpose-setup))
   #+END_SRC
 	
 ** Hydra
