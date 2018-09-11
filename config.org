@@ -2,6 +2,32 @@
 
 An elegant editor... for a more civilized age.
 
+* Environment
+  
+  Check where we are running
+  #+BEGIN_SRC emacs-lisp
+    (defun pve-env/on-cygwin ()
+      "Return true if we are on cygwin"
+      (string-equal system-type "cygwin"))
+
+    (defun pve-env/on-windows ()
+      "Return true if we are on the windows machine"
+      (string-equal system-type "windows-nt"))
+  #+END_SRC
+
+* Core emacs setup
+  
+  Various things go slower on windows (org mode, helm, ...). They all seem to pause from time to time.
+  The settings bellow stp the GC pauses from being anoying.
+  #+BEGIN_SRC emacs-lisp
+    (if (pve-env/on-windows)
+        (progn
+          (setq gc-cons-threshold (* 511 1024 1024)
+                gc-cons-percentage 0.5
+                garbage-collection-messages t)
+          (run-with-idle-timer 5 t #'garbage-collect)))
+  #+END_SRC
+
 * Packages setup
   
   Loading all the resources so the rest of the config has access to all these resoruces.
@@ -67,16 +93,6 @@ An elegant editor... for a more civilized age.
 
    #+RESULTS:
    | ~/.emacs.d/custom/ | /home/vercapi/.emacs.d/elpa/powerline-20180321.1948 | /home/vercapi/.emacs.d/elpa/use-package-20180613.2219 | /home/vercapi/.emacs.d/elpa/bind-key-20180512.2130 | /usr/share/emacs/26.1/site-lisp | /usr/share/emacs/site-lisp | /usr/share/emacs/26.1/lisp | /usr/share/emacs/26.1/lisp/vc | /usr/share/emacs/26.1/lisp/url | /usr/share/emacs/26.1/lisp/textmodes | /usr/share/emacs/26.1/lisp/progmodes | /usr/share/emacs/26.1/lisp/play | /usr/share/emacs/26.1/lisp/org | /usr/share/emacs/26.1/lisp/nxml | /usr/share/emacs/26.1/lisp/net | /usr/share/emacs/26.1/lisp/mh-e | /usr/share/emacs/26.1/lisp/mail | /usr/share/emacs/26.1/lisp/leim | /usr/share/emacs/26.1/lisp/language | /usr/share/emacs/26.1/lisp/international | /usr/share/emacs/26.1/lisp/image | /usr/share/emacs/26.1/lisp/gnus | /usr/share/emacs/26.1/lisp/eshell | /usr/share/emacs/26.1/lisp/erc | /usr/share/emacs/26.1/lisp/emulation | /usr/share/emacs/26.1/lisp/emacs-lisp | /usr/share/emacs/26.1/lisp/cedet | /usr/share/emacs/26.1/lisp/calendar | /usr/share/emacs/26.1/lisp/calc | /usr/share/emacs/26.1/lisp/obsolete |
-
-* Environment
-  
-  Check where we are running
-  #+BEGIN_SRC emacs-lisp
-    (defun pve-env/on-cygwin ()
-      "Return true if we are on cygwin"
-      (string-equal system-type "cygwin"))
-
-  #+END_SRC
 
 * Visual Configuration
 ** Emacs frame appearance
@@ -1119,6 +1135,3 @@ An elegant editor... for a more civilized age.
       :ensure t)
   #+END_SRC
   If the icons are not installed run 'all-the-icons-install-fonts'.
-  
-
-  
