@@ -245,10 +245,10 @@ An elegant editor... for a more civilized age.
      (use-package window-purpose
        :ensure t
        :config (progn
-                 (purpose-mode)
-                 (add-to-list 'purpose-user-mode-purposes '(eshell-mode . eshell))))
+                 (add-to-list 'purpose-user-mode-purposes '(eshell-mode . eshell))
+                 (setq purpose-preferred-prompt 'helm)
+                 (purpose-mode)))
    #+END_SRC
-
 
 * Emacs Behavior
 ** General behavior 
