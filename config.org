@@ -22,11 +22,14 @@ An elegant editor... for a more civilized age.
   #+BEGIN_SRC emacs-lisp
     (if (pve-env/on-windows)
         (progn
-          (setq gc-cons-threshold (* 511 1024 1024)
+          (setq gc-cons-threshold (* 511 2048 2048)
                 gc-cons-percentage 0.5
                 garbage-collection-messages t)
           (run-with-idle-timer 5 t #'garbage-collect)))
   #+END_SRC
+
+  #+RESULTS:
+  : [nil 0 5 0 t garbage-collect nil idle 0]
 
 * Packages setup
   
