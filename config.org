@@ -112,7 +112,7 @@ An elegant editor... for a more civilized age.
 
 ** mode line
 
-*** Standard configuration of the mode line
+*** What to show on the modeline
     
     Set the file size on the mode line  
     #+BEGIN_SRC emacs-lisp
@@ -129,6 +129,18 @@ An elegant editor... for a more civilized age.
 
     #+RESULTS:
     : t
+
+    Don't show everything in the mode line. Only what we deem important.
+    Or change the way it is shown. 
+    Actual configuration is done by use-packages it's :diminish keyword.
+    #+BEGIN_SRC emacs-lisp
+      (use-package diminish
+        :ensure t
+        :config (progn
+                  (diminish 'eldoc-mode)))
+    #+END_SRC
+
+    #+RESULTS:
 
 *** Powerline
 
@@ -276,9 +288,10 @@ An elegant editor... for a more civilized age.
    #+BEGIN_SRC emacs-lisp
      (use-package which-key
        :ensure t
+       :diminish which-key-mode
        :config (progn
-		 (which-key-mode)
-		 (which-key-setup-minibuffer)))
+     (which-key-mode)
+     (which-key-setup-minibuffer)))
    #+END_SRC
 
 ** Working with files  
@@ -501,6 +514,7 @@ An elegant editor... for a more civilized age.
    #+BEGIN_SRC emacs-lisp
      (use-package company
        :ensure t
+       :diminish company-mode
        :hook (after-init . global-company-mode)
        :bind ("C-<tab>" . company-complete)
        :init (setq company-minimum-prefix-length 2
@@ -528,6 +542,7 @@ An elegant editor... for a more civilized age.
    #+BEGIN_SRC emacs-lisp
      (use-package flycheck
        :ensure t
+       :diminish flycheck-mode
        :init (global-flycheck-mode))
    #+END_SRC
 
@@ -604,6 +619,11 @@ An elegant editor... for a more civilized age.
    Enable Folding in programming modes
    #+BEGIN_SRC emacs-lisp
      (add-hook 'prog-mode-hook 'hs-minor-mode)
+   #+END_SRC
+
+   Don't show hideshow mode in the mode line
+   #+BEGIN_SRC emacs-lisp
+     (diminish 'hs-minor-mode)
    #+END_SRC
 
    Visual aids for code folding in programming modes
