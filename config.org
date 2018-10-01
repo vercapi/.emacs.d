@@ -15,6 +15,13 @@ An elegant editor... for a more civilized age.
       (string-equal system-type "windows-nt"))
   #+END_SRC
 
+  Setup environment variables
+  #+BEGIN_SRC emacs-lisp
+    (setenv "LD_LIBRARY_PATH"
+            (concat "/opt/oracle/instantclient_18_3"
+                    (getenv "LD_LIBRARY_PATH")))
+  #+END_SRC
+
 * Core emacs setup
   
   Various things go slower on windows (org mode, helm, ...). They all seem to pause from time to time.
