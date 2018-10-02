@@ -848,6 +848,17 @@ An elegant editor... for a more civilized age.
 
    #+RESULTS:
    
+** Clojure
+
+   After opening a file run 'cider-jack-in' to star the nREPL. Prefix with C-u to specify a project without opening a file.
+
+   Install CIDER Clojure Integrated Development Environment and REPL
+   #+BEGIN_SRC emacs-lisp
+     (use-package cider
+       :ensure t
+       :hook (cider-mode . cider-turn-on-eldoc-mode))
+   #+END_SRC
+   
 * File browsing
 ** Side bar
 
