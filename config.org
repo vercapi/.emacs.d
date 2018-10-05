@@ -935,7 +935,14 @@ An elegant editor... for a more civilized age.
 						  'face 'pve-treemacs-file-icon-face)))
 
    #+END_SRC
+** Sunrise Commander
 
+   Disabled doesn't work on windows, only windows?
+   #+BEGIN_SRC
+     (use-package sunrise-commander
+       :quelpa (sunrise-commander :fetcher github :repo "escherdragon/sunrise-commander"))
+   #+END_SRC
+   
 * Utils
 ** Helm
 
