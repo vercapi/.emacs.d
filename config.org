@@ -1055,23 +1055,35 @@ An elegant editor... for a more civilized age.
        (pdf-tools-install)
        (setq-default pdf-view-display-size 'fit-page))
    #+END_SRC
-* Org Mode
+* Org  Mode
+
+  A simple toggle function for org headers to be used in the hydra
+  #+BEGIN_SRC emacs-lisp
+    (defun pve-org/toggle-subtree ()
+      "Toggle subtree in org mode"
+      (interactive)
+      (if (org-at-heading-p)
+          (if (org-subtree-end-visible-p)
+              (outline-show-subtree)
+            (outline-hide-subtree))))
+  #+END_SRC
 
   Hydra for setting up navigation between headers
   and for setting up bookmarkds
   #+BEGIN_SRC emacs-lisp
-    (defun pve-org-nav-hydra ()
-      (require 'hydra)
-      (defhydra hydra-org-navigation (org-mode-map "<f2>")
-	"Org navigation"
-	("n" outline-next-visible-heading)
-	("p" outline-previous-visible-heading)
-	("f" org-forward-heading-same-level)
-	("b" org-backward-heading-same-level)
-	("a" helm-org-in-buffer-headings)
-	("u" outline-up-heading))
-      (local-set-key (kbd "<f7>") 'org-mark-ring-push)
-      (local-set-key (kbd "C-<f7>") 'org-mark-ring-goto))
+      (defun pve-org-nav-hydra ()
+        (require 'hydra)
+        (defhydra hydra-org-navigation (org-mode-map "<f2>")
+    "Org navigation"
+    ("n" outline-next-visible-heading)
+    ("p" outline-previous-visible-heading)
+    ("f" org-forward-heading-same-level)
+    ("b" org-backward-heading-same-level)
+    ("a" helm-org-in-buffer-headings)
+    ("u" outline-up-heading)
+    ("t" pve-org/toggle-subtree))
+        (local-set-key (kbd "<f7>") 'org-mark-ring-push)
+        (local-set-key (kbd "C-<f7>") 'org-mark-ring-goto))
   #+END_SRC
 
   #+BEGIN_SRC emacs-lisp
