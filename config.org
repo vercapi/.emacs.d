@@ -13,6 +13,10 @@ An elegant editor... for a more civilized age.
     (defun pve-env/on-windows ()
       "Return true if we are on the windows machine"
       (string-equal system-type "windows-nt"))
+
+    (defun pve-env/on-linux ()
+      "Return true if we are on a linux system"
+      (string-equal system-type "gnu/linux"))
   #+END_SRC
 
   Setup environment variables
@@ -952,9 +956,9 @@ An elegant editor... for a more civilized age.
 ** Sunrise Commander
 
    Disabled doesn't work on windows, only windows?
-   #+BEGIN_SRC
-     (use-package sunrise-commander
-       :quelpa (sunrise-commander :fetcher github :repo "escherdragon/sunrise-commander"))
+   #+BEGIN_SRC emacs-lisp
+     (if (pve-env/on-linux) (use-package sunrise-commander
+       :quelpa (sunrise-commander :fetcher github :repo "escherdragon/sunrise-commander")))
    #+END_SRC
    
 * Utils
