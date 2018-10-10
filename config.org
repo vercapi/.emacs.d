@@ -501,6 +501,12 @@ An elegant editor... for a more civilized age.
 	      ("C-x M-i" . helm-multi-swoop-all)))
    #+END_SRC
 
+   Occur inside buffer. Only show results inline in buffer. Hide the rest
+   #+BEGIN_SRC emacs-lisp
+     (use-package loccur
+       :ensure t)
+   #+END_SRC
+
    Visual-regexp gives visual feedback on the regexp
    Key combination replace the regular query-regepx-replace
    #+BEGIN_SRC emacs-lisp
