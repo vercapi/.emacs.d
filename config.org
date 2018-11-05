@@ -732,6 +732,20 @@ An elegant editor... for a more civilized age.
 		     js2-indent-on-enter-key t))
    #+END_SRC
 
+   Indium JS development framework
+   
+   Install the server
+   #+BEGIN_SRC sh
+   sudo npm install -g indium
+   #+END_SRC
+
+   Install the emacs package
+   #+BEGIN_SRC emacs-lisp
+     (use-package indium
+       :ensure t
+       :hook (js2-mode . indium-interaction-mode))
+   #+END_SRC
+
 ** python
    
    Install langauge server for python
