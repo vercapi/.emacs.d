@@ -1106,10 +1106,14 @@ An elegant editor... for a more civilized age.
         (local-set-key (kbd "C-<f7>") 'org-mark-ring-goto))
   #+END_SRC
 
+  Babel languages
   #+BEGIN_SRC emacs-lisp
+    (require 'ob-js)
+
     (org-babel-do-load-languages
      'org-babel-load-languages
-     '((shell . t)))
+     '((shell . t) (js . t)))
+    (add-to-list 'org-babel-tangle-lang-exts '("js" . "js"))
   #+END_SRC
   
   #+BEGIN_SRC emacs-lisp
