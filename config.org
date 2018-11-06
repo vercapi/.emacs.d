@@ -720,31 +720,50 @@ An elegant editor... for a more civilized age.
 
 ** javascript
 
-   Javascript mode
-   #+BEGIN_SRC emacs-lisp
-     (use-package js2-mode
-       :mode "\\.js\\'"
-       :ensure t
-       :init
-       (setq-default js2-basic-offset 2
-		     js2-indent-switch-body t
-		     js2-auto-indent-p t
-		     js2-indent-on-enter-key t))
-   #+END_SRC
+***   An enhanced Javascript mode
 
-   Indium JS development framework
+    #+BEGIN_SRC emacs-lisp
+      (use-package js2-mode
+        :mode "\\.js\\'"
+        :ensure t
+        :init
+        (setq-default js2-basic-offset 2
+	 	     js2-indent-switch-body t
+	 	     js2-auto-indent-p t
+	 	     js2-indent-on-enter-key t))
+    #+END_SRC
+
+*** Auto completion
+
+    Install server
+    #+BEGIN_SRC sh
+      sudo npm install -g tern
+    #+END_SRC
+
+    #+BEGIN_SRC emacs-lisp
+      (use-package company-tern
+        :ensure t
+        :after (js2-mode company)
+        :hook ((js2-mode . (lambda() (tern-mode)))
+               (js-mode . (lambda() (tern-mode))))
+        :config (push 'company-tern company-backends))
+    #+END_SRC
+
+***   Indium JS development framework REPL
    
-   Install the server
-   #+BEGIN_SRC sh
-   sudo npm install -g indium
-   #+END_SRC
-
-   Install the emacs package
-   #+BEGIN_SRC emacs-lisp
-     (use-package indium
-       :ensure t
-       :hook (js2-mode . indium-interaction-mode))
-   #+END_SRC
+    Install the server
+    #+BEGIN_SRC sh
+    sudo npm install -g indium
+    #+END_SRC
+ 
+    Install the emacs package for REPL
+    #+BEGIN_SRC emacs-lisp
+      (use-package indium
+        :ensure t
+        :after js2-mode
+        :hook ((js2-mode . indium-interaction-mode)
+               (js-mode . indium-interaction-mode)))
+    #+END_SRC  
 
 ** python
    
