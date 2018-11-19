@@ -721,31 +721,50 @@ An elegant editor... for a more civilized age.
 
 ** javascript
 
-   Javascript mode
-   #+BEGIN_SRC emacs-lisp
-     (use-package js2-mode
-       :mode "\\.js\\'"
-       :ensure t
-       :init
-       (setq-default js2-basic-offset 2
-		     js2-indent-switch-body t
-		     js2-auto-indent-p t
-		     js2-indent-on-enter-key t))
-   #+END_SRC
+***   An enhanced Javascript mode
 
-   Indium JS development framework
+    #+BEGIN_SRC emacs-lisp
+      (use-package js2-mode
+        :mode "\\.js\\'"
+        :ensure t
+        :init
+        (setq-default js2-basic-offset 2
+	 	     js2-indent-switch-body t
+	 	     js2-auto-indent-p t
+	 	     js2-indent-on-enter-key t))
+    #+END_SRC
+
+*** Auto completion
+
+    Install server
+    #+BEGIN_SRC sh
+      sudo npm install -g tern
+    #+END_SRC
+
+    #+BEGIN_SRC emacs-lisp
+      (use-package company-tern
+        :ensure t
+        :after (js2-mode company)
+        :hook ((js2-mode . (lambda() (tern-mode)))
+               (js-mode . (lambda() (tern-mode))))
+        :config (push 'company-tern company-backends))
+    #+END_SRC
+
+***   Indium JS development framework REPL
    
-   Install the server
-   #+BEGIN_SRC sh
-   sudo npm install -g indium
-   #+END_SRC
-
-   Install the emacs package
-   #+BEGIN_SRC emacs-lisp
-     (use-package indium
-       :ensure t
-       :hook (js2-mode . indium-interaction-mode))
-   #+END_SRC
+    Install the server
+    #+BEGIN_SRC sh
+    sudo npm install -g indium
+    #+END_SRC
+ 
+    Install the emacs package for REPL
+    #+BEGIN_SRC emacs-lisp
+      (use-package indium
+        :ensure t
+        :after js2-mode
+        :hook ((js2-mode . indium-interaction-mode)
+               (js-mode . indium-interaction-mode)))
+    #+END_SRC  
 
 ** python
    
@@ -1084,6 +1103,7 @@ An elegant editor... for a more civilized age.
        (setq-default pdf-view-display-size 'fit-page))
    #+END_SRC
 * Org  Mode
+** Custom key  bindings
 
   A simple toggle function for org headers to be used in the hydra
   #+BEGIN_SRC emacs-lisp
@@ -1114,7 +1134,7 @@ An elegant editor... for a more civilized age.
         (local-set-key (kbd "C-<f7>") 'org-mark-ring-goto))
   #+END_SRC
 
-  Babel languages
+**  Babel configuration
   #+BEGIN_SRC emacs-lisp
     (require 'ob-js)
 
@@ -1129,7 +1149,13 @@ An elegant editor... for a more civilized age.
       (org-bullets-mode 1))
   #+END_SRC
 
-  Actually configure org mode
+    This package enables asynchronous org babel evaluation
+  #+BEGIN_SRC emacs-lisp
+    (use-package ob-async
+      :ensure t)
+  #+END_SRC
+
+**  Main configuration
   #+BEGIN_SRC emacs-lisp
     (use-package org-mode
       :init
@@ -1140,16 +1166,11 @@ An elegant editor... for a more civilized age.
        (org-mode . pve-enable-org-bullets))
       :after (hydra org-bullets ob-async))
   #+END_SRC
+** Eye candy
 
   Show bullets as images not just '*'s
   #+BEGIN_SRC emacs-lisp
     (use-package org-bullets
-      :ensure t)
-  #+END_SRC
-
-  This package enables asynchronous org babel evaluation
-  #+BEGIN_SRC emacs-lisp
-    (use-package ob-async
       :ensure t)
   #+END_SRC
 
@@ -1166,6 +1187,45 @@ An elegant editor... for a more civilized age.
           (push '("#+END_SRC" . ?) prettify-symbols-alist)
           (prettify-symbols-mode))))
    #+END_SRC
+
+   Use mono spaced font of decresing sizes for the headers 
+   #+BEGIN_SRC emacs-lisp
+     (custom-theme-set-faces 'user
+                             `(org-level-1 ((t (:font "DejaVu Sans Mono for Powerline-17"))))
+                             `(org-level-2 ((t (:font "DejaVu Sans Mono for Powerline-16"))))
+                             `(org-level-3 ((t (:font "DejaVu Sans Mono for Powerline-15"))))
+                             `(org-level-4 ((t (:font "DejaVu Sans Mono for Powerline-14"))))
+                             `(org-level-5 ((t (:font "DejaVu Sans Mono for Powerline-13"))))
+                             `(org-level-6 ((t (:font "DejaVu Sans Mono for Powerline-12"))))
+                             `(org-level-7 ((t (:font "DejaVu Sans Mono for Powerline-11"))))
+                             `(org-level-8 ((t (:font "DejaVu Sans Mono for Powerline-10")))))
+   #+END_SRC
+
+** Presenting
+
+   #+BEGIN_SRC emacs-lisp
+     (defun org-present-init ()
+       "Initial setting when presenting"
+       (progn
+         (org-present-big)
+         (org-display-inline-images)
+         (org-present-hide-cursor)
+         (org-present-read-only)))
+
+     (defun org-present-cleanup ()
+       "Clean up all presenetation sepecific settings"
+       (progn
+         (org-present-small)
+         (org-remove-inline-images)
+         (org-present-show-cursor)
+         (org-present-read-write)))
+
+     (use-package org-present
+       :ensure t
+       :hook ((org-present-mode . org-present-init)
+              (org-present-mode-qui . org-present-cleanup)))
+   #+END_SRC
+
 * Application Integration
 ** Twitter
    
