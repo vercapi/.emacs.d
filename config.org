@@ -1226,6 +1226,35 @@ An elegant editor... for a more civilized age.
               (org-present-mode-qui . org-present-cleanup)))
    #+END_SRC
 
+** Calendar  
+*** google calendar
+
+    Synchronize calenders with google calendar.
+    
+    #+BEGIN_SRC emacs-lisp
+      (use-package org-gcal
+        :ensure t
+        :config (setq org-gcal-client-id google-client-id
+                      org-gcal-client-secret google-client-secret
+                      org-gcal-file-alist '(("pieterv.sorano@gmail.com" . "~/Dropbox/org/calendars/priv_cal.org")
+                                            ("7p9jnod969dn4b78eo14vc7fvei29g2u@import.calendar.google.com" . "~/Dropbox/org/calendars/school_cal.org")
+                                            ("pieter.vercammen@contribute.be" . "~/Dropbox/org/calendars/work_cal.org")
+                                            ("kbenk8l95sn8iq6v8fs7dqfhmj577kps@import.calendar.google.com" . "~/Dropbox/org/calendars/div2_cal.org")
+                                            ("837fa10khalit6kttc36r1n7od5gvj0d@import.calendar.google.com" . "~/Dropbox/org/calendars/u10_cal.org"))))
+    #+END_SRC
+*** agenda files
+
+    Set all org files that contain schedules, deadlines or actionable items
+    
+    #+BEGIN_SRC emacs-lisp
+      (setq org-agenda-files
+            (list "~/Dropbox/org/calendars/priv_cal.org"
+                  "~/Dropbox/org/calendars/work_cal.org"
+                  "~/Dropbox/org/calendars/div2_cal.org"
+                  "~/Dropbox/org/calendars/u10_cal.org"
+                  "~/Dropbox/org/calendars/school_cal.org"))
+    #+END_SRC
+
 * Application Integration
 ** Twitter
    
