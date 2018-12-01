@@ -106,6 +106,10 @@ An elegant editor... for a more civilized age.
    (add-to-list 'load-path "~/.emacs.d/custom/")
    #+END_SRC
 
+   #+BEGIN_SRC emacs-lisp
+     (load "~/.emacs.d/secrets.el")
+   #+END_SRC
+
    #+RESULTS:
    | ~/.emacs.d/custom/ | /home/vercapi/.emacs.d/elpa/powerline-20180321.1948 | /home/vercapi/.emacs.d/elpa/use-package-20180613.2219 | /home/vercapi/.emacs.d/elpa/bind-key-20180512.2130 | /usr/share/emacs/26.1/site-lisp | /usr/share/emacs/site-lisp | /usr/share/emacs/26.1/lisp | /usr/share/emacs/26.1/lisp/vc | /usr/share/emacs/26.1/lisp/url | /usr/share/emacs/26.1/lisp/textmodes | /usr/share/emacs/26.1/lisp/progmodes | /usr/share/emacs/26.1/lisp/play | /usr/share/emacs/26.1/lisp/org | /usr/share/emacs/26.1/lisp/nxml | /usr/share/emacs/26.1/lisp/net | /usr/share/emacs/26.1/lisp/mh-e | /usr/share/emacs/26.1/lisp/mail | /usr/share/emacs/26.1/lisp/leim | /usr/share/emacs/26.1/lisp/language | /usr/share/emacs/26.1/lisp/international | /usr/share/emacs/26.1/lisp/image | /usr/share/emacs/26.1/lisp/gnus | /usr/share/emacs/26.1/lisp/eshell | /usr/share/emacs/26.1/lisp/erc | /usr/share/emacs/26.1/lisp/emulation | /usr/share/emacs/26.1/lisp/emacs-lisp | /usr/share/emacs/26.1/lisp/cedet | /usr/share/emacs/26.1/lisp/calendar | /usr/share/emacs/26.1/lisp/calc | /usr/share/emacs/26.1/lisp/obsolete |
 
