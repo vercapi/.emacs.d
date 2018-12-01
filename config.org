@@ -725,7 +725,7 @@ An elegant editor... for a more civilized age.
 
 ** javascript
 
-***   An enhanced Javascript mode
+*** An enhanced Javascript mode
 
     #+BEGIN_SRC emacs-lisp
       (use-package js2-mode
@@ -754,7 +754,7 @@ An elegant editor... for a more civilized age.
         :config (push 'company-tern company-backends))
     #+END_SRC
 
-***   Indium JS development framework REPL
+*** Indium JS development framework REPL
    
     Install the server
     #+BEGIN_SRC sh
@@ -769,6 +769,14 @@ An elegant editor... for a more civilized age.
         :hook ((js2-mode . indium-interaction-mode)
                (js-mode . indium-interaction-mode)))
     #+END_SRC  
+
+*** Live web development
+
+    #+BEGIN_SRC emacs-lisp
+      (use-package impatient-mode
+        :ensure t
+        :hook ((html-mode . impatient-mode)))
+    #+END_SRC
 
 ** python
    
