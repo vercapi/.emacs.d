@@ -1297,10 +1297,14 @@ An elegant editor... for a more civilized age.
   #+END_SRC
 
 * Libraries
+
+** Custom
   
   #+BEGIN_SRC emacs-lisp
     (use-package message-history)
   #+END_SRC
+
+** LSP
 
   Language Server Protocol (LSP) integration into emacs.
   This enables connections to LSP servers from emacs.
@@ -1335,10 +1339,10 @@ An elegant editor... for a more civilized age.
   #+END_SRC
   If the icons are not installed run 'all-the-icons-install-fonts'.
 
+** Coding
+
   Parsing CSV strings
   #+BEGIN_SRC emacs-lisp
     (use-package parse-csv
       :ensure t)
   #+END_SRC
-
-  #+RESULTS:
