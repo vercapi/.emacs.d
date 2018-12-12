@@ -924,6 +924,12 @@ An elegant editor... for a more civilized age.
    By default yaml mode doesn't use newline-and-indent (as python mode does). So this was added as a hook on he yaml-mode.
    
 ** Database
+
+*** SQLite
+
+    #+BEGIN_SRC emacs-lisp
+      (setq sql-sqlite-program "sqlite3")
+    #+END_SRC
 * File browsing
 ** Side bar
 
@@ -1127,7 +1133,7 @@ An elegant editor... for a more civilized age.
        (pdf-tools-install)
        (setq-default pdf-view-display-size 'fit-page))
    #+END_SRC
-* Org  Mode
+* Org Mode
 ** Custom key  bindings
 
   Hydra for setting up navigation between headers
@@ -1157,7 +1163,7 @@ An elegant editor... for a more civilized age.
 
     (org-babel-do-load-languages
      'org-babel-load-languages
-     '((shell . t) (js . t)))
+     '((shell . t) (js . t) (sqlite . t)))
     (add-to-list 'org-babel-tangle-lang-exts '("js" . "js"))
   #+END_SRC
   
