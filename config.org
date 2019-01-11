@@ -1322,7 +1322,8 @@ An elegant editor... for a more civilized age.
       :init (progn
               (define-prefix-command 'ctl-l-map)
               (global-set-key (kbd "C-l") 'ctl-l-map))
-      :bind (("C-l r" . lsp-rename)))
+      :bind (("C-l r" . lsp-rename))
+      :diminish lsp-mode)
   #+END_SRC
 
   LSP-UI higher level UI modules for LSP integration into emacs.
