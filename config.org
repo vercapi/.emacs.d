@@ -544,6 +544,13 @@ An elegant editor... for a more civilized age.
        company-idle-delay 0))
    #+END_SRC
 
+   Company box. Adds icons and backround colors to company autocomplete. To distinguish between sources and types.
+   #+BEGIN_SRC emacs-lisp
+     (use-package company-box
+       :ensure t
+       :hook (company-mode . company-box-mode))
+   #+END_SRC
+
    LSP backen for company mode
    #+BEGIN_SRC emacs-lisp
      (use-package company-lsp
