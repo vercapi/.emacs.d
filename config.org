@@ -1097,7 +1097,12 @@ An elegant editor... for a more civilized age.
      (add-hook 'eshell-mode-hook
 	       '(lambda ()
 		  (define-key eshell-mode-map (kbd "C-c C-l")  'helm-eshell-history)))
-    #+END_SRC
+   #+END_SRC
+
+   Ensure history of eshell opens in the same frame.
+   #+BEGIN_SRC emacs-lisp
+     (setq helm-show-completion-display-function #'helm-show-completion-default-display-function)
+   #+END_SRC
 	   
 ** Artist mode
 	      
