@@ -1,0 +1,9 @@
+# -*- mode: snippet -*-
+# name: swagger operation
+# key: <op
+# --
+${get}:
+  summary: ${sumary}
+    responses:
+      ${response_code}:
+        description: ${description}

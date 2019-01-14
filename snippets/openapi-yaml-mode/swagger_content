@@ -1,0 +1,9 @@
+# -*- mode: snippet -*-
+# name: swagger content
+# key: <cont
+# --
+content:
+  ${application/json}:
+    schema:
+      type: ${object}
+      properties:
