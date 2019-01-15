@@ -70,8 +70,8 @@ An elegant editor... for a more civilized age.
     (require 'use-package)
    #+END_SRC
 
-   Ensure that 'quelpa' is installed, a dependency for quelpa-use-package the package we really want
-   Allows to Emacs Lisp packages built directly from source
+   Ensure that 'quelpa' is installed, a dependency for quelpa-use-package, the package we really want
+   Allows to load Emacs Lisp packages built directly from source (github etc.)
    #+BEGIN_SRC emacs-lisp
      (use-package quelpa
        :ensure t)
