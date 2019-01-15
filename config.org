@@ -925,16 +925,40 @@ An elegant editor... for a more civilized age.
    
 ** YAML
    
+*** Standard YAML
+
+   Hide show rules for YAML files
+   #+BEGIN_SRC emacs-lisp
+     (defun +data-hideshow-forward-sexp (arg)
+       (let ((start (current-indentation)))
+         (forward-line)
+         (while (< start (current-indentation))
+           (forward-line))
+         (forward-line -1)
+         (end-of-line)))
+
+     (map-put hs-special-modes-alist
+              'yaml-mode
+              '("\\s-*\\_<\\(?:[^:]+\\)\\_>" "" "#" +data-hideshow-forward-sexp nil))
+
+     (map-put hs-special-modes-alist
+              'openapi-yaml-mode
+              '("\\s-*\\_<\\(?:[^:]+\\)\\_>" "" "#" +data-hideshow-forward-sexp nil))
+   #+END_SRC
+
    Yaml mode
    #+BEGIN_SRC emacs-lisp
      (use-package yaml-mode
        :ensure t
        :mode "\\.yml\\'"
-       :hook(yaml-mode . (lambda ()
-             (define-key yaml-mode-map "\C-m" 'newline-and-indent))))
+       :hook((yaml-mode . hs-minor-mode)
+             (yaml-mode . (lambda ()
+                            (define-key yaml-mode-map "\C-m" 'newline-and-indent)))))
    #+END_SRC
    
    By default yaml mode doesn't use newline-and-indent (as python mode does). So this was added as a hook on he yaml-mode.
+
+*** Swagger/OpenAPI YAML
 
    Install swagger-tools as backend for flycheck
    #+BEGIN_SRC sh
@@ -954,7 +978,8 @@ An elegant editor... for a more civilized age.
        :quelpa (openapi-yaml-mode :fetcher github :repo "magoyette/openapi-yaml-mode")
        :ensure t
        :requires flycheck-swagger-tools
-       :hook (openapi-yaml-mode . yas-minor-mode))
+       :hook ((openapi-yaml-mode . hs-minor-mode)
+              (openapi-yaml-mode . yas-minor-mode)))
    #+END_SRC
 
    
