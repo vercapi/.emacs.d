@@ -1,0 +1,8 @@
+
+# -*- mode: snippet -*-
+# name: swagger path
+# key: <path
+# --
+/${path}:
+  summary: ${summary}
+  description: ${description}

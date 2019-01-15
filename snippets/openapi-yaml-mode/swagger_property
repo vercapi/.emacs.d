@@ -1,0 +1,8 @@
+# -*- mode: snippet -*-
+# name: swagger property
+# key: <prop
+# --
+${name}:
+  type: ${string}
+  format: ${}
+  exaple: ${example}
