@@ -793,7 +793,6 @@ An elegant editor... for a more civilized age.
         :ensure t)
     #+END_SRC
 
-
 ** python
    
    Install langauge server for python
@@ -929,7 +928,6 @@ An elegant editor... for a more civilized age.
    #+END_SRC
    
 ** YAML
-   
 *** Standard YAML
 
    Hide show rules for YAML files
