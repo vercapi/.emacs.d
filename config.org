@@ -1409,10 +1409,19 @@ An elegant editor... for a more civilized age.
              ("C-l i" . helm-imenu)))
   #+END_SRC  
 
+  Dependency for all-the-icons. If not installed it will not show in windows and some wrong icons on linux
+  #+BEGIN_SRC emacs-lisp
+    (progn 
+      (url-copy-file "https://raw.githubusercontent.com/emacsmirror/emacswiki.org/master/font-lock%2B.el" "~/.emacs.d/custom/font-lock+.el" t)
+      (use-package font-lock+))
+  #+END_SRC
+
   Icon library with many unicode characters, icons, ...
   #+BEGIN_SRC emacs-lisp
     (use-package all-the-icons
-      :ensure t)
+      :ensure t
+      :after (font-lock+)
+      :init (require 'font-lock+))
   #+END_SRC
   If the icons are not installed run 'all-the-icons-install-fonts'.
 
