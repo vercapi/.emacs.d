@@ -1316,7 +1316,38 @@ An elegant editor... for a more civilized age.
               (org-present-mode-qui . org-present-cleanup)))
    #+END_SRC
 
-** Calendar  
+** TODO WorkFlow [0/1]
+
+   More or less loosly based on: [[http://howardism.org/Technical/Emacs/getting-more-boxes-done.html][Getting boxes done]]
+
+   The flow works as follows
+
+   1. everything goes into inbox
+   2. Go through inbox
+      - Not actionable
+        1. *Delete* if no longer relevant
+        2. Create an *idea* that neads further work
+        3. *References* for information that can be used later on
+      - Actionable
+        1. if t < 5 min. *Do it*
+        2. create a *tasklist* if small (Can grow into projects)
+        3. Create a *project* for a big thing
+   3. DONE
+
+   Files we will need for the flow
+   #+BEGIN_SRC emacs-lisp
+     ;; TODO next line needs to be in constants file
+     (defvar org-default-dir "~/flow/" "Primary Org mode directory directory")
+     (defvar org-default-inbox-file (concat org-default-dir "inbox.org") "Collection of all things")
+     (defvar org-default-tasks-file (concat org-default-dir "tasks.org") "Holds all actionable items")
+     (defvar org-default-projects-dir (concat org-default-dir "projects/") "Folder for all projects")
+     (defvar org-default-ideas-file (concat org-default-dir "ideas.org") "All ideas that are not yet actionable")
+     (defvar org-default-references-dir (concat org-default-dir "references/") "Non actionable information")
+     (defvar org-default-references-dir (concat org-default-references-dir "index.org") "Index file for refrences dir")
+   #+END_SRC
+
+   - [ ] Oter files? Check current evernote structure
+
 *** google calendar
 
     Synchronize calenders with google calendar.
