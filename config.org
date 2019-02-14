@@ -1318,6 +1318,8 @@ An elegant editor... for a more civilized age.
 
 ** TODO WorkFlow [0/1]
 
+*** Setup
+
    More or less loosly based on: [[http://howardism.org/Technical/Emacs/getting-more-boxes-done.html][Getting boxes done]]
 
    The flow works as follows
@@ -1332,9 +1334,8 @@ An elegant editor... for a more civilized age.
         1. if t < 5 min. *Do it*
         2. create a *tasklist* if small (Can grow into projects)
         3. Create a *project* for a big thing
-   3. DONE
 
-   Files we will need for the flow
+   List of files and directories for an org flow.
    #+BEGIN_SRC emacs-lisp
      (defvar org-default-inbox-file (concat org-default-dir "inbox.org") "Collection of all things.")
      (defvar org-default-tasks-file (concat org-default-dir "tasks.org") "Holds all actionable items.")
@@ -1345,9 +1346,17 @@ An elegant editor... for a more civilized age.
      (defvar org-default-tech-notebook-dir (concat org-default-references-dir "live-notebook.org") "Information on any topics.")
      (defvar org-default-tech-notebook-dir (concat org-default-references-dir "hockey-notebook.org") "Information on hockey.")
      (defvar org-default-official-documents-dir (concat org-default-references-dir "documents/") "Directory for official documents, non org files.")
+     (defvar org-default-calendar-dir (concat org-default-dir "calendars/") "Calendar synced files.")
    #+END_SRC
 
-   - [ ] Oter files? Check current evernote structure
+   Add files that need agenda entries
+   #+BEGIN_SRC emacs-lisp
+     (setq org-agenda-files (list org-default-projects-dir))
+     (setq org-agenda-file-regexp "^[a-z0-9-_]+.org")
+     (add-to-list 'org-agenda-files org-default-calendar-dir)
+     (add-to-list 'org-agenda-files org-default-inbox-file)
+     (add-to-list 'org-agenda-files org-default-tasks-file)
+   #+END_SRC
 
 *** google calendar
 
@@ -1363,18 +1372,6 @@ An elegant editor... for a more civilized age.
                                             (work-email . "~/Dropbox/org/calendars/work_cal.org")
                                             (hockey-calendar-div2 . "~/Dropbox/org/calendars/div2_cal.org")
                                             (hockey-calendar-u10 . "~/Dropbox/org/calendars/u10_cal.org"))))
-    #+END_SRC
-*** agenda files
-
-    Set all org files that contain schedules, deadlines or actionable items
-    
-    #+BEGIN_SRC emacs-lisp
-      (setq org-agenda-files
-            (list "~/Dropbox/org/calendars/priv_cal.org"
-                  "~/Dropbox/org/calendars/work_cal.org"
-                  "~/Dropbox/org/calendars/div2_cal.org"
-                  "~/Dropbox/org/calendars/u10_cal.org"
-                  "~/Dropbox/org/calendars/school_cal.org"))
     #+END_SRC
 
 * Application Integration
