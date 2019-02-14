@@ -1218,7 +1218,8 @@ An elegant editor... for a more civilized age.
         ("u" outline-up-heading)
         ("t" outline-toggle-children))
       (local-set-key (kbd "<f7>") 'org-mark-ring-push)
-      (local-set-key (kbd "C-<f7>") 'org-mark-ring-goto))
+      (local-set-key (kbd "C-<f7>") 'org-mark-ring-goto)
+      (local-set-key (kbd "C-c c") 'org-capture))
   #+END_SRC
 
   #+RESULTS:
@@ -1256,6 +1257,7 @@ An elegant editor... for a more civilized age.
        (org-mode . pve-enable-org-bullets))
       :after (hydra org-bullets ob-async))
   #+END_SRC
+
 ** Eye candy
 
   Show bullets as images not just '*'s
@@ -1318,7 +1320,7 @@ An elegant editor... for a more civilized age.
 
 ** TODO WorkFlow [0/1]
 
-*** Setup
+*** File setup
 
    More or less loosly based on: [[http://howardism.org/Technical/Emacs/getting-more-boxes-done.html][Getting boxes done]]
 
@@ -1358,7 +1360,28 @@ An elegant editor... for a more civilized age.
      (add-to-list 'org-agenda-files org-default-tasks-file)
    #+END_SRC
 
-*** google calendar
+*** Capture templates
+
+    Task entry, something that actually needs toi be done at some point.
+    #+BEGIN_SRC emacs-lisp
+      (add-to-list 'org-capture-templates
+                   `("t" "Task Entry"        entry
+                     (file ,org-default-inbox-file)
+                     "* %?\n:PROPERTIES:\n:CREATED:%U\n:END:\n\n%i\n\nFrom: %a"
+                     :empty-lines 1))
+    #+END_SRC
+
+    Collect a piece of information
+    #+BEGIN_SRC emacs-lisp
+      (add-to-list 'org-capture-templates
+                   `("i" "Piece of information"        entry
+                     (file ,org-default-inbox-file)
+                     "* %?\n:PROPERTIES:\n:END:\n\n%i\n\nFrom: %a"
+                     :empty-lines 1))
+
+    #+END_SRC
+
+*** Google calendar integration
 
     Synchronize calenders with google calendar.
     
