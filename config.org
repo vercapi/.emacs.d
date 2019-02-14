@@ -1336,14 +1336,15 @@ An elegant editor... for a more civilized age.
 
    Files we will need for the flow
    #+BEGIN_SRC emacs-lisp
-     ;; TODO next line needs to be in constants file
-     (defvar org-default-dir "~/flow/" "Primary Org mode directory directory")
-     (defvar org-default-inbox-file (concat org-default-dir "inbox.org") "Collection of all things")
-     (defvar org-default-tasks-file (concat org-default-dir "tasks.org") "Holds all actionable items")
-     (defvar org-default-projects-dir (concat org-default-dir "projects/") "Folder for all projects")
-     (defvar org-default-ideas-file (concat org-default-dir "ideas.org") "All ideas that are not yet actionable")
-     (defvar org-default-references-dir (concat org-default-dir "references/") "Non actionable information")
-     (defvar org-default-references-dir (concat org-default-references-dir "index.org") "Index file for refrences dir")
+     (defvar org-default-inbox-file (concat org-default-dir "inbox.org") "Collection of all things.")
+     (defvar org-default-tasks-file (concat org-default-dir "tasks.org") "Holds all actionable items.")
+     (defvar org-default-projects-dir (concat org-default-dir "projects/") "Folder for all projects.")
+     (defvar org-default-ideas-file (concat org-default-dir "ideas.org") "All ideas that are not yet actionable.")
+     (defvar org-default-notebooks-dir (concat org-default-dir "notebooks/") "Non actionable information.")
+     (defvar org-default-tech-notebook-dir (concat org-default-references-dir "tech-notebook.org") "Information on technical topcics.")
+     (defvar org-default-tech-notebook-dir (concat org-default-references-dir "live-notebook.org") "Information on any topics.")
+     (defvar org-default-tech-notebook-dir (concat org-default-references-dir "hockey-notebook.org") "Information on hockey.")
+     (defvar org-default-official-documents-dir (concat org-default-references-dir "documents/") "Directory for official documents, non org files.")
    #+END_SRC
 
    - [ ] Oter files? Check current evernote structure
