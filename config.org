@@ -1362,22 +1362,38 @@ An elegant editor... for a more civilized age.
 
 *** Capture templates
 
-    Task entry, something actionable
+**** Tasks
+
+    General task entry, something actionable
     #+BEGIN_SRC emacs-lisp
       (require 'org-capture)
       (add-to-list 'org-capture-templates
-                   `("t" "Task Entry"        entry
-                     (file ,org-default-inbox-file)
-                     "* TODO %?\n:PROPERTIES:\n:CREATED:%U\n:END:\n\n%i\n\nFrom: %a"
+                   `("t" "Task Entry" entry (file, org-default-inbox-file)
+                     "* TODO %?
+      :PROPERTIES:
+      :CREATED:%U
+      :END:
+
+      %i
+
+      From: %a"
                      :empty-lines 1))
     #+END_SRC
+
+**** Notes
 
     Create a note for future reference that needs no action.
     #+BEGIN_SRC emacs-lisp
       (add-to-list 'org-capture-templates
-                   `("i" "Piece of information"        entry
-                     (file ,org-default-inbox-file)
-                     "* NOTE %?\n:PROPERTIES:\n:CREATED:%U\n:END:\n\n%i\n\nFrom: %a"
+                   `("i" "Piece of information" entry (file, org-default-inbox-file)
+                     "* NOTE %?
+      :PROPERTIES:
+      :CREATED:%U
+      :END:
+
+      %i
+
+      From: %a"
                      :empty-lines 1))
 
     #+END_SRC
@@ -1385,9 +1401,15 @@ An elegant editor... for a more civilized age.
     And with tekst from clipboard.
     #+BEGIN_SRC emacs-lisp
       (add-to-list 'org-capture-templates
-                   `("i" "Piece of information"        entry
-                     (file ,org-default-inbox-file)
-                     "* NOTE %?\n:PROPERTIES:\n:CREATED:%U\n:END:\n\n%c\n%i\n\nFrom: %a"
+                   `("I" "Piece of information from clipboard" entry (file, org-default-inbox-file)
+                     "* NOTE %?
+      :PROPERTIES:
+      :CREATED:%U
+      :END:
+
+      %c
+
+      From: %a"
                      :empty-lines 1))
     #+END_SRC
 
