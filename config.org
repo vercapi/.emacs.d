@@ -1362,24 +1362,36 @@ An elegant editor... for a more civilized age.
 
 *** Capture templates
 
-    Task entry, something that actually needs toi be done at some point.
+    Task entry, something actionable
     #+BEGIN_SRC emacs-lisp
+      (require 'org-capture)
       (add-to-list 'org-capture-templates
                    `("t" "Task Entry"        entry
                      (file ,org-default-inbox-file)
-                     "* %?\n:PROPERTIES:\n:CREATED:%U\n:END:\n\n%i\n\nFrom: %a"
+                     "* TODO %?\n:PROPERTIES:\n:CREATED:%U\n:END:\n\n%i\n\nFrom: %a"
                      :empty-lines 1))
     #+END_SRC
 
-    Collect a piece of information
+    Create a note for future reference that needs no action.
     #+BEGIN_SRC emacs-lisp
       (add-to-list 'org-capture-templates
                    `("i" "Piece of information"        entry
                      (file ,org-default-inbox-file)
-                     "* %?\n:PROPERTIES:\n:END:\n\n%i\n\nFrom: %a"
+                     "* NOTE %?\n:PROPERTIES:\n:CREATED:%U\n:END:\n\n%i\n\nFrom: %a"
                      :empty-lines 1))
 
     #+END_SRC
+
+    And with tekst from clipboard.
+    #+BEGIN_SRC emacs-lisp
+      (add-to-list 'org-capture-templates
+                   `("i" "Piece of information"        entry
+                     (file ,org-default-inbox-file)
+                     "* NOTE %?\n:PROPERTIES:\n:CREATED:%U\n:END:\n\n%c\n%i\n\nFrom: %a"
+                     :empty-lines 1))
+    #+END_SRC
+
+    
 
 *** Google calendar integration
 
