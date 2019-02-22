@@ -1343,6 +1343,7 @@ An elegant editor... for a more civilized age.
      (defvar org-default-tasks-file (concat org-default-dir "tasks.org") "Holds all actionable items.")
      (defvar org-default-projects-dir (concat org-default-dir "projects/") "Folder for all projects.")
      (defvar org-default-ideas-file (concat org-default-dir "ideas.org") "All ideas that are not yet actionable.")
+     (defvar org-default-shopping-file (concat org-default-dir "shopping.org") "Stuff to buy.")
      (defvar org-default-notebooks-dir (concat org-default-dir "notebooks/") "Non actionable information.")
      (defvar org-default-tech-notebook-dir (concat org-default-notebooks-dir "tech-notebook.org") "Information on technical topcics.")
      (defvar org-default-tech-notebook-dir (concat org-default-notebooks-dir "live-notebook.org") "Information on any topics.")
@@ -1379,13 +1380,37 @@ An elegant editor... for a more civilized age.
       From: %a"
                      :empty-lines 1))
     #+END_SRC
+ 
+    Payments
+    #+BEGIN_SRC emacs-lisp
+      (add-to-list 'org-capture-templates
+                         `("p" "Payment" entry (file, org-default-inbox-file)
+                           "* TODO Payment %? :PAYMENT:
+            :PROPERTIES:
+            :Created:%U
+            :Payed:
+            :END:
+
+            %i
+
+            From: %a"
+                           :empty-lines 1))
+    #+END_SRC
+
+    Shopping lists
+    #+BEGIN_SRC emacs-lisp
+      (add-to-list 'org-capture-templates
+                         `("g" "Groceries" checkitem (file+headline, org-default-shopping-file "Groceries")
+                           "[ ] %?"
+                           :empty-lines 1))
+    #+END_SRC
 
 **** Notes
 
     Create a note for future reference that needs no action.
     #+BEGIN_SRC emacs-lisp
       (add-to-list 'org-capture-templates
-                   `("i" "Piece of information" entry (file, org-default-inbox-file)
+                   `("n" "Note" entry (file, org-default-inbox-file)
                      "* NOTE %?
       :PROPERTIES:
       :CREATED:%U
@@ -1401,7 +1426,7 @@ An elegant editor... for a more civilized age.
     And with tekst from clipboard.
     #+BEGIN_SRC emacs-lisp
       (add-to-list 'org-capture-templates
-                   `("I" "Piece of information from clipboard" entry (file, org-default-inbox-file)
+                   `("N" "Note from clipboard" entry (file, org-default-inbox-file)
                      "* NOTE %?
       :PROPERTIES:
       :CREATED:%U
