@@ -1346,9 +1346,9 @@ An elegant editor... for a more civilized age.
      (defvar org-default-ideas-file (concat org-default-dir "ideas.org") "All ideas that are not yet actionable.")
      (defvar org-default-shopping-file (concat org-default-dir "shopping.org") "Stuff to buy.")
      (defvar org-default-notebooks-dir (concat org-default-dir "notebooks/") "Non actionable information.")
-     (defvar org-default-tech-notebook-dir (concat org-default-notebooks-dir "tech-notebook.org") "Information on technical topcics.")
-     (defvar org-default-tech-notebook-dir (concat org-default-notebooks-dir "live-notebook.org") "Information on any topics.")
-     (defvar org-default-tech-notebook-dir (concat org-default-notebooks-dir "hockey-notebook.org") "Information on hockey.")
+     (defvar org-default-tech-notebook (concat org-default-notebooks-dir "tech-notebook.org") "Information on technical topcics.")
+     (defvar org-default-live-notebook (concat org-default-notebooks-dir "live-notebook.org") "Information on any topics.")
+     (defvar org-default-hockey-notebook (concat org-default-notebooks-dir "hockey-notebook.org") "Information on hockey.")
      (defvar org-default-official-documents-dir (concat org-default-notebooks-dir "documents/") "Directory for official documents, non org files.")
      (defvar org-default-calendar-dir (concat org-default-dir "calendars/") "Calendar synced files.")
    #+END_SRC
