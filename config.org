@@ -1319,7 +1319,7 @@ An elegant editor... for a more civilized age.
               (org-present-mode-qui . org-present-cleanup)))
    #+END_SRC
 
-** TODO WorkFlow [0/1]
+** TODO WorkFlow
 
 *** File setup
 
@@ -1438,8 +1438,28 @@ An elegant editor... for a more civilized age.
       From: %a"
                      :empty-lines 1))
     #+END_SRC
-
     
+*** Refiling
+
+    Set refiling path to start with the filename
+    #+BEGIN_SRC emacs-lisp
+      (setq org-refile-use-outline-path 'file)
+    #+END_SRC
+
+    Use full paths not step by step to ensure helm compatibility.
+    #+BEGIN_SRC emacs-lisp
+      (setq org-outline-path-complete-in-steps nil)
+    #+END_SRC
+
+    Static list of files to refile to
+    #+BEGIN_SRC emacs-lisp
+      (setq org-refile-targets '((org-default-tasks-file :level . 0)
+                                 (org-default-ideas-file :level . 0)
+                                 (org-default-shopping-file :level . 1)
+                                 (org-default-tech-notebook :level . 1)
+                                 (org-default-live-notebook :level . 1)
+                                 (org-default-hockey-notebook :level . 1)))
+    #+END_SRC
 
 *** Google calendar integration
 
