@@ -1451,14 +1451,18 @@ An elegant editor... for a more civilized age.
       (setq org-outline-path-complete-in-steps nil)
     #+END_SRC
 
-    Static list of files to refile to
+    List of targets to refile to
     #+BEGIN_SRC emacs-lisp
-      (setq org-refile-targets '((org-default-tasks-file :level . 0)
-                                 (org-default-ideas-file :level . 0)
-                                 (org-default-shopping-file :level . 1)
-                                 (org-default-tech-notebook :level . 1)
-                                 (org-default-live-notebook :level . 1)
-                                 (org-default-hockey-notebook :level . 1)))
+      (setq org-refile-targets (append '((org-default-tasks-file :level . 0)
+                                         (org-default-ideas-file :level . 0)
+                                         (org-default-shopping-file :level . 1)
+                                         (org-default-tech-notebook :level . 1)
+                                         (org-default-live-notebook :level . 1)
+                                         (org-default-hockey-notebook :level . 1))
+                                       (mapcar (lambda (i)
+                                                 (let ((lst '(:level . 0)))
+                                                   (push i lst)))
+                                               (directory-files org-default-projects-dir t ".org$"))))
     #+END_SRC
 
 *** Google calendar integration
