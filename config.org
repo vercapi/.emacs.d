@@ -684,7 +684,7 @@ An elegant editor... for a more civilized age.
       :ensure t
       :bind ("C-x t" . magit-status)
       :hook ((git-commit-mode . message-commit-setup-magit)
-	     (magit-mode . turn-on-magit-gitflow))
+       (magit-mode . magit-gitflow-mode))
       :after (message-history magit-gitflow)
       :init (init-message-history-magit))
   #+END_SRC
