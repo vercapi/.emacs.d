@@ -175,19 +175,18 @@ An elegant editor... for a more civilized age.
        )
      #+END_SRC
 
-     #+RESULTS:
-     : t
-
 ** Fonts
 
    Set the standard fonts for emacs and other componets
    This is based on std configuration. So if emacs adds this again in init.el or .emacs things might break and this needs to be update manually
 
+   [[https://files.ax86.net/terminus-ttf/][Terminus]] font was downloaded from [[https://app.programmingfonts.org/][programming fonts]].
+
    #+BEGIN_SRC emacs-lisp
      (custom-set-faces
-      '(default ((t (:family "DejaVu Sans Mono for Powerline" :foundry "unknown" :slant normal :weight normal :height 140 :width normal))))
-      '(minimap-font-face ((t (:height 40 :family "DejaVu Sans Mono"))))
-      '(mode-line ((t (:family "DejaVu Sans Mono for Powerline" :foundry "unknown" :slant normal :weight normal :height 140 :width normal)))))
+      '(default ((t (:family "Terminus (TTF)" :foundry "PfEd" :slant normal :weight normal :height 140 :width normal))))
+      '(minimap-font-face ((t (:height 40 :family "Terminus (TTF)"))))
+      '(mode-line ((t (:family "Terminus (TTF)" :foundry "unknown" :slant normal :weight normal :height 140 :width normal)))))
     #+END_SRC
 
     #+RESULTS:
@@ -1284,14 +1283,14 @@ An elegant editor... for a more civilized age.
    Use mono spaced font of decresing sizes for the headers 
    #+BEGIN_SRC emacs-lisp
      (custom-theme-set-faces 'user
-                             `(org-level-1 ((t (:font "DejaVu Sans Mono for Powerline-17"))))
-                             `(org-level-2 ((t (:font "DejaVu Sans Mono for Powerline-16"))))
-                             `(org-level-3 ((t (:font "DejaVu Sans Mono for Powerline-15"))))
-                             `(org-level-4 ((t (:font "DejaVu Sans Mono for Powerline-14"))))
-                             `(org-level-5 ((t (:font "DejaVu Sans Mono for Powerline-13"))))
-                             `(org-level-6 ((t (:font "DejaVu Sans Mono for Powerline-12"))))
-                             `(org-level-7 ((t (:font "DejaVu Sans Mono for Powerline-11"))))
-                             `(org-level-8 ((t (:font "DejaVu Sans Mono for Powerline-10")))))
+                             `(org-level-1 ((t (:font "Terminus (TTF)-17"))))
+                             `(org-level-2 ((t (:font "Terminus (TTF)-16"))))
+                             `(org-level-3 ((t (:font "Terminus (TTF)-15"))))
+                             `(org-level-4 ((t (:font "Terminus (TTF)-14"))))
+                             `(org-level-5 ((t (:font "Terminus (TTF)-13"))))
+                             `(org-level-6 ((t (:font "Terminus (TTF)-12"))))
+                             `(org-level-7 ((t (:font "Terminus (TTF)-11"))))
+                             `(org-level-8 ((t (:font "Terminus (TTF)-10")))))
    #+END_SRC
 
 ** Presenting

@@ -23,9 +23,6 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(default ((t (:family "DejaVu Sans Mono for Powerline" :foundry "unknown" :slant normal :weight normal :height 140 :width normal))))
- '(minimap-font-face ((t (:height 40 :family "DejaVu Sans Mono"))))
- '(mode-line ((t (:family "DejaVu Sans Mono for Powerline" :foundry "unknown" :slant normal :weight normal :height 140 :width normal))))
  '(treemacs-directory-face ((t :inherit default)))
  '(treemacs-git-untracked-face ((t :inherit default))))
 (put 'narrow-to-region 'disabled nil)
