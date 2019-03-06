@@ -1364,11 +1364,65 @@ An elegant editor... for a more civilized age.
 
 *** Capture templates
 
+    Load org-protocol and org-capture so we can use these librarie to setup catpuring witing emacs and from else where
+     #+BEGIN_SRC emacs-lisp
+       (require 'org-protocol)
+       (require 'org-capture)
+     #+END_SRC
+
+**** Browser integration 
+
+     Integration uses [[https://orgmode.org/worg/org-contrib/org-protocol.html][org-protcol]].
+
+     [[https://github.com/sprig/org-capture-extension][Documentation]] on the browser integration.
+     
+     Configuration file for registering emacsclient as handler for org-protocol
+     #+BEGIN_SRC conf :tangle ~/.local/share/applications/org-protocol.desktop
+       [Desktop Entry]
+       Name=org-protocol
+       Exec=emacsclient %u
+       Type=Application
+       Terminal=false
+       Categories=System;
+       MimeType=x-scheme-handler/org-protocol;
+     #+END_SRC
+
+     Ensure the new handler is picked up by the system
+     #+BEGIN_SRC sh
+       update-desktop-database ~/.local/share/applications/
+     #+END_SRC
+
+     Templates for capturing from org-capture browser integration
+     When text is selected
+     #+BEGIN_SRC emacs-lisp
+       (add-to-list 'org-capture-templates
+                    `("p" "Protocol" entry (file, org-default-inbox-file)
+                     "* %?
+       :PROPERTIES:
+       :CREATED:%U
+       :SOURCE:%:link
+       :END:
+
+       %i
+
+       %?"))
+     #+END_SRC
+
+     Capture template when no text is selected.
+     #+BEGIN_SRC emacs-lisp
+       (add-to-list 'org-capture-templates
+                    `("L" "Protocol Link" entry (file, org-default-inbox-file)
+                     "* %? [[%:link][%:description]]
+       :PROPERTIES:
+       :CREATED:%U
+       :SOURCE:%:link
+       :END:"))
+     #+END_SRC
+
 **** Tasks
 
     General task entry, something actionable
     #+BEGIN_SRC emacs-lisp
-      (require 'org-capture)
       (add-to-list 'org-capture-templates
                    `("t" "Task Entry" entry (file, org-default-inbox-file)
                      "* TODO %?
