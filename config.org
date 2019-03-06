@@ -184,32 +184,30 @@ An elegant editor... for a more civilized age.
 
    #+BEGIN_SRC emacs-lisp
      (custom-set-faces
-      '(default ((t (:family "Terminus (TTF)" :foundry "PfEd" :slant normal :weight normal :height 140 :width normal))))
+      '(default ((t (:family "Terminus (TTF)" :foundry "PfEd" :slant normal :weight normal :height 150 :width normal))))
       '(minimap-font-face ((t (:height 40 :family "Terminus (TTF)"))))
-      '(mode-line ((t (:family "Terminus (TTF)" :foundry "unknown" :slant normal :weight normal :height 140 :width normal)))))
+      '(mode-line ((t (:family "Terminus (TTF)" :foundry "unknown" :slant normal :weight normal :height 150 :width normal)))))
     #+END_SRC
-
-    #+RESULTS:
 
     Simple shortcuts to switch between to common used font sizes
     #+BEGIN_SRC emacs-lisp
       (defun pve-small-fonts ()
-	"Set font to work on desktop screens."
-	(interactive)
-	(pve-set-fonts 100)
-	)
+        "Set font to work on desktop screens."
+        (interactive)
+        (pve-set-fonts 115)
+        )
 
       (defun pve-big-fonts ()
-	"Set font for use on laptop screens."
-	(interactive)
-	(pve-set-fonts 140)
-	)
+        "Set font for use on laptop screens."
+        (interactive)
+        (pve-set-fonts 150)
+        )
 
       (defun pve-set-fonts (font-height)
-	"Set size of fonts to FONT-HEIGHT, and only the size of the fonts."
-	(set-face-attribute 'default nil :height font-height)
-	(set-face-attribute 'mode-line nil :height font-height)
-	)
+        "Set size of fonts to FONT-HEIGHT, and only the size of the fonts."
+        (set-face-attribute 'default nil :height font-height)
+        (set-face-attribute 'mode-line nil :height font-height)
+        )
     #+END_SRC
     
 ** Theme/Syntax sugar
