@@ -1320,7 +1320,6 @@ An elegant editor... for a more civilized age.
    #+END_SRC
 
 ** TODO WorkFlow
-
 *** File setup
 
    More or less loosly based on: [[http://howardism.org/Technical/Emacs/getting-more-boxes-done.html][Getting boxes done]]
@@ -1361,6 +1360,18 @@ An elegant editor... for a more civilized age.
      (add-to-list 'org-agenda-files org-default-inbox-file)
      (add-to-list 'org-agenda-files org-default-tasks-file)
    #+END_SRC
+*** Workflow states
+
+    We want to keep a logbook of the actions done but keep it tucked a way in the LOGBOOK drawer
+    #+BEGIN_SRC emacs-lisp
+      (setq org-log-into-drawer 'LOGBOOK)
+    #+END_SRC
+    Will look create :LOGBOOK: under the heading
+
+    #+BEGIN_SRC emacs-lisp
+      (setq org-todo-keywords
+            '((sequence "TODO(t)" "DOING(o!)" "BLOCKED(b@/!)" "DELEGATED(e@!)" "|" "DONE(d!)" "CANCELED(c@)")))
+    #+END_SRC
 
 *** Capture templates
 
