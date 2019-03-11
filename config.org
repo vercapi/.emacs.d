@@ -1372,7 +1372,7 @@ An elegant editor... for a more civilized age.
       (setq org-todo-keywords
             '((sequence "TODO(t)" "DOING(o!)" "BLOCKED(b@/!)" "DELEGATED(e@!)" "|" "DONE(d!)" "CANCELED(c@)")))
     #+END_SRC
-
+*** TODO Tags
 *** Capture templates
 
     Load org-protocol and org-capture so we can use these librarie to setup catpuring witing emacs and from else where
