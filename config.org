@@ -374,7 +374,11 @@ An elegant editor... for a more civilized age.
      (add-hook 'org-shiftleft-final-hook 'windmove-left)
      (add-hook 'org-shiftdown-final-hook 'windmove-down)
      (add-hook 'org-shiftright-final-hook 'windmove-right)
+     (setq org-support-shift-select 'always)
    #+END_SRC
+
+   #+RESULTS:
+   : always
    
    Eybrowse allows a virutal desktop like solution to be used within emacs.
    #+BEGIN_SRC emacs-lisp
