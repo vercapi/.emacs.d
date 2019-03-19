@@ -1200,6 +1200,34 @@ An elegant editor... for a more civilized age.
        :ensure t
        :init (setq lastpass-user personal-email))
    #+END_SRC
+
+   Helm interface to lastpass
+   #+BEGIN_SRC emacs-lisp
+     (defun helm-lastpass-source ()
+       "Creates a source for helm using lastpass command line"
+       (mapcar
+        (lambda (entry)
+          (let ((formatted (replace-regexp-in-string "^ " "ALL " entry)))
+            (let ((last-space (pve-last-char formatted " " 1)))
+              (list (substring formatted 0 last-space)
+                     (substring formatted (+ 1 last-space))))))
+          (split-string
+         (nth 1
+              (let ((formatstr (concat "--format=%ag"
+                                       " " "%an"
+                                       " " "%au"
+                                       " " "%ai")))
+                (lastpass-runcmd "ls" formatstr))) "\n" t)))
+
+     (defun helm-lastpass ()
+       "Helm interface to get password from lastpass"
+       (interactive)
+       (let ((data (helm-lastpass-source)))
+         (helm :sources (helm-build-sync-source "test"
+                          :candidates data
+                          :action (lambda (candidate) (kill-new (lastpass-getpass (car candidate)))))
+               :buffer "*helm lastpass*")))
+   #+END_SRC
    
 * Org Mode
 ** Custom key  bindings
