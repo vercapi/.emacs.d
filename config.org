@@ -1379,6 +1379,7 @@ An elegant editor... for a more civilized age.
      (defvar org-default-inbox-file (concat org-default-dir "inbox.org") "Collection of all things.")
      (defvar org-default-tasks-file (concat org-default-dir "tasks.org") "Holds all actionable items.")
      (defvar org-default-projects-dir (concat org-default-dir "projects/") "Folder for all projects.")
+     (defvar org-default-projects-file (concat org-default-projects-dir "projects.org") "File for projects.")
      (defvar org-default-ideas-file (concat org-default-dir "ideas.org") "All ideas that are not yet actionable.")
      (defvar org-default-shopping-file (concat org-default-dir "shopping.org") "Stuff to buy.")
      (defvar org-default-notebooks-dir (concat org-default-dir "notebooks/") "Non actionable information.")
@@ -1387,6 +1388,7 @@ An elegant editor... for a more civilized age.
      (defvar org-default-hockey-notebook (concat org-default-notebooks-dir "hockey-notebook.org") "Information on hockey.")
      (defvar org-default-official-documents-dir (concat org-default-notebooks-dir "documents/") "Directory for official documents, non org files.")
      (defvar org-default-calendar-dir (concat org-default-dir "calendars/") "Calendar synced files.")
+     (defvar org-default-archive-file (concat org-default-dir "archive.org") "archive file.")
    #+END_SRC
 
    Add files that need agenda entries
