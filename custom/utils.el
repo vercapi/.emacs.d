@@ -14,7 +14,8 @@
 Returns the positionf of the last found occurence of REGEXP"
   (let ((match (string-match-p (regexp-quote regexp) text idx)))
     (if match
-        (pve-last-char text char (+ 1 match))
+        (pve-last-char text regexp (+ 1 match))
       (- idx 1))))
 
+(provide 'utils)
 ;;; utils.el ends here
