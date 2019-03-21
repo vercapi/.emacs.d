@@ -1054,6 +1054,7 @@ An elegant editor... for a more civilized age.
        :ensure t)
    #+END_SRC
 
+   Customization of faces for treemacs
    #+BEGIN_SRC emacs-lisp
      (custom-set-faces
       '(treemacs-directory-face ((t :inherit default)))
@@ -1068,9 +1069,15 @@ An elegant editor... for a more civilized age.
        '((t :inherit treemacs-file-face :height 1.5))
        "Face used for the file icons, to make them bigger compared to other icons"
        :group 'treemacs-faces)
+
+     (face-spec-set
+      'treemacs-root-face
+      '((t :weight bold
+           :height 1.2))
+      'face-defface-spec)
    #+END_SRC
 
-   When treemacs loads, set project (root), folder and normal text icons.ép
+   When treemacs loads, set project (root), folder and normal text icons.
    These were not coverd by the automatic mapping in the use-package section
    #+BEGIN_SRC emacs-lisp
      (with-eval-after-load "treemacs"
