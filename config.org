@@ -51,7 +51,7 @@ An elegant editor... for a more civilized age.
 
    Configure all sources for packages to be used throughtout this config file.
    #+BEGIN_SRC emacs-lisp
-    (setq package-archives '(("melpa" . "http://melpa.milkbox.net/packages/")
+    (setq package-archives '(("melpa" . "http://melpa.org/packages/")
                              ("gnu" . "http://elpa.gnu.org/packages/")))
    #+END_SRC
 
