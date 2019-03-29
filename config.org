@@ -1331,14 +1331,14 @@ An elegant editor... for a more civilized age.
    Use mono spaced font of decresing sizes for the headers 
    #+BEGIN_SRC emacs-lisp
      (custom-theme-set-faces 'user
-                             `(org-level-1 ((t (:font "ProggyVector-17"))))
-                             `(org-level-2 ((t (:font "ProggyVector-16"))))
-                             `(org-level-3 ((t (:font "ProggyVector-15"))))
-                             `(org-level-4 ((t (:font "ProggyVector-14"))))
-                             `(org-level-5 ((t (:font "ProggyVector-13"))))
-                             `(org-level-6 ((t (:font "ProggyVector-12"))))
-                             `(org-level-7 ((t (:font "ProggyVector-11"))))
-                             `(org-level-8 ((t (:font "ProggyVector-10")))))
+                             `(org-level-1 nil)
+                             `(org-level-2 nil)
+                             `(org-level-3 nil)
+                             `(org-level-4 nil)
+                             `(org-level-5 nil)
+                             `(org-level-6 nil)
+                             `(org-level-7 nil)
+                             `(org-level-8 nil))
    #+END_SRC
 
    #+RESULTS:
