@@ -567,7 +567,7 @@ An elegant editor... for a more civilized age.
    #+BEGIN_SRC emacs-lisp
      (use-package fish-completion
        :ensure t
-       :init (global-fish-completion-mode))
+       :config (global-fish-completion-mode))
    #+END_SRC
 
    Auto insert the other pair of a bracket
@@ -1151,9 +1151,6 @@ An elegant editor... for a more civilized age.
 	     (setq eshell-path-env (concat cygwin-paths eshell-path-env))
 	     (setenv "PATH" (concat cygwin-paths (getenv "PATH"))))))
    #+END_SRC
-
-   #+RESULTS:
-   : pve-set-eshell-path-env
 
    Add hook to eshell to set paths when eshell starts
    #+BEGIN_SRC emacs-lisp
