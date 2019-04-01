@@ -1320,15 +1320,20 @@ An elegant editor... for a more civilized age.
                 (lambda ()
                   (push '("[ ]" . ?) prettify-symbols-alist)
                   (push '("[X]" . ?) prettify-symbols-alist)
-                  (push '("TODO" . ?) prettify-symbols-alist)
-                  (push '("DONE" . ?) prettify-symbols-alist)
-                  (push '("#+TITLE" . ?) prettify-symbols-alist)
+                  (push '("NEEDSWORK" . ?) prettify-symbols-alist)
+                  (push '("#+TITLE:" . ?) prettify-symbols-alist)
                   (push '("#+BEGIN_SRC" . ?) prettify-symbols-alist)
                   (push '("#+END_SRC" . ?) prettify-symbols-alist)
                   (prettify-symbols-mode))))
    #+END_SRC
 
-   Use mono spaced font of decresing sizes for the headers 
+   
+   Change font of checkboxes. Checkbox is already replaced with an icon so we don't want emacs to draw an additional box
+   #+BEGIN_SRC emacs-lisp
+     (face-spec-set 'org-checkbox '((t (:box nil))))
+   #+END_SRC
+
+   Ensure default fonts for org headers
    #+BEGIN_SRC emacs-lisp
      (custom-theme-set-faces 'user
                              `(org-level-1 nil)
@@ -1340,8 +1345,6 @@ An elegant editor... for a more civilized age.
                              `(org-level-7 nil)
                              `(org-level-8 nil))
    #+END_SRC
-
-   #+RESULTS:
 
 ** Presenting
 
@@ -1421,8 +1424,10 @@ An elegant editor... for a more civilized age.
 
     #+BEGIN_SRC emacs-lisp
       (setq org-todo-keywords
-            '((sequence "TODO(t)" "DOING(o!)" "BLOCKED(b@/!)" "DELEGATED(e@!)" "|" "DONE(d!)" "CANCELED(c@)")))
+            '((sequence "TODO(t)" "DOING(o!)" "BLOCKED(b@/!)" "DELEGATED(e@!)" "|" "DONE(d!)" "CANCELED(c@)")
+              (sequence "NEEDSWORK(w)" "|" "PREPARED(p)")))
     #+END_SRC
+
 *** Capture templates
 
     Load org-protocol and org-capture so we can use these librarie to setup catpuring witing emacs and from else where
