@@ -61,12 +61,13 @@ An elegant editor... for a more civilized age.
 
    Ensure that 'use-package' is installed.
    #+BEGIN_SRC emacs-lisp
-   (if (not (package-installed-p 'use-package))
-   (progn
-       (package-refresh-contents)
-       (package-install 'use-package)))
- 
-    (require 'use-package)
+     (if (not (package-installed-p 'use-package))
+     (progn
+         (package-refresh-contents)
+         (package-install 'use-package)))
+
+     (require 'use-package)
+     (setq use-package-compute-statistics t)
    #+END_SRC
 
    Ensure that 'quelpa' is installed, a dependency for quelpa-use-package, the package we really want
