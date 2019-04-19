@@ -1582,12 +1582,13 @@ An elegant editor... for a more civilized age.
     #+BEGIN_SRC emacs-lisp
       (setq org-refile-targets (append '((org-default-tasks-file :level . 0)
                                          (org-default-ideas-file :level . 0)
+                                         (org-default-archive-file :level . 0)
                                          (org-default-shopping-file :level . 1)
-                                         (org-default-tech-notebook :level . 1)
+                                         (org-default-tech-notebook :level . 2)
                                          (org-default-live-notebook :level . 1)
                                          (org-default-hockey-notebook :level . 1))
                                        (mapcar (lambda (i)
-                                                 (let ((lst '(:level . 0)))
+                                                 (let ((lst '(:level . 1)))
                                                    (push i lst)))
                                                (directory-files org-default-projects-dir t ".org$"))))
     #+END_SRC
