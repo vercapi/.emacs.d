@@ -1594,6 +1594,27 @@ An elegant editor... for a more civilized age.
                                                (directory-files org-default-projects-dir t ".org$"))))
     #+END_SRC
 
+    Create a project file from a header
+    #+BEGIN_SRC emacs-lisp
+      (defun pve/projectfile-from-subtree (projectname)
+        "Create file from org heading. Files will be created n the org-default-projects-dir."
+        (interactive "P")
+        (setq project-name (read-string "Project name: "))
+        (let ((filename (concat
+                          (expand-file-name
+                           project-name
+                           org-default-projects-dir)
+                          ".org")))
+          (print filename)
+          (org-cut-subtree)
+          (find-file-noselect filename)
+          (with-temp-file filename
+            (org-mode)
+            (insert (format "#+TITLE: %s" project-name))
+            (newline 2)
+            (yank))))
+    #+END_SRC
+
 *** Google calendar integration
 
     Synchronize calenders with google calendar.
