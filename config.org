@@ -464,6 +464,13 @@ An elegant editor... for a more civilized age.
       (global-set-key (kbd "C-)") 'xah-forward-right-bracket)
     #+END_SRC
 
+*** Zapping
+
+    #+BEGIN_SRC emacs-lisp
+      (global-set-key (kbd "C-z") 'zap-up-to-char)
+      (global-set-key (kbd "M-z") 'zap-to-char)
+    #+END_SRC
+
 *** Bookmarks
     #+BEGIN_SRC emacs-lisp
       (use-package bm
