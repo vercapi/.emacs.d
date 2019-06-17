@@ -1269,10 +1269,20 @@ An elegant editor... for a more civilized age.
 * Org Mode
 ** Custom key  bindings
 
+   Insert a checkbox
+  #+BEGIN_SRC emacs-lisp
+    (defun pve-org-insert-checkbox ()
+      "Insert an org mode checkbox"
+      (interactive)
+      (insert "- [ ]")
+      (indent-for-tab-command)
+      )
+  #+END_SRC
+
   Hydra for setting up navigation between headers
   and for setting up bookmarkds
   #+BEGIN_SRC emacs-lisp
-    (defun pve-org-nav-hydra ()
+    (defun pve-org-keys ()
       (require 'hydra)
       (defhydra hydra-org-navigation (org-mode-map "<f2>")
         "Org navigation"
@@ -1282,15 +1292,15 @@ An elegant editor... for a more civilized age.
         ("b" org-backward-heading-same-level)
         ("a" helm-org-in-buffer-headings)
         ("u" outline-up-heading)
-        ("t" outline-toggle-children))
+        ("t" outline-toggle-children)
+        ("l" org-kill-note-or-show-branches))
       (local-set-key (kbd "<f7>") 'org-mark-ring-push)
       (local-set-key (kbd "C-<f7>") 'org-mark-ring-goto)
-      (local-set-key (kbd "C-c c") 'org-capture))
+      (local-set-key (kbd "C-c c") 'org-capture)
+      (local-set-key (kbd "C-c x") 'pve-org-insert-checkbox))
+
   #+END_SRC
-
-  #+RESULTS:
-  : pve-org-nav-hydra
-
+  
 ** Babel configuration
   #+BEGIN_SRC emacs-lisp
     (require 'ob-js)
@@ -1318,8 +1328,10 @@ An elegant editor... for a more civilized age.
       :init
       (setq org-confirm-babel-evaluate nil) ;;No need to confirm executing babel code blocks
       (require 'ob-async)
+      (setq org-catch-invisible-edits 'error) ;; Don't edit what is hidden in org mode (e.g. after closed headers)
+      (setq org-cycle-separator-lines 0) ;; No spaces in between headings
       :hook
-      ((org-mode . pve-org-nav-hydra)
+      ((org-mode . pve-org-keys)
        (org-mode . pve-enable-org-bullets)
        (org-mode . helm-mode))
       :after (hydra org-bullets ob-async))
