@@ -1682,16 +1682,6 @@ An elegant editor... for a more civilized age.
     (use-package pocket-api
       :ensure t)
   #+END_SRC
-** Reddit
-
-   Reddit plugin
-   #+BEGIN_SRC emacs-lisp
-     (use-package md4rd
-       :ensure t
-       :config
-       (add-hook 'md4rd-mode-hook 'md4rd-indent-all-the-lines)
-       (setq md4rd-subs-active '(emacs archlinux awesomewm DIY uhk space)))
-   #+END_SRC
 
 * Libraries
 
