@@ -227,11 +227,10 @@ An elegant editor... for a more civilized age.
 
    [[https://pawelbx.github.io/emacs-theme-gallery/][Theme gallery]]
    
-   Using solarized theme as base theme
    #+BEGIN_SRC emacs-lisp
-     (use-package solarized-theme
+     (use-package nord-theme
        :ensure t
-       :config (load-theme 'solarized-dark t))
+       :config (load-theme 'nord t))
    #+END_SRC
 
    Colorize delimters (,[,... different colors for every level
