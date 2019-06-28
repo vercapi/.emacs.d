@@ -1009,6 +1009,14 @@ An elegant editor... for a more civilized age.
     #+BEGIN_SRC emacs-lisp
       (setq sql-sqlite-program "sqlite3")
     #+END_SRC
+** elisp
+
+   EROS emacs inline, in buffer evaluation
+   #+BEGIN_SRC emacs-lisp
+     (use-package eros
+       :ensure t
+       :config (eros-mode 1))
+   #+END_SRC
 * File browsing
 ** Side bar
 
