@@ -427,13 +427,14 @@ An elegant editor... for a more civilized age.
     Flash cursor whenever it jumps to another possition by any command
     #+BEGIN_SRC emacs-lisp
       (use-package beacon
-	:ensure t
-	:config (beacon-mode 1))
+        :ensure t
+        :config (beacon-mode 1))
     #+END_SRC
 
-    Highlight the current line
+    Highlight the current line and set a specific color.
     #+BEGIN_SRC emacs-lisp
       (global-hl-line-mode)
+      (set-face-background 'hl-line "#2f4f4f")
     #+END_SRC
 
 *** Jumping
