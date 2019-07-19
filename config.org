@@ -1027,63 +1027,127 @@ An elegant editor... for a more civilized age.
    
    Install and config the treemacs package.
    #+BEGIN_SRC emacs-lisp
-        (use-package treemacs
-          :ensure t
-          :defer t
-          :after (all-the-icons)
-          :init
-          :config
-          (progn
-            ;; Map the icons of al`'l-the-icons on to the icon mappings of treemacs
-            (dolist (item all-the-icons-icon-alist)
-              (let* ((extension (car item))
-                     (icon (apply (cdr item))))
-                (ht-set! treemacs-icons-hash 
-                         (s-replace-all '(("\\" . "") ("$" . "") ("." . "")) extension)
-                         (concat icon " "))))
-            ;; Set the differnt config options
-            (setq treemacs-collapse-dirs              (if (executable-find "python") 3 0)
-                  treemacs-file-event-delay           5000
-                  treemacs-follow-after-init          t
-                  treemacs-follow-recenter-distance   0.1
-                  treemacs-goto-tag-strategy          'refetch-index
-                  treemacs-indentation                2
-                  treemacs-indentation-string         " "
-                  treemacs-is-never-other-window      nil
-                  treemacs-no-png-images              nil
-                  treemacs-project-follow-cleanup     nil
-                  treemacs-persist-file               (expand-file-name ".cache/treemacs-persist" user-emacs-directory)
-                  treemacs-recenter-after-file-follow nil
-                  treemacs-recenter-after-tag-follow  nil
-                  treemacs-show-hidden-files          t
-                  treemacs-silent-filewatch           nil
-                  treemacs-silent-refresh             nil
-                  treemacs-sorting                    'alphabetic-desc
-                  treemacs-space-between-root-nodes   t
-                  treemacs-tag-follow-cleanup         t
-                  treemacs-tag-follow-delay           1.5
-                  treemacs-width                      35)
+     (use-package treemacs
+       :ensure t
+       :defer t
+       :after (all-the-icons)
+       :init
+       :config
+       (progn
+         ;; Create theme
+         (treemacs-create-theme "pve"
+           :icon-directory (f-join treemacs-dir "icons/default")
+           :config
+           (progn
+             ;; directory and other icons
+             (treemacs-create-icon :icon (all-the-icons-faicon "circle-o")       :extensions (root))
+             (treemacs-create-icon :icon (all-the-icons-faicon "folder")         :extensions (dir-closed))
+             (treemacs-create-icon :icon (all-the-icons-faicon "folder")         :extensions (dir-open))
+             (treemacs-create-icon :icon (all-the-icons-faicon "circle")         :extensions (tag-leaf))
+             (treemacs-create-icon :icon (all-the-icons-faicon "minus-square")   :extensions (tag-open))
+             (treemacs-create-icon :icon (all-the-icons-faicon "plus-square")    :extensions (tag-closed))
+             (treemacs-create-icon :icon (all-the-icons-material "error")        :extensions (error))
+             (treemacs-create-icon :icon (all-the-icons-material "warning")      :extensions (warning))
+             (treemacs-create-icon :icon (all-the-icons-material "info_outline") :extensions (info))
 
-            ;; The default width and height of the icons is 22 pixels. If you are
-            ;; using a Hi-DPI display, uncomment this to double the icon size.
-            ;;(treemacs-resize-icons 44)
+             ;; ;; file icons
+             (treemacs-create-icon :icon (all-the-icons-fileicon "default")         :extensions (fallback))
+             (treemacs-create-icon :icon (all-the-icons-fileicon "emacs")           :extensions ("el" "elc"))
+             (treemacs-create-icon :icon (all-the-icons-icon-for-file "x.yml")      :extensions ("yml" "yaml"))
+             (treemacs-create-icon :icon (all-the-icons-fileicon "powershell")      :extensions ("sh" "zsh" "fish"))
+             (treemacs-create-icon :icon (all-the-icons-octicon "file-pdf")         :extensions ("pdf"))
+             (treemacs-create-icon :icon (all-the-icons-icon-for-file "x.c")        :extensions ("c"))
+             (treemacs-create-icon :icon (all-the-icons-icon-for-file "x.h")        :extensions ("h"))
+             (treemacs-create-icon :icon (all-the-icons-icon-for-file "x.cc")       :extensions ("cpp" "cxx" "cc"))
+             (treemacs-create-icon :icon (all-the-icons-icon-for-file "x.hh")       :extensions ("hpp" "tpp" "hh"))
+             (treemacs-create-icon :icon (all-the-icons-icon-for-file "x.hs")       :extensions ("hs" "lhs" "cabal"))
+             (treemacs-create-icon :icon (all-the-icons-icon-for-file "x.py")       :extensions ("py" "pyc"))
+             (treemacs-create-icon :icon (all-the-icons-icon-for-file "x.md")       :extensions ("md"))
+             (treemacs-create-icon :icon (all-the-icons-icon-for-file "x.rs")       :extensions ("rs"))
+             (treemacs-create-icon :icon (all-the-icons-icon-for-file "x.jpg")      :extensions ("jpg" "jpeg" "bmp" "svg" "png" "xpm" "gif"))
+             (treemacs-create-icon :icon (all-the-icons-icon-for-file "x.clj")      :extensions ("clj" "cljs" "cljc"))
+             (treemacs-create-icon :icon (all-the-icons-icon-for-file "x.ts")       :extensions ("ts" "tsx"))
+             (treemacs-create-icon :icon (all-the-icons-icon-for-file "x.vue")      :extensions ("vue"))
+             (treemacs-create-icon :icon (all-the-icons-icon-for-file "x.css")      :extensions ("css"))
+             (treemacs-create-icon :icon (all-the-icons-icon-for-file "x.ini")      :extensions ("properties" "conf" "config" "cfg" "ini" "xdefaults" "xresources" "terminalrc" "ledgerrc"))
+             (treemacs-create-icon :icon (all-the-icons-icon-for-file "x.html")     :extensions ("html" "htm"))
+             (treemacs-create-icon :icon (all-the-icons-icon-for-file "x.git")      :extensions ("git" "gitignore" "gitconfig" "gitmodules"))
+             (treemacs-create-icon :icon (all-the-icons-icon-for-file "x.java")     :extensions ("java"))
+             (treemacs-create-icon :icon (all-the-icons-icon-for-file "x.kt")       :extensions ("kt"))
+             (treemacs-create-icon :icon (all-the-icons-icon-for-file "x.scala")    :extensions ("scala"))
+             (treemacs-create-icon :icon (all-the-icons-icon-for-file "x.sbt")      :extensions ("sbt"))
+             (treemacs-create-icon :icon (all-the-icons-icon-for-file "x.go")       :extensions ("go"))
+             (treemacs-create-icon :icon (all-the-icons-icon-for-file "x.js")       :extensions ("js" "jsx"))
+             (treemacs-create-icon :icon (all-the-icons-icon-for-file "x.json")     :extensions ("json"))
+             (treemacs-create-icon :icon (all-the-icons-icon-for-file "x.jl")       :extensions ("jl"))
+             (treemacs-create-icon :icon (all-the-icons-icon-for-file "x.ex")       :extensions ("ex"))
+             (treemacs-create-icon :icon (all-the-icons-icon-for-file "x.exs")      :extensions ("exs" "eex"))
+             (treemacs-create-icon :icon (all-the-icons-icon-for-file "x.ml")       :extensions ("ml" "mli"))
+             (treemacs-create-icon :icon (all-the-icons-icon-for-file "Dockerfile") :extensions ("dockerfile"))
+             (treemacs-create-icon :icon (all-the-icons-icon-for-file "x.mov")      :extensions ("webm" "mp4" "avi" "mkv" "flv" "mov" "wmv" "mpg" "mpeg" "mpv"))
+             (treemacs-create-icon :icon (all-the-icons-icon-for-file "x.tex")      :extensions ("tex"))
+             (treemacs-create-icon :icon (all-the-icons-icon-for-file "x.rkt")      :extensions ("racket" "rkt" "rktl" "rktd" "scrbl" "scribble" "plt"))
+             (treemacs-create-icon :icon (all-the-icons-icon-for-file "makefile")   :extensions ("makefile"))
+             (treemacs-create-icon :icon (all-the-icons-icon-for-file "license")    :extensions ("license"))
+             (treemacs-create-icon :icon (all-the-icons-icon-for-file "x.zip")      :extensions ("zip" "7z" "tar" "gz" "rar"))
+             (treemacs-create-icon :icon (all-the-icons-icon-for-file "x.elm")      :extensions ("elm"))
+             (treemacs-create-icon :icon (all-the-icons-icon-for-file "x.xml")      :extensions ("xml" "xsl"))
+             (treemacs-create-icon :icon (all-the-icons-icon-for-file "x.dll")      :extensions ("exe" "dll" "obj" "so" "o"))
+             (treemacs-create-icon :icon (all-the-icons-icon-for-file "x.rb")       :extensions ("rb"))
+             (treemacs-create-icon :icon (all-the-icons-icon-for-file "x.scss")     :extensions ("scss"))
+             (treemacs-create-icon :icon (all-the-icons-icon-for-file "x.lua")      :extensions ("lua"))
+             (treemacs-create-icon :icon (all-the-icons-icon-for-file "x.log")      :extensions ("log"))
+             (treemacs-create-icon :icon (all-the-icons-icon-for-file "x.lisp")     :extensions ("lisp"))
+             (treemacs-create-icon :icon (all-the-icons-icon-for-file "x.sql")      :extensions ("sql"))
+             (treemacs-create-icon :icon (all-the-icons-icon-for-file "x.org")      :extensions ("org"))
+             (treemacs-create-icon :icon (all-the-icons-icon-for-file "x.pl")       :extensions ("pl" "pm" "perl"))
+             (treemacs-create-icon :icon (all-the-icons-icon-for-file "x.r")        :extensions ("r"))
+             (treemacs-create-icon :icon (all-the-icons-icon-for-file "x.re")       :extensions ("re" "rei"))))
+         ;; activate the theme
+         (treemacs-load-theme "pve")
+         ;; Set the differnt config options
+         (setq treemacs-collapse-dirs              (if (executable-find "python") 3 0)
+               treemacs-file-event-delay           5000
+               treemacs-follow-after-init          t
+               treemacs-recenter-distance          0.1
+               treemacs-goto-tag-strategy          'refetch-index
+               treemacs-indentation                2
+               treemacs-indentation-string         " "
+               treemacs-is-never-other-window      nil
+               treemacs-no-png-images              nil
+               treemacs-project-follow-cleanup     nil
+               treemacs-persist-file               (expand-file-name ".cache/treemacs-persist" user-emacs-directory)
+               treemacs-recenter-after-file-follow nil
+               treemacs-recenter-after-tag-follow  nil
+               treemacs-show-hidden-files          t
+               treemacs-silent-filewatch           nil
+               treemacs-silent-refresh             nil
+               treemacs-sorting                    'alphabetic-desc
+               treemacs-space-between-root-nodes   t
+               treemacs-tag-follow-cleanup         t
+               treemacs-tag-follow-delay           1.5
+               treemacs-width                      35)
 
-            (treemacs-follow-mode t)
-            (treemacs-filewatch-mode t)
-            (treemacs-fringe-indicator-mode t)
-            (pcase (cons (not (null (executable-find "git")))
-                         (not (null (executable-find "python3"))))
-              (`(t . t)
-               (treemacs-git-mode 'extended))
-              (`(t . _)
-               (treemacs-git-mode 'simple))))
-          :bind
-          (("M-0"       . treemacs-select-window)
-           ("C-c t 1"   . treemacs-delete-other-windows)
-           ("C-c t t"   . treemacs)
-           ("C-c t B"   . treemacs-bookmark)
-           ("C-c t f" . treemacs-find-file)
-           ("C-c t t" . treemacs-find-tag)))
+         ;; The default width and height of the icons is 22 pixels. If you are
+         ;; using a Hi-DPI display, uncomment this to double the icon size.
+         ;;(treemacs-resize-icons 44)
+
+         (treemacs-follow-mode t)
+         (treemacs-filewatch-mode t)
+         (treemacs-fringe-indicator-mode t)
+         (pcase (cons (not (null (executable-find "git")))
+                      (not (null (executable-find "python3"))))
+           (`(t . t)
+            (treemacs-git-mode 'extended))
+           (`(t . _)
+            (treemacs-git-mode 'simple))))
+       :bind
+       (("M-0"       . treemacs-select-window)
+        ("C-c t 1"   . treemacs-delete-other-windows)
+        ("C-c t t"   . treemacs)
+        ("C-c t B"   . treemacs-bookmark)
+        ("C-c t f" . treemacs-find-file)
+        ("C-c t t" . treemacs-find-tag)))
 
      (use-package treemacs-projectile
        :after treemacs projectile
@@ -1113,20 +1177,6 @@ An elegant editor... for a more civilized age.
       'face-defface-spec)
    #+END_SRC
 
-   When treemacs loads, set project (root), folder and normal text icons.
-   These were not coverd by the automatic mapping in the use-package section
-   #+BEGIN_SRC emacs-lisp
-     (with-eval-after-load "treemacs"
-       (setq treemacs-icon-open-png   (propertize (format "%s " (all-the-icons-material "folder_open"))
-						  'face 'pve-treemacs-directory-icon-face)
-	     treemacs-icon-closed-png (propertize (format "%s " (all-the-icons-material "folder"))
-						  'face 'pve-treemacs-directory-icon-face)
-	     treemacs-icon-root-png (propertize (format "%s " (all-the-icons-material "apps"))
-						'face 'treemacs-root-face)
-	     treemacs-icon-text (propertize (format "%s " (all-the-icons-octicon "file-text"))
-						  'face 'pve-treemacs-file-icon-face)))
-
-   #+END_SRC
 ** Sunrise Commander
 
    Disabled doesn't work on windows, only windows?
