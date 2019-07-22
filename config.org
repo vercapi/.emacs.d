@@ -227,10 +227,16 @@ An elegant editor... for a more civilized age.
 
    [[https://pawelbx.github.io/emacs-theme-gallery/][Theme gallery]]
    
+   Define theme
    #+BEGIN_SRC emacs-lisp
      (use-package nord-theme
        :ensure t
        :config (load-theme 'nord t))
+   #+END_SRC
+
+   Highlight color
+   #+BEGIN_SRC emacs-lisp
+     (defconst pve-highlight-color "#2f4f4f")
    #+END_SRC
 
    Colorize delimters (,[,... different colors for every level
@@ -434,7 +440,7 @@ An elegant editor... for a more civilized age.
     Highlight the current line and set a specific color.
     #+BEGIN_SRC emacs-lisp
       (global-hl-line-mode)
-      (set-face-background 'hl-line "#2f4f4f")
+      (set-face-background 'hl-line pve-highlight-color)
     #+END_SRC
 
 *** Jumping
@@ -1198,6 +1204,8 @@ An elegant editor... for a more civilized age.
     helm-ff-search-library-in-sexp        t ; search for library in `require' and `declare-function' sexp.
     helm-scroll-amount                    8 ; scroll 8 lines other window using M-<next>/M-<prior>
     helm-ff-file-name-history-use-recentf t)
+      (set-face-attribute 'helm-selection nil :background pve-highlight-color)
+      (set-face-attribute 'helm-selection-line nil :background pve-highlight-color)
       :bind (("M-x" . helm-M-x)
        ("C-x b" . helm-mini)
        ("C-x C-f" . helm-find-files)
