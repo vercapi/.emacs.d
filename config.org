@@ -1576,20 +1576,20 @@ An elegant editor... for a more civilized age.
        :SOURCE:%:link
        :END:
 
-       %i
-
-       %?"))
+       %i"))
      #+END_SRC
 
      Capture template when no text is selected.
      #+BEGIN_SRC emacs-lisp
        (add-to-list 'org-capture-templates
                     `("L" "Protocol Link" entry (file, org-default-inbox-file)
-                     "* %? [[%:link][%:description]]
+                     "* [[%:link][%:description]]
        :PROPERTIES:
        :CREATED:%U
        :SOURCE:%:link
-       :END:"))
+       :END:
+
+       %?"))
      #+END_SRC
 
 **** Tasks
