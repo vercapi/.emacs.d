@@ -1507,9 +1507,10 @@ An elegant editor... for a more civilized age.
      (defvar org-default-tech-notebook (concat org-default-notebooks-dir "tech-notebook.org") "Information on technical topcics.")
      (defvar org-default-live-notebook (concat org-default-notebooks-dir "live-notebook.org") "Information on any topics.")
      (defvar org-default-hockey-notebook (concat org-default-notebooks-dir "hockey-notebook.org") "Information on hockey.")
-     (defvar org-default-official-documents-dir (concat org-default-notebooks-dir "documents/") "Directory for official documents, non org files.")
-     (defvar org-default-calendar-dir (concat org-default-dir "calendars/") "Calendar synced files.")
+     (defvar org-default-documents (concat org-default-notebooks-dir "documents.org") "Directory for documents such as PDFs.")
+     (defvar org-default-calendar-dir (concat org-default-dir "calendars/") "Calendar synce;d files.")
      (defvar org-default-archive-file (concat org-default-dir "archive.org") "archive file.")
+     (defvar org-attachments-dir (concat org-default-dir "attachments") "place to store attachments")
    #+END_SRC
 
    Add files that need agenda entries
@@ -1725,6 +1726,20 @@ An elegant editor... for a more civilized age.
                                            (,hockey-calendar-div2 . "~/Dropbox/org/calendars/div2_cal.org")
                                            (,hockey-calendar-u10 . "~/Dropbox/org/calendars/u10_cal.org")
                                            (,kids-calendar . "~/Dropbox/org/calendars/kids.org"))))
+    #+END_SRC
+
+*** Attachments & files
+
+    This enables adding image attachments from external sources (urls, drag&drop, screenshots)
+    This sets default directory but can be overwitten by:
+    -\*- mode: Org; org-download-image-dir: "~/Pictures/foo"; -\*-
+    #+BEGIN_SRC emacs-lisp
+      (use-package org-download
+        :ensure t
+        :config
+        (setq-default org-download-image-dir (concat org-attachments-dir "/default"))
+        ;; Dired support
+        (add-hook 'dired-mode-hook 'org-download-enable))
     #+END_SRC
 
 ** Plugins
