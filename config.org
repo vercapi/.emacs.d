@@ -1507,7 +1507,7 @@ An elegant editor... for a more civilized age.
      (defvar org-default-tech-notebook (concat org-default-notebooks-dir "tech-notebook.org") "Information on technical topcics.")
      (defvar org-default-live-notebook (concat org-default-notebooks-dir "live-notebook.org") "Information on any topics.")
      (defvar org-default-hockey-notebook (concat org-default-notebooks-dir "hockey-notebook.org") "Information on hockey.")
-     (defvar org-default-documents (concat org-default-notebooks-dir "documents.org") "Directory for documents such as PDFs.")
+     (defvar org-default-documents (concat org-default-dir "documents.org") "Directory for documents such as PDFs.")
      (defvar org-default-calendar-dir (concat org-default-dir "calendars/") "Calendar synce;d files.")
      (defvar org-default-archive-file (concat org-default-dir "archive.org") "archive file.")
      (defvar org-attachments-dir (concat org-default-dir "attachments") "place to store attachments")
@@ -1740,6 +1740,17 @@ An elegant editor... for a more civilized age.
         (setq-default org-download-image-dir (concat org-attachments-dir "/default"))
         ;; Dired support
         (add-hook 'dired-mode-hook 'org-download-enable))
+    #+END_SRC
+
+    
+    #+BEGIN_SRC emacs-lisp
+      (defvar )
+
+      (defun pve-save-document (document-path document-location)
+          "Save documents"
+          (with-temp-buffer
+            (find-file org-default-documents)
+            (org-map-entries (lambda () (org-get-heading)) nil 'tree)))
     #+END_SRC
 
 ** Plugins
