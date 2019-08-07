@@ -1733,25 +1733,29 @@ An elegant editor... for a more civilized age.
     This enables adding image attachments from external sources (urls, drag&drop, screenshots)
     This sets default directory but can be overwitten by:
     -\*- mode: Org; org-download-image-dir: "~/Pictures/foo"; -\*-
-    #+BEGIN_SRC emacs-lisp
+   #+BEGIN_SRC emacs-lisp
       (use-package org-download
         :ensure t
         :config
         (setq-default org-download-image-dir (concat org-attachments-dir "/default"))
         ;; Dired support
         (add-hook 'dired-mode-hook 'org-download-enable))
-    #+END_SRC
 
-    
-    #+BEGIN_SRC emacs-lisp
-      (defvar )
+   #+END_SRC
 
-      (defun pve-save-document (document-path document-location)
-          "Save documents"
-          (with-temp-buffer
-            (find-file org-default-documents)
-            (org-map-entries (lambda () (org-get-heading)) nil 'tree)))
-    #+END_SRC
+   Get al the headers in the CMS org file
+   #+BEGIN_SRC emacs-lisp
+     ;; Need to include this for helm-source-org-headings-for-files
+     (require 'org-helm)
+     (defun cms-headers ()
+       "Find org heads for storing documents"
+       (interactive)
+       (with-temp-buffer
+         (org-mode)
+         (helm :sources (helm-source-org-headings-for-files (list org-default-documents))
+               :candidate-number-limit 99999
+               :buffer "*helm CMS*")))
+   #+END_SRC
 
 ** Plugins
 *** magit integration
