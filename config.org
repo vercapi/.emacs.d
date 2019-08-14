@@ -1662,6 +1662,22 @@ An elegant editor... for a more civilized age.
       From: %a"
                      :empty-lines 1))
     #+END_SRC
+
+    #+BEGIN_SRC emacs-lisp
+      (add-to-list 'org-capture-templates 
+                   `("R" "Recipes" entry (file+headline, org-default-life-notebook, "Recepten")
+                     "** %?
+      ,*** Ingredienten
+
+          x personen
+
+          - 
+
+      ,*** bereiding
+
+          - 
+      "))
+    #+END_SRC
     
 *** Refiling
 
