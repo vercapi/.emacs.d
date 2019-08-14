@@ -1743,6 +1743,16 @@ An elegant editor... for a more civilized age.
 
    #+END_SRC
 
+   Move files to location and link them into the CMS org file.
+   #+BEGIN_SRC emacs-lisp
+   
+   #+END_SRC
+
+   Generate preview image from PDF and link into the CMS org file.
+   #+BEGIN_SRC emacs-lisp
+   
+   #+END_SRC
+
    Get al the headers in the CMS org file
    #+BEGIN_SRC emacs-lisp
      ;; Need to include this for helm-source-org-headings-for-files
