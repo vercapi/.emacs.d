@@ -20,10 +20,14 @@ An elegant editor... for a more civilized age.
   #+END_SRC
 
   Setup environment variables
+  Oracle's instaclient so it is accessible for the python runtime
   #+BEGIN_SRC emacs-lisp
-    (setenv "LD_LIBRARY_PATH"
-            (concat "/opt/oracle/instantclient_18_3"
-                    (getenv "LD_LIBRARY_PATH")))
+    (when (pve-env/on-linux)
+      (let ((oracle-instaclient "/opt/oracle/instantclient_18_3")
+            (ld_library_path "LD_LIBRARY_PATH")
+            (seperator ":"))
+        (setenv ld_library_path
+                (concat oracle-instaclient seperator (getenv ld_library_path)))))
   #+END_SRC
 
   Use the gnu core utils from git
