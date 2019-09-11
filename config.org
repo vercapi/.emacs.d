@@ -329,9 +329,15 @@ An elegant editor... for a more civilized age.
 
 ** Working with files  
    
-   Backups of files
+   No backup or autosave files. We want to autosave directly to the file itself
    #+BEGIN_SRC emacs-lisp
-     (setq backup-directory-alist '(("." . "~/.saves/")))
+     (setq make-backup-files nil
+           auto-save-default nil)
+   #+END_SRC
+
+   Auto saving files to the actual file, no backups.
+   #+BEGIN_SRC emacs-lisp
+     (auto-save-visited-mode)
    #+END_SRC
 
    Disable lock files
