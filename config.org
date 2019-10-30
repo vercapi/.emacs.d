@@ -1723,7 +1723,7 @@ An elegant editor... for a more civilized age.
                                          (org-default-archive-file :level . 0)
                                          (org-default-shopping-file :level . 1)
                                          (org-default-tech-notebook :level . 2)
-                                         (org-default-live-notebook :level . 1)
+                                         (org-default-life-notebook :level . 1)
                                          (org-default-hockey-notebook :level . 1))
                                        (mapcar (lambda (i)
                                                  (let ((lst '(:level . 1)))
