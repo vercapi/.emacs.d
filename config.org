@@ -1402,6 +1402,8 @@ An elegant editor... for a more civilized age.
   #+END_SRC
   
 ** Babel configuration
+   
+   Add javascript support to babel
   #+BEGIN_SRC emacs-lisp
     (require 'ob-js)
 
@@ -1410,13 +1412,19 @@ An elegant editor... for a more civilized age.
      '((shell . t) (js . t) (sqlite . t)))
     (add-to-list 'org-babel-tangle-lang-exts '("js" . "js"))
   #+END_SRC
-  
+
+  Add java support to babel
+  #+BEGIN_SRC emacs-lisp
+    (require 'ob-java)
+    (add-to-list 'org-babel-load-languages '(java . t))
+  #+END_SRC
+
   #+BEGIN_SRC emacs-lisp
     (defun pve-enable-org-bullets ()
       (org-bullets-mode 1))
   #+END_SRC
 
-    This package enables asynchronous org babel evaluation
+  This package enables asynchronous org babel evaluation
   #+BEGIN_SRC emacs-lisp
     (use-package ob-async
       :ensure t)
