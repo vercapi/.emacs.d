@@ -720,10 +720,11 @@ An elegant editor... for a more civilized age.
    #+END_SRC
    
 * Source control
+** Magit config
 
   Setting up the function to initialize the message-history and magit integration.
   #+BEGIN_SRC emacs-lisp
-    (defun init-message-history-magit ()
+  (defun init-message-history-magit ()
 	(progn
 	  (defun message-add-magit ()
 	    "This is a helper method that already provides a file"
@@ -733,7 +734,7 @@ An elegant editor... for a more civilized age.
 	    (add-hook 'before-save-hook 'message-add-magit nil t))))
   #+END_SRC
 
-  Using magit for soruce control
+  Using magit for source control
   #+BEGIN_SRC emacs-lisp
     (use-package magit
       :ensure t
@@ -750,6 +751,97 @@ An elegant editor... for a more civilized age.
       :ensure t)
   #+END_SRC	    
   		    
+** Multi git
+
+   Do actions on multiple git objects.
+   A buffer is used to show status/log in a buffer
+
+*** Core
+
+   Core of the multi-git. 
+   - Find all git dirs (emacs-lisp)
+   - Setup the needed state for magit
+   - Execute the function passed
+
+   #+BEGIN_SRC emacs-lisp
+     (defun multi-git-exec (rootdir action)
+       "Run the ACTION function for every git repo in ROOTDIR."
+       (progn
+         (with-current-buffer (get-buffer-create "*Mutlti git log*")
+           (erase-buffer)
+           (insert (concat "Root directory: " rootdir))
+           (newline)
+           (mapc (lambda (dir) (insert (concat "- " dir)) (newline))
+                 (multi-git-dirs rootdir))
+           (newline)
+           (insert (concat "executing function: " (format "%s" action)))
+           (newline 2)
+           (mapc (lambda (dir)
+                     (let ((default-directory (concat rootdir dir)))
+                       (progn
+                         (let ((items (funcall action)))
+                           (if items
+                               (progn
+                                 (insert (concat "* " dir " *"))
+                                 (newline)
+                                 (mapc (lambda (item)
+                                         (insert (format "- %s" item))
+                                         (newline))
+                                       items)
+                                 (newline 2)))))))
+                 (multi-git-dirs rootdir)))))
+   #+END_SRC
+
+   This actually finds all the directories
+   #+BEGIN_SRC emacs-lisp
+     (defun multi-git-dirs (rootdir)
+       "Get all subdirectories that are git repos in ROOTDIR."
+       (seq-filter (lambda (dir)
+                     (magit-git-repo-p (concat rootdir dir)))
+                   (directory-files rootdir)))
+   #+END_SRC
+
+   
+   
+*** Git operators 
+
+    Here are the functions that can be passed to multi-get-exec.
+    In essence these are the actions that will be applied to all git repo's
+    
+    #+BEGIN_SRC emacs-lisp
+      (defun multi-git-switch-to-branch (branch-name)
+        "Switch to specified branch BRANCH-NAME."
+        (let ((old-branch (magit-get-current-branch)))
+          (if branch-name
+              (progn
+                (magit-checkout (format "%s" branch-name))
+                (list (concat "old: " old-branch)
+                      (concat "attempted: " branch-name)
+                      (concat "new: " (magit-get-current-branch)))))))
+    #+END_SRC
+
+*** Interactive functions
+
+    Function actually used by the user
+
+*** Helpers
+
+    This includes functions that can be used from within git operators
+
+    #+BEGIN_SRC emacs-lisp
+      (defun multi-git-get-release-branches ()
+        "Get *local* release branch for repo in DIR. 
+        There should only be one release branch at all times."
+        (mapcar
+         (lambda (item)
+           (replace-regexp-in-string "refs/heads/" "" item))
+         (seq-filter (lambda (item)
+                       (if (and (string-match ".*/release/*" item) (not (string-match "/remotes/" item)))
+                           item))
+                     (magit-list-branches))))
+    #+END_SRC
+    
+
 * Project management
   
   The base of projectmanangement is projectile
