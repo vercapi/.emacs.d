@@ -880,6 +880,24 @@ An elegant editor... for a more civilized age.
     #+END_SRC
     
 
+*** Mode
+
+    Currently this is not really a mode. More helper functions to use in the output
+    #+BEGIN_SRC emacs-lisp
+      (defun multi-git-open-magit-at-point ()
+        (interactive)
+        (search-backward "*" nil t 2)
+        (setq start-repo-name (+ 2 (point)))
+        (search-forward "*" nil t 2)
+        (setq end-repo-name (- (point) 2))
+        (goto-char (point-min))
+        (search-forward ":")
+        (goto-char (+ 1 (point)))
+        (let ((rootdir (buffer-substring (point) (line-end-position)))
+              (repo-name (buffer-substring start-repo-name end-repo-name)))
+          (magit-status (concat rootdir "/" repo-name))))
+    #+END_SRC
+
 * Project management
   
   The base of projectmanangement is projectile
