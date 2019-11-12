@@ -826,6 +826,14 @@ An elegant editor... for a more civilized age.
         (list (format "%s" (magit-get-current-branch))))
     #+END_SRC
 
+    #+BEGIN_SRC emacs-lisp
+      (defun multi-git-fetch ()
+        "Fetch from default-dir, returns number of not pulled commits"
+        (magit-git-fetch "origin" "")
+          (let ((n (cadr (magit-rev-diff-count "HEAD" (magit-get-upstream-branch)))))
+            (list (format "Number of unpulled commits: %s" n))))
+    #+END_SRC
+
 *** Interactive functions
 
     Functions actually used by the user
@@ -833,10 +841,17 @@ An elegant editor... for a more civilized age.
     For all git repos show the currently selected branch
     #+BEGIN_SRC emacs-lisp
       (defun multi-git-current-branches (dir)
-        "Interactive function to switch branch. This can be used switch mulitple branches."
+        "Show current branch for all git repos in DIR."
         (interactive "DRoot directory of repos: ")
-        (message "dir: %s" dir)
         (multi-git-exec dir 'multi-git-show-current-branch-name))
+    #+END_SRC
+
+    Fetch from all repo's
+    #+BEGIN_SRC emacs-lisp
+      (defun multi-git-fetch-from-all (dir)
+        "Fetch for all git repos in DIR."
+        (interactive "DRoot directory of repos: ")
+        (multi-git-exec dir 'multi-git-fetch))
     #+END_SRC
 
 *** Helpers
