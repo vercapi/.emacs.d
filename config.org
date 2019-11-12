@@ -854,6 +854,14 @@ An elegant editor... for a more civilized age.
         (multi-git-exec dir 'multi-git-fetch))
     #+END_SRC
 
+    Switch to a specific branch
+    #+BEGIN_SRC emacs-lisp
+      (defun multi-git-switch-branch (dir branch-name)
+        "Switch all git repos in DIR to BRANCH-NAME."
+        (interactive "DRoot directory of repos: \nsBranch name:")
+        (multi-git-exec dir '(lambda () (multi-git-switch-to-branch branch-name))))
+    #+END_SRC
+
 *** Helpers
 
     This includes functions that can be used from within git operators
