@@ -755,7 +755,7 @@ An elegant editor... for a more civilized age.
 
    Do actions on multiple git objects.
    A buffer is used to show status/log in a buffer
-
+   
 *** Core
 
    Core of the multi-git. 
@@ -828,7 +828,18 @@ An elegant editor... for a more civilized age.
           (let ((n (cadr (magit-rev-diff-count "HEAD" (magit-get-upstream-branch)))))
             (list (format "Number of unpulled commits: %s" n))))
     #+END_SRC
-
+    
+    #+BEGIN_SRC emacs-lisp
+      (defun multi-git-ahead-behind (first-branch second-branch)
+        "Check how much second branch is behind/ahead on the first branch"
+        (list (let ((result (shell-command-to-string (format "git rev-list --left-right --count %s...%s" first-branch second-branch))))
+                (if (string= (car (split-string result " ")) "fatal:")
+                    (format "One or both branches don't exist: %s, %s" first-branch second-branch)
+                  (let ((behind (car (split-string result)))
+                        (ahead (cdr (split-string result))))
+                    (format "%s is %s behind on %s and %s ahead on %s" second-branch behind first-branch ahead first-branch))))))
+    #+END_SRC
+    
 *** Interactive functions
 
     Functions actually used by the user
@@ -855,6 +866,14 @@ An elegant editor... for a more civilized age.
         "Switch all git repos in DIR to BRANCH-NAME."
         (interactive "DRoot directory of repos: \nsBranch name:")
         (multi-git-exec dir '(lambda () (multi-git-switch-to-branch branch-name))))
+    #+END_SRC
+
+    Check the how many commits a branch is ahead/behind another branch
+    #+BEGIN_SRC emacs-lisp
+      (defun multi-git-compare-branches (dir first-branch second-branch)
+        "Compare how far second branch is behind ahead first branch"
+        (interactive "DRoot directory of repos: \nsFirst branch name: \nsSecond branch name:")
+        (multi-git-exec dir '(lambda () (multi-git-ahead-behind first-branch second-branch))))
     #+END_SRC
 
 *** Helpers
@@ -922,6 +941,7 @@ An elegant editor... for a more civilized age.
         (use-local-map multi-git-mode-map)
         (run-hooks 'multi-git-mode-hook))
     #+END_SRC
+
 
 * Project management
   
