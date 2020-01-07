@@ -467,19 +467,18 @@ An elegant editor... for a more civilized age.
     Jump to anywhere you can see.
     Also enables jumping back from where you jumped from
     #+BEGIN_SRC emacs-lisp
-      (use-package ace-jump-mode
-	:ensure t
-	:bind (("C-:" . ace-jump-mode)
-	       ("C-;" . ace-jump-mode-pop-mark))
-	:config (ace-jump-mode-enable-mark-sync))
+      (use-package avy
+        :ensure t
+        :bind (("C-;" . avy-goto-char-timer)
+               ("C-:" . avy-pop-mark)
+               ("C-c g" . avy-goto-line)))
     #+END_SRC
 
     Navigate back to previous changes
     #+BEGIN_SRC emacs-lisp
       (use-package goto-last-change
-	:ensure t
-	:after ace-jump-mode
-	:bind ("C-. " . goto-last-change))
+        :ensure t
+        :bind ("C-. " . goto-last-change))
     #+END_SRC
 
     Parentheses navigation as done by [[http://ergoemacs.org/emacs/emacs_navigating_keys_for_brackets.html][ergo-emacs]]
@@ -492,8 +491,10 @@ An elegant editor... for a more civilized age.
 *** Zapping
 
     #+BEGIN_SRC emacs-lisp
-      (global-set-key (kbd "C-z") 'zap-up-to-char)
-      (global-set-key (kbd "M-z") 'zap-to-char)
+      (use-package avy-zap
+        :ensure t
+        :bind (("C-z" . 'avy-zap-up-to-char)
+               ("M-z" . 'avy-zap-to-char)))
     #+END_SRC
 
 *** Bookmarks
@@ -1586,7 +1587,7 @@ An elegant editor... for a more civilized age.
   #+BEGIN_SRC emacs-lisp
     (defun pve-org-keys ()
       (require 'hydra)
-      (defhydra hydra-org-navigation (org-mode-map "<f2>")
+      (defhydra hydra-org-navigation (org-mode-map "<f12>")
         "Org navigation"
         ("n" outline-next-visible-heading)
         ("p" outline-previous-visible-heading)
@@ -1595,7 +1596,8 @@ An elegant editor... for a more civilized age.
         ("a" helm-org-in-buffer-headings)
         ("u" outline-up-heading)
         ("t" outline-toggle-children)
-        ("l" org-kill-note-or-show-branches))
+        ("l" org-kill-note-or-show-branches)
+        ("s" avy-org-goto-heading-timer)))
       (local-set-key (kbd "<f7>") 'org-mark-ring-push)
       (local-set-key (kbd "C-<f7>") 'org-mark-ring-goto)
       (local-set-key (kbd "C-c c") 'org-capture)
