@@ -712,13 +712,6 @@ An elegant editor... for a more civilized age.
    #+BEGIN_SRC emacs-lisp
      (diminish 'hs-minor-mode)
    #+END_SRC
-
-   Visual aids for code folding in programming modes
-   #+BEGIN_SRC emacs-lisp
-     (use-package hideshowvis
-       :ensure t
-       :hook (prog-mode . hideshowvis-minor-mode))
-   #+END_SRC
    
 * Source control
 ** Magit config
