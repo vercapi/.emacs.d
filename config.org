@@ -936,7 +936,6 @@ An elegant editor... for a more civilized age.
         (run-hooks 'multi-git-mode-hook))
     #+END_SRC
 
-
 * Project management
   
   The base of projectmanangement is projectile
@@ -1594,8 +1593,7 @@ An elegant editor... for a more civilized age.
       (local-set-key (kbd "<f7>") 'org-mark-ring-push)
       (local-set-key (kbd "C-<f7>") 'org-mark-ring-goto)
       (local-set-key (kbd "C-c c") 'org-capture)
-      (local-set-key (kbd "C-c x") 'pve-org-insert-checkbox))
-
+      (local-set-key (kbd "C-c x") 'pve-org-insert-checkbox)
   #+END_SRC
   
 ** Babel configuration
