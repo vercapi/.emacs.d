@@ -733,10 +733,8 @@ An elegant editor... for a more civilized age.
     (use-package magit
       :ensure t
       :bind ("C-x t" . magit-status)
-      :hook ((git-commit-mode . message-commit-setup-magit)
-       (magit-mode . magit-gitflow-mode))
-      :after (message-history magit-gitflow)
-      :init (init-message-history-magit))
+      :hook ((magit-mode . magit-gitflow-mode))
+      :after (magit-gitflow))
   #+END_SRC
 
   Add git flow extension to magit. This enables feature branches etc.
@@ -2018,12 +2016,6 @@ An elegant editor... for a more civilized age.
   #+END_SRC
 
 * Libraries
-** Custom
-  
-  #+BEGIN_SRC emacs-lisp
-    (use-package message-history)
-  #+END_SRC
-
 ** LSP
 
   Language Server Protocol (LSP) integration into emacs.
