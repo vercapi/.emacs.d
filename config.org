@@ -973,6 +973,37 @@ An elegant editor... for a more civilized age.
 		'((restclient . t))))
    #+END_SRC
 
+   In Org mode we want to tangle URI's with parameters, following fucntions allow for thsi
+   #+BEGIN_SRC emacs-lisp
+     (defun pve-get-tangled-result ()
+       "Get the tangled result of a source block 
+     RETURNS the tangled result"
+       (interactive)
+       (progn
+         (let ((tmp-file "/tmp/tangle.tmp"))
+           (org-babel-tangle '(4) tmp-file)
+           (with-temp-buffer
+             (insert-file-contents tmp-file)
+             (buffer-string)))))
+
+   #+END_SRC
+
+   #+BEGIN_SRC emacs-lisp
+     (defun pve-tangle-to-kill-ring ()
+       "Tangle a source block and copy the result to a source block"
+       (interactive)
+       (kill-new (pve-get-tangled-result)))
+   #+END_SRC
+
+   #+BEGIN_SRC emacs-lisp
+     (defun pve-tangle-to-browser-url ()
+       "Tangle a source block and copy it to the browser"
+       (interactive)
+       (progn
+         (require 'browse-url)
+         (browse-url (pve-get-tangled-result))))
+   #+END_SRC
+
 ** javascript
 
 *** An enhanced Javascript mode
