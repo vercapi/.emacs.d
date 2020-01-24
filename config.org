@@ -1149,13 +1149,13 @@ An elegant editor... for a more civilized age.
      (use-package lsp-java
        :ensure t
        :after lsp
-       :config
-       (add-hook 'java-mode-hook  'lsp)
-       (add-hook 'java-mode-hook  'flycheck-mode)
-       (add-hook 'java-mode-hook  'company-mode)
-       (add-hook 'java-mode-hook  (lambda () (lsp-ui-flycheck-enable t)))
-       (add-hook 'java-mode-hook  'lsp-ui-sideline-mode)
-       (add-hook 'java-mode-hook  'yas-minor-mode))
+       :hook
+       (java-mode-hook . lsp)
+       (java-mode-hook . flycheck-mode)
+       (java-mode-hook . company-mode)
+       (java-mode-hook . (lambda () (lsp-ui-flycheck-enable t)))
+       (java-mode-hook . lsp-ui-sideline-mode)
+       (java-mode-hook . yas-minor-mode))
    #+END_SRC
 
    Templates for java snippets
