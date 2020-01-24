@@ -1664,6 +1664,7 @@ An elegant editor... for a more civilized age.
       (require 'ob-async)
       (setq org-catch-invisible-edits 'error) ;; Don't edit what is hidden in org mode (e.g. after closed headers)
       (setq org-cycle-separator-lines 0) ;; No spaces in between headings
+      (require 'org-tempo) ;; Get easy template completion with TAB
       :hook
       ((org-mode . pve-org-keys)
        (org-mode . pve-enable-org-bullets)
