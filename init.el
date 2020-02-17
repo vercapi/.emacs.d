@@ -8,7 +8,6 @@
 (require 'org)
 (require 'ob-tangle)
 (org-babel-load-file (expand-file-name "~/.emacs.d/config.org"))
-(put 'dired-find-alternate-file 'disabled nil)
 (put 'upcase-region 'disabled nil)
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
@@ -23,6 +22,18 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(default ((t (:family "ProggyVector" :foundry "PfEd" :slant normal :weight normal :height 120 :width normal))))
+ '(minimap-font-face ((t (:height 40 :family "ProggyVector"))))
+ '(mode-line ((t (:family "ProggyVector" :foundry "PfEd" :slant normal :weight normal :height 120 :width normal))))
+ '(org-level-1 ((t (:font "ProggyVector"))))
+ '(org-level-2 ((t (:font "ProggyVector"))))
+ '(org-level-3 ((t (:font "ProggyVector"))))
+ '(org-level-4 ((t (:font "ProggyVector"))))
+ '(org-level-5 ((t (:font "ProggyVector"))))
+ '(org-level-6 ((t (:font "ProggyVector"))))
+ '(org-level-7 ((t (:font "ProggyVector"))))
+ '(org-level-8 ((t (:font "ProggyVector"))))
  '(treemacs-directory-face ((t :inherit default)))
  '(treemacs-git-untracked-face ((t :inherit default))))
 (put 'narrow-to-region 'disabled nil)
+(put 'dired-find-alternate-file 'disabled nil)
