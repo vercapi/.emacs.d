@@ -1178,13 +1178,13 @@ An elegant editor... for a more civilized age.
      (use-package lsp-java
        :ensure t
        :after lsp
-       :hook
-       (java-mode-hook . lsp)
-       (java-mode-hook . flycheck-mode)
-       (java-mode-hook . company-mode)
-       (java-mode-hook . (lambda () (lsp-ui-flycheck-enable t)))
-       (java-mode-hook . lsp-ui-sideline-mode)
-       (java-mode-hook . yas-minor-mode))
+       :hook ((java-mode . lsp)
+              (java-mode . flycheck-mode)
+              (java-mode . company-mode)
+              (java-mode . (lambda () (lsp-ui-flycheck-enable t)))
+              (java-mode . lsp-ui-sideline-mode)
+              (java-mode . yas-minor-mode)
+              (java-mode . (lambda () (setq c-basic-offset 2)))))
    #+END_SRC
 
    Templates for java snippets
@@ -1426,6 +1426,15 @@ An elegant editor... for a more civilized age.
        :quelpa (sunrise-commander :fetcher github :repo "escherdragon/sunrise-commander")))
    #+END_SRC
    
+** Dired config
+   
+   Sorting for dired
+   #+begin_src emacs-lisp
+     (use-package dired-quick-sort
+       :ensure t
+       :config (dired-quick-sort-setup))
+   #+end_src
+
 * Utils
 ** Helm
 
