@@ -194,7 +194,7 @@ An elegant editor... for a more civilized age.
    This is based on std configuration. So if emacs adds this again in init.el or .emacs things might break and this needs to be update manually
 
    [[https://github.com/bluescan/proggyfonts/][Proggy Vector]] font was downloaded from [[https://app.programmingfonts.org/][programming fonts]].
-
+   
    #+BEGIN_SRC emacs-lisp
      (custom-set-faces
       '(default ((t (:family "ProggyVector" :foundry "PfEd" :slant normal :weight normal :height 120 :width normal))))
@@ -712,26 +712,7 @@ An elegant editor... for a more civilized age.
      (diminish 'hs-minor-mode)
    #+END_SRC
 
-   Visual aids for code folding in programming modes
-   #+BEGIN_SRC emacs-lisp
-     (use-package hideshowvis
-       :ensure t
-       :hook (prog-mode . hideshowvis-minor-mode))
-   #+END_SRC
-   
 * Source control
-
-  Setting up the function to initialize the message-history and magit integration.
-  #+BEGIN_SRC emacs-lisp
-    (defun init-message-history-magit ()
-	(progn
-	  (defun message-add-magit ()
-	    "This is a helper method that already provides a file"
-	    (message-history/add message-history/message-history-file))
-	  (defun message-commit-setup-magit ()
-	    "This method needs to called for setting up the git-commit-mode hook it will set up a hook only when the magit commit buffer is activated"
-	    (add-hook 'before-save-hook 'message-add-magit nil t))))
-  #+END_SRC
 
   Using magit for soruce control
   #+BEGIN_SRC emacs-lisp
