@@ -464,19 +464,18 @@ An elegant editor... for a more civilized age.
     Jump to anywhere you can see.
     Also enables jumping back from where you jumped from
     #+BEGIN_SRC emacs-lisp
-      (use-package ace-jump-mode
-	:ensure t
-	:bind (("C-:" . ace-jump-mode)
-	       ("C-;" . ace-jump-mode-pop-mark))
-	:config (ace-jump-mode-enable-mark-sync))
+      (use-package avy
+        :ensure t
+        :bind (("C-;" . avy-goto-char-timer)
+               ("C-:" . avy-pop-mark)
+               ("C-c g" . avy-goto-line)))
     #+END_SRC
 
     Navigate back to previous changes
     #+BEGIN_SRC emacs-lisp
       (use-package goto-last-change
-	:ensure t
-	:after ace-jump-mode
-	:bind ("C-. " . goto-last-change))
+        :ensure t
+        :bind ("C-. " . goto-last-change))
     #+END_SRC
 
     Parentheses navigation as done by [[http://ergoemacs.org/emacs/emacs_navigating_keys_for_brackets.html][ergo-emacs]]
@@ -489,8 +488,10 @@ An elegant editor... for a more civilized age.
 *** Zapping
 
     #+BEGIN_SRC emacs-lisp
-      (global-set-key (kbd "C-z") 'zap-up-to-char)
-      (global-set-key (kbd "M-z") 'zap-to-char)
+      (use-package avy-zap
+        :ensure t
+        :bind (("C-z" . 'avy-zap-up-to-char)
+               ("M-z" . 'avy-zap-to-char)))
     #+END_SRC
 
 *** Bookmarks
@@ -677,7 +678,8 @@ An elegant editor... for a more civilized age.
        :ensure t
        :bind ("C-x u" . undo-tree-visualize)
        :config (setq undo-tree-visualizer-relative-timestamps t
-		     undo-tree-visualizer-timestamps t))
+                     undo-tree-visualizer-timestamps t
+                     undo-tree-enable-undo-in-region t))
    #+END_SRC
 ** Text format
 
@@ -710,6 +712,7 @@ An elegant editor... for a more civilized age.
    #+END_SRC
 
 * Source control
+** Magit config
 
   Using magit for soruce control
   #+BEGIN_SRC emacs-lisp
@@ -726,6 +729,197 @@ An elegant editor... for a more civilized age.
       :ensure t)
   #+END_SRC	    
   		    
+** Multi git
+
+   Do actions on multiple git objects.
+   A buffer is used to show status/log in a buffer
+   
+*** Core
+
+   Core of the multi-git. 
+   - Find all git dirs (emacs-lisp)
+   - Setup the needed state for magit
+   - Execute the function passed
+
+   #+BEGIN_SRC emacs-lisp
+     (defun multi-git-exec (rootdir action)
+       "Run the ACTION function for every git repo in ROOTDIR."
+       (progn
+         (with-current-buffer (get-buffer-create "*Multi git log*")
+           (multi-git-mode)
+           (let ((inhibit-read-only t))
+             (erase-buffer)
+             (insert (concat "Root directory: " rootdir))
+             (newline 2)
+             (mapc (lambda (dir)
+                     (let ((default-directory (concat rootdir dir)))
+                       (progn
+                         (let ((items (funcall action)))
+                           (if items
+                               (progn
+                                 (insert (concat "* " dir " *"))
+                                 (newline)
+                                 (mapc (lambda (item)
+                                         (insert (format "- %s" item))
+                                         (newline))
+                                       items)
+                                 (newline 2)))))))
+                   (multi-git-dirs rootdir))))))
+   #+END_SRC
+
+   This actually finds all the directories
+   #+BEGIN_SRC emacs-lisp
+     (defun multi-git-dirs (rootdir)
+       "Get all subdirectories that are git repos in ROOTDIR."
+       (seq-filter (lambda (dir)
+                     (magit-git-repo-p (concat rootdir dir)))
+                   (directory-files rootdir)))
+   #+END_SRC
+   
+*** Git operators 
+
+    Here are the functions that can be passed to multi-get-exec.
+    In essence these are the actions that will be applied to all git repo's
+    
+    #+BEGIN_SRC emacs-lisp
+      (defun multi-git-switch-to-branch (branch-name)
+        "Switch to specified branch BRANCH-NAME."
+        (let ((old-branch (magit-get-current-branch)))
+          (if branch-name
+              (progn
+                (magit-checkout (format "%s" branch-name))
+                (list (concat "old: " old-branch)
+                      (concat "attempted: " branch-name)
+                      (concat "new: " (magit-get-current-branch)))))))
+    #+END_SRC
+
+    #+BEGIN_SRC emacs-lisp
+      (defun multi-git-show-current-branch-name ()
+        "Show current brach name"
+        (list (format "%s" (magit-get-current-branch))))
+    #+END_SRC
+
+    #+BEGIN_SRC emacs-lisp
+      (defun multi-git-fetch ()
+        "Fetch from default-dir, returns number of not pulled commits"
+        (magit-git-fetch "origin" "")
+          (let ((n (cadr (magit-rev-diff-count "HEAD" (magit-get-upstream-branch)))))
+            (list (format "Number of unpulled commits: %s" n))))
+    #+END_SRC
+    
+    #+BEGIN_SRC emacs-lisp
+      (defun multi-git-ahead-behind (first-branch second-branch)
+        "Check how much second branch is behind/ahead on the first branch"
+        (list (let ((result (shell-command-to-string (format "git rev-list --left-right --count %s...%s" first-branch second-branch))))
+                (if (string= (car (split-string result " ")) "fatal:")
+                    (format "One or both branches don't exist: %s, %s" first-branch second-branch)
+                  (let ((behind (car (split-string result)))
+                        (ahead (cdr (split-string result))))
+                    (format "%s is %s behind on %s and %s ahead on %s" second-branch behind first-branch ahead first-branch))))))
+    #+END_SRC
+    
+*** Interactive functions
+
+    Functions actually used by the user
+
+    For all git repos show the currently selected branch
+    #+BEGIN_SRC emacs-lisp
+      (defun multi-git-current-branches (dir)
+        "Show current branch for all git repos in DIR."
+        (interactive "DRoot directory of repos: ")
+        (multi-git-exec dir 'multi-git-show-current-branch-name))
+    #+END_SRC
+
+    Fetch from all repo's
+    #+BEGIN_SRC emacs-lisp
+      (defun multi-git-fetch-from-all (dir)
+        "Fetch for all git repos in DIR."
+        (interactive "DRoot directory of repos: ")
+        (multi-git-exec dir 'multi-git-fetch))
+    #+END_SRC
+
+    Switch to a specific branch
+    #+BEGIN_SRC emacs-lisp
+      (defun multi-git-switch-branch (dir branch-name)
+        "Switch all git repos in DIR to BRANCH-NAME."
+        (interactive "DRoot directory of repos: \nsBranch name:")
+        (multi-git-exec dir '(lambda () (multi-git-switch-to-branch branch-name))))
+    #+END_SRC
+
+    Check the how many commits a branch is ahead/behind another branch
+    #+BEGIN_SRC emacs-lisp
+      (defun multi-git-compare-branches (dir first-branch second-branch)
+        "Compare how far second branch is behind ahead first branch"
+        (interactive "DRoot directory of repos: \nsFirst branch name: \nsSecond branch name:")
+        (multi-git-exec dir '(lambda () (multi-git-ahead-behind first-branch second-branch))))
+    #+END_SRC
+
+*** Helpers
+
+    This includes functions that can be used from within git operators
+
+    #+BEGIN_SRC emacs-lisp
+      (defun multi-git-get-release-branches ()
+        "Get *local* release branch for repo in DIR. 
+        There should only be one release branch at all times."
+        (mapcar
+         (lambda (item)
+           (replace-regexp-in-string "refs/heads/" "" item))
+         (seq-filter (lambda (item)
+                       (if (and (string-match ".*/release/*" item) (not (string-match "/remotes/" item)))
+                           item))
+                     (magit-list-branches))))
+    #+END_SRC
+    
+
+*** Mode
+
+    
+    Function to open magit status buffer for the git repo shown in the multi-git buffer
+    #+BEGIN_SRC emacs-lisp
+      (defun multi-git-open-magit-at-point ()
+        "Open magit buffer for repository the point is at in the multi-git buffer"
+        (interactive)
+        (save-excursion
+          (search-backward "*" nil t 2)
+          (setq start-repo-name (+ 2 (point)))
+          (search-forward "*" nil t 2)
+          (setq end-repo-name (- (point) 2))
+          (goto-char (point-min))
+          (search-forward ":")
+          (goto-char (+ 1 (point)))
+          (let ((rootdir (buffer-substring (point) (line-end-position)))
+                (repo-name (buffer-substring start-repo-name end-repo-name)))
+            (magit-status (concat rootdir "/" repo-name)))))
+    #+END_SRC
+
+    Hooks for multi-git-mode
+    #+BEGIN_SRC emacs-lisp
+      (defvar multi-git-mode-hook nil
+        "Hook for multi-git mode run once the mode is loaded")
+    #+END_SRC
+
+    Keymap for multi-git-mode
+    #+BEGIN_SRC emacs-lisp
+      (defvar multi-git-mode-map
+        (let ((map (make-keymap)))
+          (define-key map "t" 'multi-git-open-magit-at-point)
+          map)
+        "Keymap for multi-git major mode")
+    #+END_SRC
+
+    Entry function for the multi-git-mode
+    #+BEGIN_SRC emacs-lisp
+      (define-derived-mode multi-git-mode special-mode "multi-git"
+        "A major mode for managing multiple git repostiories."
+        (buffer-disable-undo)
+        (setq truncate-lines t)
+        (setq buffer-read-only t)
+        (setq show-trailing-whitespace nil)
+        (use-local-map multi-git-mode-map)
+        (run-hooks 'multi-git-mode-hook))
+    #+END_SRC
+
 * Project management
   
   The base of projectmanangement is projectile
@@ -761,6 +955,37 @@ An elegant editor... for a more civilized age.
        :config (org-babel-do-load-languages
 		'org-babel-load-languages
 		'((restclient . t))))
+   #+END_SRC
+
+   In Org mode we want to tangle URI's with parameters, following fucntions allow for thsi
+   #+BEGIN_SRC emacs-lisp
+     (defun pve-get-tangled-result ()
+       "Get the tangled result of a source block 
+     RETURNS the tangled result"
+       (interactive)
+       (progn
+         (let ((tmp-file "/tmp/tangle.tmp"))
+           (org-babel-tangle '(4) tmp-file)
+           (with-temp-buffer
+             (insert-file-contents tmp-file)
+             (buffer-string)))))
+
+   #+END_SRC
+
+   #+BEGIN_SRC emacs-lisp
+     (defun pve-tangle-to-kill-ring ()
+       "Tangle a source block and copy the result to a source block"
+       (interactive)
+       (kill-new (pve-get-tangled-result)))
+   #+END_SRC
+
+   #+BEGIN_SRC emacs-lisp
+     (defun pve-tangle-to-browser-url ()
+       "Tangle a source block and copy it to the browser"
+       (interactive)
+       (progn
+         (require 'browse-url)
+         (browse-url (pve-get-tangled-result))))
    #+END_SRC
 
 ** javascript
@@ -939,12 +1164,13 @@ An elegant editor... for a more civilized age.
      (use-package lsp-java
        :ensure t
        :after lsp
-       :config
-       (add-hook 'java-mode-hook  'lsp)
-       (add-hook 'java-mode-hook  'flycheck-mode)
-       (add-hook 'java-mode-hook  'company-mode)
-       (add-hook 'java-mode-hook  (lambda () (lsp-ui-flycheck-enable t)))
-       (add-hook 'java-mode-hook  'lsp-ui-sideline-mode))
+       :hook ((java-mode . lsp)
+              (java-mode . flycheck-mode)
+              (java-mode . company-mode)
+              (java-mode . (lambda () (lsp-ui-flycheck-enable t)))
+              (java-mode . lsp-ui-sideline-mode)
+              (java-mode . yas-minor-mode)
+              (java-mode . (lambda () (setq c-basic-offset 2)))))
    #+END_SRC
 
    Templates for java snippets
@@ -1186,6 +1412,15 @@ An elegant editor... for a more civilized age.
        :quelpa (sunrise-commander :fetcher github :repo "escherdragon/sunrise-commander")))
    #+END_SRC
    
+** Dired config
+   
+   Sorting for dired
+   #+begin_src emacs-lisp
+     (use-package dired-quick-sort
+       :ensure t
+       :config (dired-quick-sort-setup))
+   #+end_src
+
 * Utils
 ** Helm
 
@@ -1336,6 +1571,14 @@ An elegant editor... for a more civilized age.
      (use-package rfc-mode
        :ensure t)
    #+END_SRC
+** Lyrics
+
+   Just download and see song lyrics within emacs
+   #+BEGIN_SRC emacs-lisp
+     (use-package lyrics
+       :ensure t)
+   #+END_SRC
+   
 * Org Mode
 ** Custom key  bindings
 
@@ -1360,7 +1603,7 @@ An elegant editor... for a more civilized age.
   #+BEGIN_SRC emacs-lisp
     (defun pve-org-keys ()
       (require 'hydra)
-      (defhydra hydra-org-navigation (org-mode-map "<f2>")
+      (defhydra hydra-org-navigation (org-mode-map "<f12>")
         "Org navigation"
         ("n" outline-next-visible-heading)
         ("p" outline-previous-visible-heading)
@@ -1369,15 +1612,17 @@ An elegant editor... for a more civilized age.
         ("a" helm-org-in-buffer-headings)
         ("u" outline-up-heading)
         ("t" outline-toggle-children)
-        ("l" org-kill-note-or-show-branches))
+        ("l" org-kill-note-or-show-branches)
+        ("s" avy-org-goto-heading-timer)))
       (local-set-key (kbd "<f7>") 'org-mark-ring-push)
       (local-set-key (kbd "C-<f7>") 'org-mark-ring-goto)
       (local-set-key (kbd "C-c c") 'org-capture)
-      (local-set-key (kbd "C-c x") 'pve-org-insert-checkbox))
-
+      (local-set-key (kbd "C-c x") 'pve-org-insert-checkbox)
   #+END_SRC
   
 ** Babel configuration
+   
+   Add javascript support to babel
   #+BEGIN_SRC emacs-lisp
     (require 'ob-js)
 
@@ -1386,13 +1631,19 @@ An elegant editor... for a more civilized age.
      '((shell . t) (js . t) (sqlite . t)))
     (add-to-list 'org-babel-tangle-lang-exts '("js" . "js"))
   #+END_SRC
-  
+
+  Add java support to babel
+  #+BEGIN_SRC emacs-lisp
+    (require 'ob-java)
+    (add-to-list 'org-babel-load-languages '(java . t))
+  #+END_SRC
+
   #+BEGIN_SRC emacs-lisp
     (defun pve-enable-org-bullets ()
       (org-bullets-mode 1))
   #+END_SRC
 
-    This package enables asynchronous org babel evaluation
+  This package enables asynchronous org babel evaluation
   #+BEGIN_SRC emacs-lisp
     (use-package ob-async
       :ensure t)
@@ -1406,6 +1657,7 @@ An elegant editor... for a more civilized age.
       (require 'ob-async)
       (setq org-catch-invisible-edits 'error) ;; Don't edit what is hidden in org mode (e.g. after closed headers)
       (setq org-cycle-separator-lines 0) ;; No spaces in between headings
+      (require 'org-tempo) ;; Get easy template completion with TAB
       :hook
       ((org-mode . pve-org-keys)
        (org-mode . pve-enable-org-bullets)
@@ -1430,7 +1682,9 @@ An elegant editor... for a more civilized age.
                   (push '("NEEDSWORK" . ?) prettify-symbols-alist)
                   (push '("#+TITLE:" . ?) prettify-symbols-alist)
                   (push '("#+BEGIN_SRC" . ?) prettify-symbols-alist)
+                  (push '("#+begin_src" . ?) prettify-symbols-alist)
                   (push '("#+END_SRC" . ?) prettify-symbols-alist)
+                  (push '("#+end_src" . ?) prettify-symbols-alist)
                   (prettify-symbols-mode))))
    #+END_SRC
 
@@ -1699,7 +1953,7 @@ An elegant editor... for a more civilized age.
                                          (org-default-archive-file :level . 0)
                                          (org-default-shopping-file :level . 1)
                                          (org-default-tech-notebook :level . 2)
-                                         (org-default-live-notebook :level . 1)
+                                         (org-default-life-notebook :level . 1)
                                          (org-default-hockey-notebook :level . 1))
                                        (mapcar (lambda (i)
                                                  (let ((lst '(:level . 1)))
