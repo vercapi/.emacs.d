@@ -1246,6 +1246,31 @@ An elegant editor... for a more civilized age.
        :ensure t
        :config (eros-mode 1))
    #+END_SRC
+** Saltstack
+
+   #+begin_src emacs-lisp
+     (use-package salt-mode
+       :ensure t)
+   #+end_src
+** Haskell
+   
+   #+begin_src emacs-lisp 
+     (use-package haskell-mode
+       :ensure t)
+   #+end_src
+
+* Drawing
+** UML
+   
+   #+begin_src emacs-lisp
+     (use-package plantuml-mode
+       :ensure t
+       :init
+       (setq org-plantuml-jar-path (expand-file-name "/usr/share/java/plantuml/plantuml.jar"))
+       (add-to-list 'org-src-lang-modes '("plantuml" . plantuml))
+       (org-babel-do-load-languages 'org-babel-load-languages '((plantuml . t))))
+   #+end_src
+
 * File browsing
 ** Side bar
 
