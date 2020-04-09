@@ -1586,9 +1586,10 @@ An elegant editor... for a more civilized age.
        (let ((data (helm-lastpass-source)))
          (helm :sources (helm-build-sync-source "test"
                           :candidates data
-                          :action (lambda (candidate) (kill-new (lastpass-getpass (car candidate)))))
+                          :action (lambda (candidate) (insert (lastpass-getpass (car candidate)))))
                :buffer "*helm lastpass*")))
    #+END_SRC
+
 ** RFC mode
 
    Read/search RFC documents directly from emacs
