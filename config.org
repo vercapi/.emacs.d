@@ -1,7 +1,5 @@
 #+TITLE: Emacs Configuration 
 
-  
-
 An elegant editor... for a more civilized age.
 
 * Environment
@@ -587,7 +585,7 @@ An elegant editor... for a more civilized age.
        :diminish company-mode
        :hook (after-init . global-company-mode)
        :bind ("C-<tab>" . company-complete)
-       :init (setq company-minimum-prefix-length 2
+       :init (setq company-minimum-prefix-length 1
                    company-dabbrev-downcase nil
                    company-idle-delay 0
                    company-global-modes '(not eshell-mode)))
@@ -1258,6 +1256,12 @@ An elegant editor... for a more civilized age.
    
    #+begin_src emacs-lisp 
      (use-package haskell-mode
+       :ensure t)
+   #+end_src
+** Clojure
+
+   #+begin_src emacs-lisp
+     (use-package cider
        :ensure t)
    #+end_src
 
