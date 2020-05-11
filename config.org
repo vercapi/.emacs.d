@@ -710,6 +710,13 @@ An elegant editor... for a more civilized age.
    #+BEGIN_SRC emacs-lisp
      (diminish 'hs-minor-mode)
    #+END_SRC
+** Minibuffer
+
+   Enable the use of minibuffer commands in the minibuffer
+   e.g. call on helm-lastpass when inserting password in the minibuffer
+   #+begin_src emacs-lisp
+     (setq enable-recursive-minibuffers t)
+   #+end_src
 
 * Source control
 ** Magit config
