@@ -1471,12 +1471,13 @@ An elegant editor... for a more civilized age.
     (use-package helm
       :ensure t
       :diminish Helm 
-     :config
+      :config
       (setq helm-split-window-in-side-p           t ; open helm buffer inside current window, not occupy whole other window
             helm-move-to-line-cycle-in-source     t ; move to end or beginning of source when reaching top or bottom of source.
             helm-ff-search-library-in-sexp        t ; search for library in `require' and `declare-function' sexp.
             helm-scroll-amount                    8 ; scroll 8 lines other window using M-<next>/M-<prior>
-            helm-ff-file-name-history-use-recentf t)
+            helm-ff-file-name-history-use-recentf t ; use recentf-list instead of file-name-history
+            helm-follow-input-idle-delay 0.5)
       (set-face-attribute 'helm-selection nil :background pve-highlight-color)
       (set-face-attribute 'helm-selection-line nil :background pve-highlight-color)
       (customize-set-variable 'helm-ff-lynx-style-map t)
