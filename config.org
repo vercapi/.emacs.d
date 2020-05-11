@@ -881,12 +881,11 @@ An elegant editor... for a more civilized age.
 
 *** Mode
 
-    
-    Function to open magit status buffer for the git repo shown in the multi-git buffer
-    #+BEGIN_SRC emacs-lisp
-      (defun multi-git-open-magit-at-point ()
-        "Open magit buffer for repository the point is at in the multi-git buffer"
-        (interactive)
+    Do any anctions on the current repo in the mulit-git buffer
+    #+begin_src emacs-lisp
+      (defun multi-git-action-for-repo (action)
+        "Do any actions on the current repo in the multi-git buffer
+      ACTION is the fucnton to call accepts the rootdir as parameter"
         (save-excursion
           (search-backward "*" nil t 2)
           (setq start-repo-name (+ 2 (point)))
@@ -895,10 +894,47 @@ An elegant editor... for a more civilized age.
           (goto-char (point-min))
           (search-forward ":")
           (goto-char (+ 1 (point)))
+          (print action)
           (let ((rootdir (buffer-substring (point) (line-end-position)))
                 (repo-name (buffer-substring start-repo-name end-repo-name)))
-            (magit-status (concat rootdir "/" repo-name)))))
+            (funcall action (concat rootdir "/" repo-name)))))
+    #+end_src
+
+    Function to open magit status buffer for the git repo shown in the multi-git buffer
+    #+BEGIN_SRC emacs-lisp
+      (defun multi-git-open-magit-at-point ()
+          "Open magit buffer for repository the point is at in the multi-git buffer"
+          (interactive)
+          (multi-git-action-for-repo 'multi-git-status-single))
     #+END_SRC
+
+    Fucntion to let a user push the repo to the configured remote
+    #+begin_src emacs-lisp 
+      (defun multi-git-push-to-remote-at-point ()
+        "Push the current branch at point to it's configured remote"
+        (interactive)
+        (multi-git-action-for-repo 'multi-git-push-single))
+    #+end_src
+
+
+    How we need to check the status in magit
+    #+begin_src emacs-lisp
+      (defun multi-git-status-single (reponame)
+        "Show the status screen of the current repo"
+        (magit-status reponame))
+    #+end_src
+
+    How we need to do the pus in magit
+    #+begin_src emacs-lisp
+      (defun multi-git-push-single (reponame)
+        "Push multi git selected repo to it's configured push remote"
+        (print (concat "push: "reponame))
+        (let ((default-directory reponame))
+          (magit-run-git-async "push" "-v" "-u" "origin" (magit-get-current-branch))))
+    #+end_src
+
+    #+RESULTS:
+    : multi-git-push-single
 
     Hooks for multi-git-mode
     #+BEGIN_SRC emacs-lisp
@@ -914,6 +950,12 @@ An elegant editor... for a more civilized age.
           map)
         "Keymap for multi-git major mode")
     #+END_SRC
+
+    Add aditional keys
+    This doesn't need a restart from emacs as it updates the map instead of defining as in the statement above.
+    #+begin_src emacs-lisp
+      (define-key multi-git-mode-map "p" 'multi-git-push-to-remote-at-point)
+    #+end_src
 
     Entry function for the multi-git-mode
     #+BEGIN_SRC emacs-lisp
