@@ -1435,6 +1435,18 @@ An elegant editor... for a more civilized age.
       'face-defface-spec)
    #+END_SRC
 
+   Custom fucntion to add projects in a dir in buld to the current treemacs workspace
+   #+begin_src emacs-lisp
+     (defun pve-add-subdirs-to-project (base-path)
+       "Add all folders of this subdir as projects to the current workspace"
+         (let ((path base-path))
+           (mapc (lambda (project)
+                   (if (not (or (string= project ".") (string= project "..")))
+                       (progn (print (format "%s/%s" (concat path project) project))
+                              (treemacs-do-add-project-to-workspace (concat path project) project))))
+                 (directory-files path))))
+   #+end_src
+
 ** Sunrise Commander
 
    Disabled doesn't work on windows, only windows?
