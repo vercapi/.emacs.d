@@ -1163,7 +1163,7 @@ An elegant editor... for a more civilized age.
    #+BEGIN_SRC emacs-lisp
      (use-package lsp-java
        :ensure t
-       :after lsp
+       :after lsp-mode
        :hook ((java-mode . lsp)
               (java-mode . flycheck-mode)
               (java-mode . company-mode)
@@ -1487,7 +1487,8 @@ An elegant editor... for a more civilized age.
              ("M-y" . helm-show-kill-ring)
              :map helm-map
              ("<tab>" . helm-execute-persistent-action)
-             ("C-z" . helm-select-action)))
+             ("C-z" . helm-select-action))
+      :init (helm-mode))
   #+END_SRC
 	
 ** Hydra
