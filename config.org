@@ -721,9 +721,10 @@ An elegant editor... for a more civilized age.
      (use-package undo-tree
        :ensure t
        :bind ("C-x u" . undo-tree-visualize)
-       :config (setq undo-tree-visualizer-relative-timestamps t
+       :config (setq undo-tree-visualizer-relative-timestamps nil
                      undo-tree-visualizer-timestamps t
-                     undo-tree-enable-undo-in-region t))
+                     undo-tree-enable-undo-in-region t)
+                (global-undo-tree-mode))
    #+END_SRC
 ** Text format
 
