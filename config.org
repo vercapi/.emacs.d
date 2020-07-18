@@ -1720,6 +1720,29 @@ An elegant editor... for a more civilized age.
      (use-package lyrics
        :ensure t)
    #+END_SRC
+** Proced extension
+
+   Utilities to work within the proced vuffer
+
+   Kill all process with some name
+   #+begin_src emacs-lisp
+     (defun proced-killall ()
+         "Within proced buffer kill all processes with word at point"
+         (interactive)
+         (let ((bounds (bounds-of-thing-at-point 'word)))
+           (goto-char 0)
+           (while (search-forward
+                   (buffer-substring-no-properties (car bounds) (cdr bounds))
+                   nil t)
+             (proced-do-mark t))
+           (proced-send-signal)))
+   #+end_src
+
+   Set the killall function key binding
+   #+begin_src emacs-lisp
+     (add-hook 'proced-mode-hook
+       (lambda () (define-key proced-mode-map (kbd "a") 'proced-killall)))
+   #+end_src
    
 * Org Mode
 ** Custom key  bindings
