@@ -1384,7 +1384,6 @@ An elegant editor... for a more civilized age.
        :defer t
        :after (all-the-icons)
        :init
-       :config
        (progn
          ;; Create theme
          (treemacs-create-theme "pve"
@@ -1456,7 +1455,8 @@ An elegant editor... for a more civilized age.
              (treemacs-create-icon :icon (concat (all-the-icons-icon-for-file "x.r") " ")        :extensions ("r"))
              (treemacs-create-icon :icon (concat (all-the-icons-icon-for-file "x.re") " ")       :extensions ("re" "rei"))))
          ;; activate the theme
-         (treemacs-load-theme "pve")
+         (treemacs-load-theme "pve"))
+         :config
          ;; Set the differnt config options
          (setq treemacs-collapse-dirs              (if (executable-find "python") 3 0)
                treemacs-file-event-delay           5000
@@ -1487,19 +1487,13 @@ An elegant editor... for a more civilized age.
          (treemacs-follow-mode t)
          (treemacs-filewatch-mode t)
          (treemacs-fringe-indicator-mode t)
-         (pcase (cons (not (null (executable-find "git")))
-                      (not (null (executable-find "python3"))))
-           (`(t . t)
-            (treemacs-git-mode 'extended))
-           (`(t . _)
-            (treemacs-git-mode 'simple))))
+         (treemacs-git-mode 'extended)
        :bind
        (("M-0"       . treemacs-select-window)
         ("C-c t 1"   . treemacs-delete-other-windows)
         ("C-c t t"   . treemacs)
         ("C-c t B"   . treemacs-bookmark)
-        ("C-c t f" . treemacs-find-file)
-        ("C-c t t" . treemacs-find-tag)))
+        ("C-c t f" . treemacs-find-file)))
 
      (use-package treemacs-projectile
        :after treemacs projectile
@@ -1585,6 +1579,12 @@ An elegant editor... for a more civilized age.
              ("C-z" . helm-select-action))
       :init (helm-mode))
   #+END_SRC
+
+  #+begin_src emacs-lisp
+    (use-package helm-icons
+      :ensure t
+      :init (helm-icons-enable))
+  #+end_src
 	
 ** Hydra
    
