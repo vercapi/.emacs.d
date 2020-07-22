@@ -1013,7 +1013,12 @@ An elegant editor... for a more civilized age.
     (use-package projectile
       :ensure t
       :hook (after-init . projectile-global-mode))
-  #+END_SRC	       
+  #+END_SRC
+
+  #+begin_src emacs-lisp 
+    (use-package helm-projectile
+      :ensure t)
+  #+end_src
   		       
 * Programming environments
 ** restclient
