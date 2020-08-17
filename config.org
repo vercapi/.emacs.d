@@ -1004,14 +1004,22 @@ An elegant editor... for a more civilized age.
   #+BEGIN_SRC emacs-lisp
     (use-package projectile
       :ensure t
+      :bind-keymap ("C-c p" . projectile-command-map)
       :hook (after-init . projectile-global-mode))
   #+END_SRC
 
+  [[https://tuhdo.github.io/helm-projectile.html][Documentation]] on helm projectile.
   #+begin_src emacs-lisp 
     (use-package helm-projectile
-      :ensure t)
+      :ensure t
+      :init
+      (setq projectile-completion-system 'helm)
+      (helm-projectile-on)
+      :bind (:map projectile-mode-map
+                  ("C-c p h" . helm-projectile)
+                  ("C-c p p" . helm-projectile-switch-project)))
   #+end_src
-  		       
+
 * Programming environments
 ** restclient
 
