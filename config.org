@@ -1834,6 +1834,31 @@ An elegant editor... for a more civilized age.
       :after (hydra org-bullets ob-async))
   #+END_SRC
 
+** Editing org code blocks
+   
+   [[https://erick.navarro.io/blog/avoid-losing-windows-layout-when-editing-org-code-blocks/][source]]
+
+   Store and restore the configuration setting before opening the window to edit the src code   
+   #+begin_src emacs-lisp
+     (defvar pve/org-src-block-tmp-window-configuration nil)
+
+     (defun pve/org-edit-special (&optional arg)
+       "Save current window configuration before a org-edit buffer is open."
+       (setq pve/org-src-block-tmp-window-configuration (current-window-configuration)))
+
+     (defun pve/org-edit-src-exit ()
+       "Restore the window configuration that was saved before org-edit-special was called."
+       (set-window-configuration pve/org-src-block-tmp-window-configuration))
+   #+end_src
+
+   We need to execute this code after org is loaded so we use eval-after-load.
+   #+begin_src emacs-lisp
+     (eval-after-load "org"
+       `(progn
+          (advice-add 'org-edit-special :before 'pve/org-edit-special)
+          (advice-add 'org-edit-src-exit :after 'pve/org-edit-src-exit)))
+   #+end_src
+
 ** Eye candy
 
   Show bullets as images not just '*'s
