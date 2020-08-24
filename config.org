@@ -1749,7 +1749,7 @@ An elegant editor... for a more civilized age.
    #+end_src
    
 * Org Mode
-** Custom key  bindings
+** Custom key bindings
 
    Insert a checkbox
   #+BEGIN_SRC emacs-lisp
@@ -1819,6 +1819,7 @@ An elegant editor... for a more civilized age.
   #+END_SRC
 
 ** Main configuration
+
   #+BEGIN_SRC emacs-lisp
     (use-package org-mode
       :init
