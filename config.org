@@ -2175,13 +2175,15 @@ An elegant editor... for a more civilized age.
         :ensure t
         :config (setq org-gcal-client-id google-client-id 
                      org-gcal-client-secret google-client-secret
-                     org-gcal-file-alist `((,personal-email . "~/Dropbox/org/calendars/priv_cal.org")
-                                           (,school-kids-calendar . "~/Dropbox/org/calendars/school_cal.org")
-                                           (,work-email . "~/Dropbox/org/calendars/work_cal.org")
-                                           (,hockey-calendar-div2 . "~/Dropbox/org/calendars/div2_cal.org")
-                                           (,hockey-calendar-u10 . "~/Dropbox/org/calendars/u10_cal.org")
-                                           (,kids-calendar . "~/Dropbox/org/calendars/kids.org"))))
+                     org-gcal-file-alist `((,personal-email . ,(concat org-default-dir "calendars/priv_cal.org"))
+                                           (,school-kids-calendar . ,(concat org-default-dir "calendars/school_cal.org"))
+                                           (,hockey-calendar-div2 . ,(concat org-default-dir "calendars/div2_cal.org"))
+                                           (,hockey-calendar-u10 . ,(concat org-default-dir "calendars/u10_cal.org"))
+                                           (,kids-calendar . ,(concat org-default-dir "calendars/kids.org")))))
     #+END_SRC
+
+    #+RESULTS:
+    : #s(hash-table size 65 test eql rehash-size 1.5 rehash-threshold 0.8125 data (:use-package (24397 4495 660113 189000) :init (24397 4495 660110 636000) :config (24397 4495 660105 555000) :config-secs (0 0 21 347000) :init-secs (0 0 31 859000) :use-package-secs (0 0 72 473000)))
 
 *** Attachments & files
 
