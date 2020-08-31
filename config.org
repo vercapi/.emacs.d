@@ -1797,9 +1797,12 @@ An elegant editor... for a more civilized age.
 
     (org-babel-do-load-languages
      'org-babel-load-languages
-     '((shell . t) (js . t) (sqlite . t)))
+     '((shell . t) (js . t) (sqlite . t) (python . t)))
     (add-to-list 'org-babel-tangle-lang-exts '("js" . "js"))
   #+END_SRC
+
+  #+RESULTS:
+  : ((python . py) (java . java) (js . js) (emacs-lisp . el) (elisp . el))
 
   Add java support to babel
   #+BEGIN_SRC emacs-lisp
