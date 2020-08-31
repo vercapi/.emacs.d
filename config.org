@@ -1882,24 +1882,10 @@ An elegant editor... for a more civilized age.
                   (push '("#+end_src" . ?) prettify-symbols-alist)
                   (prettify-symbols-mode))))
    #+END_SRC
-
    
    Change font of checkboxes. Checkbox is already replaced with an icon so we don't want emacs to draw an additional box
    #+BEGIN_SRC emacs-lisp
      (face-spec-set 'org-checkbox '((t (:box nil))))
-   #+END_SRC
-
-   Ensure default fonts for org headers
-   #+BEGIN_SRC emacs-lisp
-     (custom-theme-set-faces 'user
-                             `(org-level-1 ((t (:font "ProggyVector"))))
-                             `(org-level-2 ((t (:font "ProggyVector"))))
-                             `(org-level-3 ((t (:font "ProggyVector"))))
-                             `(org-level-4 ((t (:font "ProggyVector"))))
-                             `(org-level-5 ((t (:font "ProggyVector"))))
-                             `(org-level-6 ((t (:font "ProggyVector"))))
-                             `(org-level-7 ((t (:font "ProggyVector"))))
-                             `(org-level-8 ((t (:font "ProggyVector")))))
    #+END_SRC
 
 ** Presenting
