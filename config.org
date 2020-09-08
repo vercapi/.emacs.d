@@ -2194,7 +2194,8 @@ An elegant editor... for a more civilized age.
       (use-package org-download
         :ensure t
         :config
-        (setq-default org-download-image-dir (concat org-attachments-dir "/default"))
+        (setq-default org-download-image-dir (concat org-attachments-dir "/default")
+                      org-download-screenshot-method "gnome-screenshot -a -f %s")
         ;; Dired support
         (add-hook 'dired-mode-hook 'org-download-enable))
     #+END_SRC
