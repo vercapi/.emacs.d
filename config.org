@@ -2185,6 +2185,38 @@ An elegant editor... for a more civilized age.
     #+RESULTS:
     : #s(hash-table size 65 test eql rehash-size 1.5 rehash-threshold 0.8125 data (:use-package (24397 4495 660113 189000) :init (24397 4495 660110 636000) :config (24397 4495 660105 555000) :config-secs (0 0 21 347000) :init-secs (0 0 31 859000) :use-package-secs (0 0 72 473000)))
 
+
+** Plugins
+*** magit integration
+    
+    #+BEGIN_SRC emacs-lisp
+      (use-package orgit
+        :ensure t)
+    #+END_SRC
+** Links
+*** Org links
+
+    Create links and move file to the attachment folder
+    #+begin_src emacs-lisp
+      (defun pve/create-org-link (source-file)
+        "Create a link to SOURCE-FILE but first copy it to the attachments folder.
+      Storage system is shared with org-download."
+        (interactive "fSource file: ")
+        (let ((full-file-path (concat (org-download--dir) "/" (car (last (split-string source-file "/")))))
+              (description (read-string "Link description: ")))
+          (copy-file source-file full-file-path)
+          (insert (org-link-make-string full-file-path description))))
+    #+end_src
+
+    Opening org links
+    #+begin_src emacs-lisp
+      (setq org-file-apps
+            '((auto-mode . emacs)
+              ("\\.mm\\'" . default)
+              ("\\.x?html?\\'" . default)
+              ("\\.pdf\\'" . emacs)))
+    #+end_src
+
 *** Attachments & files
 
     This enables adding image attachments from external sources (urls, drag&drop, screenshots)
@@ -2200,22 +2232,6 @@ An elegant editor... for a more civilized age.
         (add-hook 'dired-mode-hook 'org-download-enable))
     #+END_SRC
 
-** Plugins
-*** magit integration
-    
-    #+BEGIN_SRC emacs-lisp
-      (use-package orgit
-        :ensure t)
-    #+END_SRC
-** Links
-
-   #+begin_src emacs-lisp
-     (setq org-file-apps
-           '((auto-mode . emacs)
-             ("\\.mm\\'" . default)
-             ("\\.x?html?\\'" . default)
-             ("\\.pdf\\'" . emacs)))
-   #+end_src
 
 * Application Integration
 ** Twitter
