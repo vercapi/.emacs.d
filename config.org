@@ -53,9 +53,6 @@ An elegant editor... for a more civilized age.
           (run-with-idle-timer 5 t #'garbage-collect)))
   #+END_SRC
 
-  #+RESULTS:
-  : [nil 0 5 0 t garbage-collect nil idle 0]
-
 * Packages setup
   
   Loading all the resources so the rest of the config has access to all these resoruces.
@@ -75,9 +72,9 @@ An elegant editor... for a more civilized age.
    Ensure that 'use-package' is installed.
    #+BEGIN_SRC emacs-lisp
      (if (not (package-installed-p 'use-package))
-     (progn
-         (package-refresh-contents)
-         (package-install 'use-package)))
+         (progn
+           (package-refresh-contents)
+           (package-install 'use-package)))
 
      (require 'use-package)
      (setq use-package-compute-statistics t)
@@ -87,11 +84,10 @@ An elegant editor... for a more civilized age.
    Allows to load Emacs Lisp packages built directly from source (github etc.)
    #+BEGIN_SRC emacs-lisp
      (use-package quelpa
+       :init (setq quelpa-update-melpa-p nil)
        :ensure t)
    #+END_SRC
 
-   #+RESULTS:
-   : quelpa
 
    Further install quelpa-use-package
    This is the quelpa handle for use-package
@@ -101,9 +97,6 @@ An elegant editor... for a more civilized age.
        :after quelpa)
    #+END_SRC
 
-   #+RESULTS:
-   : quelpa-use-package
-   
 ** Load custom local code
 
    All custom tooling that is available within this repository.
@@ -115,9 +108,6 @@ An elegant editor... for a more civilized age.
      (load "~/.emacs.d/secrets.el")
    #+END_SRC
 
-   #+RESULTS:
-   | ~/.emacs.d/custom/ | /home/vercapi/.emacs.d/elpa/powerline-20180321.1948 | /home/vercapi/.emacs.d/elpa/use-package-20180613.2219 | /home/vercapi/.emacs.d/elpa/bind-key-20180512.2130 | /usr/share/emacs/26.1/site-lisp | /usr/share/emacs/site-lisp | /usr/share/emacs/26.1/lisp | /usr/share/emacs/26.1/lisp/vc | /usr/share/emacs/26.1/lisp/url | /usr/share/emacs/26.1/lisp/textmodes | /usr/share/emacs/26.1/lisp/progmodes | /usr/share/emacs/26.1/lisp/play | /usr/share/emacs/26.1/lisp/org | /usr/share/emacs/26.1/lisp/nxml | /usr/share/emacs/26.1/lisp/net | /usr/share/emacs/26.1/lisp/mh-e | /usr/share/emacs/26.1/lisp/mail | /usr/share/emacs/26.1/lisp/leim | /usr/share/emacs/26.1/lisp/language | /usr/share/emacs/26.1/lisp/international | /usr/share/emacs/26.1/lisp/image | /usr/share/emacs/26.1/lisp/gnus | /usr/share/emacs/26.1/lisp/eshell | /usr/share/emacs/26.1/lisp/erc | /usr/share/emacs/26.1/lisp/emulation | /usr/share/emacs/26.1/lisp/emacs-lisp | /usr/share/emacs/26.1/lisp/cedet | /usr/share/emacs/26.1/lisp/calendar | /usr/share/emacs/26.1/lisp/calc | /usr/share/emacs/26.1/lisp/obsolete |
-
 * Visual Configuration
 ** Emacs frame appearance
 
@@ -127,9 +117,6 @@ An elegant editor... for a more civilized age.
      (toggle-scroll-bar -1) ;; no scrollbar
      (fset 'yes-or-no-p 'y-or-n-p) ;; type y/n not yes/no
    #+END_SRC
-
-   #+RESULTS:
-   : y-or-n-p
 
 ** mode line
 *** What to show on the modeline
@@ -178,7 +165,7 @@ An elegant editor... for a more civilized age.
 ** Fonts
 
    Set the standard fonts for emacs and other componets
-   This is based on std configuration. So if emacs adds this again in init.el or .emacs things might break and this needs to be update manually
+   This is based on std configuration. So if emacs adds this again in init.el or .emacs things might break and this needs to be  manually
 
    [[https://github.com/bluescan/proggyfonts/][Proggy Vector]] font was downloaded from [[https://app.programmingfonts.org/][programming fonts]].
    
@@ -403,7 +390,10 @@ An elegant editor... for a more civilized age.
    #+BEGIN_SRC emacs-lisp
      (use-package eyebrowse
        :ensure t
-       :init (eyebrowse-mode t))
+       :init (eyebrowse-mode t)
+       :bind
+       (("C-c C-w 0" . eyebrowse-switch-to-window-config-0)
+        ("C-c C-w 1" . eyebrowse-switch-to-window-config-1)))
    #+END_SRC
 
    Scroll without moving cursor
@@ -480,46 +470,46 @@ An elegant editor... for a more civilized age.
 *** Bookmarks
     #+BEGIN_SRC emacs-lisp
       (use-package bm
-	   :ensure t
-	   :demand t
-	   :init
-	   (setq bm-restore-repository-on-load t) ;; restore on load (even before you require bm)
-	   :config
-	   (setq bm-cycle-all-buffers nil  ;; Don't llow cross-buffer 'next'
-		 bm-repository-file "~/.emacs.d/bm-repository")
-	   (setq-default bm-buffer-persistence t)  ;; save bookmarks
-	   ;; Loading the repository from file when on start up.
-	   (add-hook' after-init-hook 'bm-repository-load)
-	   ;; Restoring bookmarks when on file find.
-	   (add-hook 'find-file-hooks 'bm-buffer-restore)
-	   ;; Saving bookmarks
-	   (add-hook 'kill-buffer-hook #'bm-buffer-save)
-	   ;; Saving the repository to file when on exit.
-	   ;; kill-buffer-hook is not called when Emacs is killed, so we
-	   ;; must save all bookmarks first.
-	   (add-hook 'kill-emacs-hook #'(lambda nil
-					    (bm-buffer-save-all)
-					    (bm-repository-save)))
-	   ;; The `after-save-hook' is not necessary to use to achieve persistence,
-	   ;; but it makes the bookmark data in repository more in sync with the file
-	   ;; state.
-	   (add-hook 'after-save-hook #'bm-buffer-save)
-	   ;; Restoring bookmarks
-	   (add-hook 'find-file-hooks   #'bm-buffer-restore)
-	   (add-hook 'after-revert-hook #'bm-buffer-restore)
-	   ;; The `after-revert-hook' is not necessary to use to achieve persistence,
-	   ;; but it makes the bookmark data in repository more in sync with the file
-	   ;; state. This hook might cause trouble when using packages
-	   ;; that automatically reverts the buffer (like vc after a check-in).
-	   ;; This can easily be avoided if the package provides a hook that is
-	   ;; called before the buffer is reverted (like `vc-before-checkin-hook').
-	   ;; Then new bookmarks can be saved before the buffer is reverted.
-	   ;; Make sure bookmarks is saved before check-in (and revert-buffer)
-	   (add-hook 'vc-before-checkin-hook #'bm-buffer-save)
-	   :bind (("C-c b" . bm-next)
-		  ("C-c B" . bm-previous)
-		  ("C-c m" . bm-toggle))
-	   )
+        :ensure t
+        :demand t
+        :init
+        (setq bm-restore-repository-on-load t) ;; restore on load (even before you require bm)
+        :config
+        (setq bm-cycle-all-buffers nil  ;; Don't llow cross-buffer 'next'
+              bm-repository-file "~/.emacs.d/bm-repository")
+        (setq-default bm-buffer-persistence t)  ;; save bookmarks
+        ;; Loading the repository from file when on start up.
+        (add-hook' after-init-hook 'bm-repository-load)
+        ;; Restoring bookmarks when on file find.
+        (add-hook 'find-file-hooks 'bm-buffer-restore)
+        ;; Saving bookmarks
+        (add-hook 'kill-buffer-hook #'bm-buffer-save)
+        ;; Saving the repository to file when on exit.
+        ;; kill-buffer-hook is not called when Emacs is killed, so we
+        ;; must save all bookmarks first.
+        (add-hook 'kill-emacs-hook #'(lambda nil
+                                       (bm-buffer-save-all)
+                                       (bm-repository-save)))
+        ;; The `after-save-hook' is not necessary to use to achieve persistence,
+        ;; but it makes the bookmark data in repository more in sync with the file
+        ;; state.
+        (add-hook 'after-save-hook #'bm-buffer-save)
+        ;; Restoring bookmarks
+        (add-hook 'find-file-hooks   #'bm-buffer-restore)
+        (add-hook 'after-revert-hook #'bm-buffer-restore)
+        ;; The `after-revert-hook' is not necessary to use to achieve persistence,
+        ;; but it makes the bookmark data in repository more in sync with the file
+        ;; state. This hook might cause trouble when using packages
+        ;; that automatically reverts the buffer (like vc after a check-in).
+        ;; This can easily be avoided if the package provides a hook that is
+        ;; called before the buffer is reverted (like `vc-before-checkin-hook').
+        ;; Then new bookmarks can be saved before the buffer is reverted.
+        ;; Make sure bookmarks is saved before check-in (and revert-buffer)
+        (add-hook 'vc-before-checkin-hook #'bm-buffer-save)
+        :bind (("C-c b" . bm-next)
+               ("C-c B" . bm-previous)
+               ("C-c m" . bm-toggle))
+        )
     #+END_SRC
     
 *** Homing
@@ -579,12 +569,6 @@ An elegant editor... for a more civilized age.
 	      ("C-x M-i" . helm-multi-swoop-all)))
    #+END_SRC
 
-   Occur inside buffer. Only show results inline in buffer. Hide the rest
-   #+BEGIN_SRC emacs-lisp
-     (use-package loccur
-       :ensure t)
-   #+END_SRC
-
    Visual-regexp gives visual feedback on the regexp
    Key combination replace the regular query-regepx-replace
    #+BEGIN_SRC emacs-lisp
@@ -633,13 +617,6 @@ An elegant editor... for a more civilized age.
        :config (push 'company-lsp company-backends))
    #+END_SRC
 
-   fish like completion for shells
-   #+BEGIN_SRC emacs-lisp
-     (use-package fish-completion
-       :ensure t
-       :config (global-fish-completion-mode))
-   #+END_SRC
-
    Auto insert the other pair of a bracket
    And the config for elements that are not supported by default
    #+BEGIN_SRC emacs-lisp
@@ -664,10 +641,11 @@ An elegant editor... for a more civilized age.
      (use-package multiple-cursors
        :ensure t
        :bind (("C->" . mc/mark-next-like-this)
-	      ("C-<" . mc/mark-previous-like-this)
-	      ("C-c C-<" . mc/mark-all-like-this)
-	      ("C-M->" . mc/unmark-next-like-this)
-	      ("C-M-<" . 'mc/unmark-previous-like-this)))
+        ("C-<" . mc/mark-previous-like-this)
+        ("C-c C-<" . mc/mark-all-like-this)
+        ("C-M->" . mc/unmark-next-like-this)
+        ("C-M-<" . mc/unmark-previous-like-this)
+        ("C-c C-n" . mc/insert-numbers)))
    #+END_SRC   
    Visual regepx also has an extansion  to visually add multiple cursors
 
@@ -705,7 +683,7 @@ An elegant editor... for a more civilized age.
        :ensure t
        :diminish undo-tree-mode
        :bind ("C-x u" . undo-tree-visualize)
-       :config (setq undo-tree-visualizer-relative-timestamps nil
+       :config (setq undo-tree-visualizer-relative-timestamps t
                      undo-tree-visualizer-timestamps t
                      undo-tree-enable-undo-in-region t)
                 (global-undo-tree-mode))
@@ -717,6 +695,7 @@ An elegant editor... for a more civilized age.
      (setq-default indent-tabs-mode nil) ;; don't use tabs
      (setq-default tab-width 2) ;; use 2 space tabs
    #+END_SRC
+
 ** Folding
 
    Set Folding characters for every programming mode
@@ -923,7 +902,6 @@ An elegant editor... for a more civilized age.
           (goto-char (point-min))
           (search-forward ":")
           (goto-char (+ 1 (point)))
-          (print action)
           (let ((rootdir (buffer-substring (point) (line-end-position)))
                 (repo-name (buffer-substring start-repo-name end-repo-name)))
             (funcall action (concat rootdir "/" repo-name)))))
@@ -957,7 +935,6 @@ An elegant editor... for a more civilized age.
     #+begin_src emacs-lisp
       (defun multi-git-push-single (reponame)
         "Push multi git selected repo to it's configured push remote"
-        (print (concat "push: "reponame))
         (let ((default-directory reponame))
           (magit-run-git-async "push" "-v" "-u" "origin" (magit-get-current-branch))))
     #+end_src
@@ -1036,16 +1013,17 @@ An elegant editor... for a more civilized age.
    #+BEGIN_SRC emacs-lisp
      (use-package company-restclient
        :ensure t
+       :after restclient
        :config (add-to-list 'company-backends 'company-restclient))
    #+END_SRC
 
    Add integration into org mode for restclient
    #+BEGIN_SRC emacs-lisp
-     (use-package ob-restclient
-       :ensure t
-       :config (org-babel-do-load-languages
-		'org-babel-load-languages
-		'((restclient . t))))
+      (use-package ob-restclient
+        :ensure t
+        :config (org-babel-do-load-languages
+                 'org-babel-load-languages
+                 '((restclient . t))))
    #+END_SRC
 
    In Org mode we want to tangle URI's with parameters, following fucntions allow for thsi
@@ -1131,6 +1109,7 @@ An elegant editor... for a more civilized age.
     #+BEGIN_SRC emacs-lisp
       (use-package impatient-mode
         :ensure t
+        :mode "\\.js\\'"
         :hook ((html-mode . impatient-mode)))
     #+END_SRC
 
@@ -1182,7 +1161,8 @@ An elegant editor... for a more civilized age.
    Mode for editing docker files
    #+BEGIN_SRC emacs-lisp
      (use-package dockerfile-mode
-       :ensure t)
+       :ensure t
+       :mode "\\Dockerfile\\'")
    #+END_SRC
 
 ** LUA
@@ -1192,7 +1172,8 @@ An elegant editor... for a more civilized age.
    (Error (use-package): lua-mode/:catch: Unknown rx form ‘symbol’)
    #+BEGIN_SRC emacs-lisp :tangle no
      (use-package lua-mode
-       :ensure t)
+       :ensure t
+       :mode "\\.lua\\'")
    #+END_SRC
    
    #+BEGIN_SRC emacs-lisp
@@ -1276,7 +1257,8 @@ An elegant editor... for a more civilized age.
 
    #+BEGIN_SRC emacs-lisp
      (use-package pcap-mode
-       :ensure t)
+       :ensure t
+       :mode "\\.pcap\\'")
    #+END_SRC
    
 ** YAML
@@ -1337,19 +1319,24 @@ An elegant editor... for a more civilized age.
    #+BEGIN_SRC emacs-lisp
      (use-package eros
        :ensure t
+       :mode "\\.el\\'"
        :config (eros-mode 1))
    #+END_SRC
+
 ** Saltstack
 
    #+begin_src emacs-lisp
      (use-package salt-mode
-       :ensure t)
+       :ensure t
+       :mode "\\.sls\\'"
+       )
    #+end_src
 ** Haskell
    
    #+begin_src emacs-lisp 
      (use-package haskell-mode
-       :ensure t)
+       :ensure t
+       :mode "\\.hs\\'")
    #+end_src
 ** Clojure
 
@@ -1529,7 +1516,7 @@ An elegant editor... for a more civilized age.
          (let ((path base-path))
            (mapc (lambda (project)
                    (if (not (or (string= project ".") (string= project "..")))
-                       (progn (print (format "%s/%s" (concat path project) project))
+                       (progn 
                               (treemacs-do-add-project-to-workspace (concat path project) project))))
                  (directory-files path))))
    #+end_src
@@ -1586,9 +1573,6 @@ An elegant editor... for a more civilized age.
   #+begin_src emacs-lisp
     (diminish 'helm-ff-cache-mode)
   #+end_src
-
-  #+RESULTS:
-  |   |
 	
 ** Hydra
    
@@ -1600,36 +1584,6 @@ An elegant editor... for a more civilized age.
 
    #+RESULTS:
 	 
-** Eshell
-
-   Set paths depending on the environment we are running
-   #+BEGIN_SRC emacs-lisp
-     (defun pve-set-eshell-path-env ()
-       "Settig the eshell-path-env"
-       (if (pve-env/on-cygwin)
-	   (progn
-	     (setq cygwin-paths "/cygdrive/c/Program Files/nodejs/:")
-	     (setq eshell-path-env (concat cygwin-paths eshell-path-env))
-	     (setenv "PATH" (concat cygwin-paths (getenv "PATH"))))))
-   #+END_SRC
-
-   Add hook to eshell to set paths when eshell starts
-   #+BEGIN_SRC emacs-lisp
-     (add-hook 'eshell-mode-hook 'pve-set-eshell-path-env)
-   #+END_SRC
-
-   Enable eshell history to be accessses by helm instead of the static history
-   #+BEGIN_SRC emacs-lisp
-     (add-hook 'eshell-mode-hook
-	       '(lambda ()
-		  (define-key eshell-mode-map (kbd "C-c C-l")  'helm-eshell-history)))
-   #+END_SRC
-
-   Ensure history of eshell opens in the same frame.
-   #+BEGIN_SRC emacs-lisp
-     (setq helm-show-completion-display-function #'helm-show-completion-default-display-function)
-   #+END_SRC
-	   
 ** Artist mode
 	      
    Artist mode doesn't work within org mode. This narrows the buffer to a place you want to work.
@@ -1646,14 +1600,6 @@ An elegant editor... for a more civilized age.
        (widen))
    #+END_SRC
    
-** Speed type
-
-   Mode for practicing speed typing
-   #+BEGIN_SRC emacs-lisp
-     (use-package speed-type
-       :ensure t)
-   #+END_SRC
-
 ** PDF
    
    Enable viewing and working with PDFs inside emacs
@@ -1748,6 +1694,38 @@ An elegant editor... for a more civilized age.
        (lambda () (define-key proced-mode-map (kbd "a") 'proced-killall)))
    #+end_src
    
+* Shells
+** Eshell
+
+   Set paths depending on the environment we are running
+   #+BEGIN_SRC emacs-lisp
+     (defun pve-set-eshell-path-env ()
+       "Settig the eshell-path-env"
+       (if (pve-env/on-cygwin)
+	   (progn
+	     (setq cygwin-paths "/cygdrive/c/Program Files/nodejs/:")
+	     (setq eshell-path-env (concat cygwin-paths eshell-path-env))
+	     (setenv "PATH" (concat cygwin-paths (getenv "PATH"))))))
+   #+END_SRC
+
+   Add hook to eshell to set paths when eshell starts
+   #+BEGIN_SRC emacs-lisp
+     (add-hook 'eshell-mode-hook 'pve-set-eshell-path-env)
+   #+END_SRC
+
+   Enable eshell history to be accessses by helm instead of the static history
+   #+BEGIN_SRC emacs-lisp
+     (add-hook 'eshell-mode-hook
+	       '(lambda ()
+		  (define-key eshell-mode-map (kbd "C-c C-l")  'helm-eshell-history)))
+   #+END_SRC
+
+   Ensure history of eshell opens in the same frame.
+   #+BEGIN_SRC emacs-lisp
+     (setq helm-show-completion-display-function #'helm-show-completion-default-display-function)
+   #+END_SRC
+	   
+
 * Org Mode
 ** Custom key bindings
 
@@ -1825,6 +1803,7 @@ An elegant editor... for a more civilized age.
 
   #+BEGIN_SRC emacs-lisp
     (use-package org-mode
+      :mode "\\.org\\'"
       :init
       (setq org-confirm-babel-evaluate nil) ;;No need to confirm executing babel code blocks
       (require 'ob-async)
@@ -1891,7 +1870,7 @@ An elegant editor... for a more civilized age.
      (face-spec-set 'org-checkbox '((t (:box nil))))
    #+END_SRC
 
-** Presenting
+k** Presenting
 
    #+BEGIN_SRC emacs-lisp
      (defun org-present-init ()
@@ -1912,6 +1891,7 @@ An elegant editor... for a more civilized age.
 
      (use-package org-present
        :ensure t
+       :after org-mode
        :hook ((org-present-mode . org-present-init)
               (org-present-mode-qui . org-present-cleanup)))
    #+END_SRC
@@ -2156,7 +2136,6 @@ An elegant editor... for a more civilized age.
                            project-name
                            org-default-projects-dir)
                           ".org")))
-          (print filename)
           (org-cut-subtree)
           (find-file-noselect filename)
           (with-temp-file filename
@@ -2191,7 +2170,8 @@ An elegant editor... for a more civilized age.
     
     #+BEGIN_SRC emacs-lisp
       (use-package orgit
-        :ensure t)
+        :ensure t
+        :after (org git))
     #+END_SRC
 ** Links
 *** Org links
@@ -2225,13 +2205,13 @@ An elegant editor... for a more civilized age.
     #+BEGIN_SRC emacs-lisp
       (use-package org-download
         :ensure t
+        :after org
         :config
         (setq-default org-download-image-dir (concat org-attachments-dir "/default")
                       org-download-screenshot-method "gnome-screenshot -a -f %s")
         ;; Dired support
         (add-hook 'dired-mode-hook 'org-download-enable))
     #+END_SRC
-
 
 * Application Integration
 ** Pocket
@@ -2248,6 +2228,36 @@ An elegant editor... for a more civilized age.
     (use-package pocket-api
       :ensure t)
   #+END_SRC
+** Exchange Web Services
+
+   This doesn't seem to work at this moment <2020-09-01 Tue>
+   #+begin_src 
+     (use-package excorporate
+       :ensure t
+       :config
+       (setq-default
+                 ;; configure email address and office 365 exchange server adddress for exchange web services
+                 excorporate-configuration
+                 (quote
+                  (work-email . "https://outlook.office365.com/EWS/Exchange.asmx"))
+                 org-agenda-include-diary t)
+       (add-hook 'org-agenda-cleanup-fancy-diary-hook 'pve/agenda-update-diary))
+
+     (defun pve/excorporate-activate  ()
+       "Start outlook calendar sycning."
+       (interactive)
+       (progn
+         (excorporate)
+         (excorporate-diary-enable)))
+
+     (defun pve/agenda-update-diary ()
+       "call excorporate to update the diary for today"
+       (exco-diary-diary-advice (calendar-current-date) (calendar-current-date) #'message "diary updated"))
+
+   #+end_src
+
+   #+RESULTS:
+   : pve/excorporate-sync
 
 * Libraries
 ** LSP
@@ -2258,6 +2268,7 @@ An elegant editor... for a more civilized age.
   #+BEGIN_SRC emacs-lisp
     (use-package lsp-mode
       :ensure t
+      :demand t
       :init (progn
               (define-prefix-command 'ctl-l-map)
               (global-set-key (kbd "C-l") 'ctl-l-map))
@@ -2269,6 +2280,7 @@ An elegant editor... for a more civilized age.
   #+BEGIN_SRC emacs-lisp
     (use-package lsp-ui
       :ensure t
+      :demand t
       :after (lsp-mode)
       :config
       (setq
@@ -2289,7 +2301,9 @@ An elegant editor... for a more civilized age.
   Dependency for all-the-icons. If not installed it will not show in windows and some wrong icons on linux
   #+BEGIN_SRC emacs-lisp
     (progn 
-      (url-copy-file "https://raw.githubusercontent.com/emacsmirror/emacswiki.org/master/font-lock%2B.el" "~/.emacs.d/custom/font-lock+.el" t)
+      (let ((destination "~/.emacs.d/custom/font-lock+.el"))
+        (if (not (file-exists-p destination))
+            (url-copy-file "https://raw.githubusercontent.com/emacsmirror/emacswiki.org/master/font-lock%2B.el" destination t)))
       (use-package font-lock+))
   #+END_SRC
 

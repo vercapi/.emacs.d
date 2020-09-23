@@ -31,6 +31,5 @@
   (setq line-nr-pos (search-forward-regexp "Line [0-9]*"))
   (setq line-nr (string-to-number (thing-at-point 'word)))
   (switch-to-buffer (find-file-noselect (buffer-substring (+ link-start 1) (- link-end 1))))
-  (print line-nr)
   (let ((current-prefix-arg line-nr))
     (call-interactively 'goto-line)))
