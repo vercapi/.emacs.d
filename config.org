@@ -1530,6 +1530,12 @@ An elegant editor... for a more civilized age.
    
 ** Dired config
    
+   Enable to use 'a' to close previous buffer.
+   This is used to not keep open all these bufer when browsing files
+   #+begin_src emacs-lisp
+     (put 'dired-find-alternate-file 'disabled nil)
+   #+end_src
+   
    Sorting for dired
    #+begin_src emacs-lisp
      (use-package dired-quick-sort
