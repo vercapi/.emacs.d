@@ -1725,6 +1725,13 @@ An elegant editor... for a more civilized age.
      (setq helm-show-completion-display-function #'helm-show-completion-default-display-function)
    #+END_SRC
 	   
+** vterm
+
+   Complete terminal emulator inside of emacs
+   #+begin_src emacs-lisp
+     (use-package vterm
+       :ensure t)
+   #+end_src
 
 * Org Mode
 ** Custom key bindings
