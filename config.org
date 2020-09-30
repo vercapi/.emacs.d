@@ -1766,7 +1766,8 @@ An elegant editor... for a more civilized age.
         ("u" outline-up-heading)
         ("t" outline-toggle-children)
         ("l" org-kill-note-or-show-branches)
-        ("s" avy-org-goto-heading-timer)))
+        ("s" avy-org-goto-heading-timer)
+        ("c" org-previous-visible-heading)))
       (local-set-key (kbd "<f7>") 'org-mark-ring-push)
       (local-set-key (kbd "C-<f7>") 'org-mark-ring-goto)
       (local-set-key (kbd "C-c c") 'org-capture)
@@ -2154,6 +2155,8 @@ k** Presenting
 *** Google calendar integration
 
     Synchronize calenders with google calendar.
+
+    Manually synchronize with org-gcal-sync
     
     #+BEGIN_SRC emacs-lisp
       (use-package org-gcal
