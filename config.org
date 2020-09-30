@@ -272,7 +272,7 @@ An elegant editor... for a more civilized age.
    #+END_SRC
 
 * Emacs Behavior
-** General behavior 
+** General Emacs behavior 
 
    Turn of the bell alarm
    #+BEGIN_SRC emacs-lisp
@@ -308,6 +308,17 @@ An elegant editor... for a more civilized age.
      (which-key-mode)
      (which-key-setup-minibuffer)))
    #+END_SRC
+** Parentheses
+
+   [[http://danmidwood.com/content/2014/11/21/animated-paredit.html][Visual tutorial]]
+
+   #+begin_src emacs-lisp
+     (use-package paredit
+       :ensure t
+       :hook
+       (emacs-lisp-mode . paredit-mode)
+       (clojure-mode . paredit-mode))
+   #+end_src
 
 ** Working with files  
    
