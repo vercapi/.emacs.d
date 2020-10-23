@@ -1080,22 +1080,7 @@ An elegant editor... for a more civilized age.
 	 	     js2-indent-on-enter-key t))
     #+END_SRC
 
-*** Auto completion
-
-    Install server
-    #+BEGIN_SRC sh
-      sudo npm install -g tern
-    #+END_SRC
-
-    #+BEGIN_SRC emacs-lisp
-      (use-package company-tern
-        :ensure t
-        :after (js2-mode company)
-        :hook ((js2-mode . (lambda() (tern-mode)))
-               (js-mode . (lambda() (tern-mode))))
-        :config (push 'company-tern company-backends))
-    #+END_SRC
-
+*** TODO Auto completion
 *** Indium JS development framework REPL
    
     Install the server
