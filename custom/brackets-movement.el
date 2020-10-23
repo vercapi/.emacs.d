@@ -8,7 +8,6 @@
 (progn
   (setq xah-left-brackets '())
   (dotimes (x (- (length xah-brackets) 1))
-    (message "%s" x)
     (when (= (% x 2) 0)
       (push (char-to-string (elt xah-brackets x))
             xah-left-brackets)))
@@ -21,7 +20,6 @@
 (progn
   (setq xah-right-brackets '())
   (dotimes (x (- (length xah-brackets) 1))
-    (message "%s" x)
     (when (= (% x 2) 1)
       (push (char-to-string (elt xah-brackets x))
             xah-right-brackets)))
