@@ -308,6 +308,12 @@ An elegant editor... for a more civilized age.
      (which-key-mode)
      (which-key-setup-minibuffer)))
    #+END_SRC
+
+   Fix long line issue
+   #+begin_src emacs-lisp
+     (so-long-enable)
+   #+end_src
+
 ** Parentheses
 
    [[http://danmidwood.com/content/2014/11/21/animated-paredit.html][Visual tutorial]]
