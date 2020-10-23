@@ -23,7 +23,7 @@ An elegant editor... for a more civilized age.
   Oracle's instaclient so it is accessible for the python runtime
   #+BEGIN_SRC emacs-lisp
     (when (pve-env/on-linux)
-      (let ((oracle-instaclient "/opt/oracle/instantclient_18_3")
+      (let ((oracle-instaclient "/opt/apps/oracle/client/instantclient_19_8")
             (ld_library_path "LD_LIBRARY_PATH")
             (seperator ":"))
         (setenv ld_library_path
