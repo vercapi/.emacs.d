@@ -604,9 +604,11 @@ An elegant editor... for a more civilized age.
    #+BEGIN_SRC emacs-lisp
      (use-package company
        :ensure t
+       :demand t
        :diminish company-mode
        :hook (after-init . global-company-mode)
        :bind ("C-<tab>" . company-complete)
+       :config (push 'company-capf company-backends)
        :init (setq company-minimum-prefix-length 1
                    company-dabbrev-downcase nil
                    company-idle-delay 0
@@ -617,15 +619,10 @@ An elegant editor... for a more civilized age.
    #+BEGIN_SRC emacs-lisp
      (use-package company-box
        :ensure t
+       :demand t
+       :after (company)
        :diminish company-box-mode
        :hook (company-mode . company-box-mode))
-   #+END_SRC
-
-   LSP backend for company mode
-   #+BEGIN_SRC emacs-lisp
-     (use-package company-lsp
-       :ensure t
-       :config (push 'company-lsp company-backends))
    #+END_SRC
 
    Auto insert the other pair of a bracket
