@@ -818,8 +818,8 @@ An elegant editor... for a more civilized age.
 
     #+BEGIN_SRC emacs-lisp
       (defun multi-git-show-current-branch-name ()
-        "Show current brach name"
-        (list (format "%s" (magit-get-current-branch))))
+        "Show current brach name and changes that have not yet been commited"
+        (list (format "%s changes: %s" (magit-get-current-branch) (shell-command-to-string "git status --porcelain=v1 2>/dev/null | wc -l"))))
     #+END_SRC
 
     #+BEGIN_SRC emacs-lisp
