@@ -594,7 +594,7 @@ An elegant editor... for a more civilized age.
    This also uses the LSP integration if it is enabled in the current buffer.
    #+BEGIN_SRC emacs-lisp
      (use-package helm-xref
-       :ensure t
+       :ensure t       
        :config (setq xref-show-xrefs-function 'helm-xref-show-xrefs))
    #+END_SRC
 
@@ -1148,7 +1148,8 @@ An elegant editor... for a more civilized age.
    Manage dockers from within emacs.
    #+BEGIN_SRC emacs-lisp
      (use-package docker
-       :ensure t)
+       :ensure t
+       :defer 2)
    #+END_SRC
 
    Mode for editing docker files
@@ -1531,10 +1532,14 @@ An elegant editor... for a more civilized age.
 
    Disabled doesn't work on windows, only windows?
    #+BEGIN_SRC emacs-lisp
-     (if (pve-env/on-linux) (use-package sunrise-commander
-       :quelpa (sunrise-commander :fetcher github :repo "escherdragon/sunrise-commander")))
+     (if (pve-env/on-linux)
+         (use-package sunrise-commander
+           :quelpa (sunrise-commander
+                    :fetcher github
+                    :repo "escherdragon/sunrise-commander"
+                    :defer 2)))
    #+END_SRC
-   
+
 ** Dired config
    
    Enable to use 'a' to close previous buffer.
