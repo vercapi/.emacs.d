@@ -780,16 +780,19 @@ An elegant editor... for a more civilized age.
                          (let ((items (funcall action)))
                            (if items
                                (progn
-                                 (insert (concat "* " dir " *"))
-                                 (newline)
+                                 (insert (concat "* " dir " " (car items) " *"))
+                                 (newline 2)
                                  (mapc (lambda (item)
-                                         (insert (format "- %s"
+                                         (insert (format "  %s"
                                                          (replace-regexp-in-string "\n$" "" item)))
                                          (newline))
-                                       items)
+                                       (cdr items))
                                  (newline 2)))))))
                    (multi-git-dirs rootdir))))))
    #+END_SRC
+
+   #+RESULTS:
+   : multi-git-exec
 
    This actually finds all the directories
    #+BEGIN_SRC emacs-lisp
@@ -805,6 +808,18 @@ An elegant editor... for a more civilized age.
     Here are the functions that can be passed to multi-get-exec.
     In essence these are the actions that will be applied to all git repo's
     
+    #+begin_src emacs-lisp
+      (defun multi-git-info ()
+        "Get the information to build the mulit git buffer"
+        (append
+         (multi-git-header)
+         (multi-git-show-current-branch-name)
+         (multi-git-ahead-behind (magit-get-current-branch) (concat (magit-get-remote) "/" (magit-get-current-branch)))))
+    #+end_src
+
+    #+RESULTS:
+    : multi-git-info
+
     #+BEGIN_SRC emacs-lisp
       (defun multi-git-switch-to-branch (branch-name)
         "Switch to specified branch BRANCH-NAME."
@@ -817,14 +832,31 @@ An elegant editor... for a more civilized age.
                       (concat "new: " (magit-get-current-branch)))))))
     #+END_SRC
 
+    Header info
+    #+begin_src emacs-lisp
+      (defun multi-git-header ()
+        "Get the header info for the git repo"
+        (let ((num-of-changes
+               (string-to-number
+                (replace-regexp-in-string "\n$" ""
+                                          (shell-command-to-string "git status --porcelain=v1 2>/dev/null | wc -l")))))
+          (list
+           (format "on %s"
+                   (magit-get-current-branch)))))
+    #+end_src
+
     #+BEGIN_SRC emacs-lisp
       (defun multi-git-show-current-branch-name ()
         "Show current brach name and changes that have not yet been commited"
-        (list
-         (format "Current branch: %s" (magit-get-current-branch))
-         (format "changes: %s" (shell-command-to-string "git status --porcelain=v1 2>/dev/null | wc -l"))
-         (format "Unpushed: %s" (shell-command-to-string (format "git log origin/%s..HEAD | grep commit | wc -l" (magit-get-current-branch))))))
+        (let ((num-of-changes
+               (string-to-number
+                (replace-regexp-in-string "\n$" ""
+                                          (shell-command-to-string "git status --porcelain=v1 2>/dev/null | wc -l")))))
+          (list (format "Changes: %s" num-of-changes))))
     #+END_SRC
+
+    #+RESULTS:
+    : multi-git-show-current-branch-name
 
     #+BEGIN_SRC emacs-lisp
       (defun multi-git-fetch ()
@@ -848,6 +880,14 @@ An elegant editor... for a more civilized age.
 *** Interactive functions
 
     Functions actually used by the user
+
+    Startup multigit
+    #+BEGIN_SRC emacs-lisp
+      (defun multi-git-load (dir)
+        "Show current branch for all git repos in DIR."
+        (interactive "DRoot directory of repos: ")
+        (multi-git-exec dir 'multi-git-info))
+    #+END_SRC
 
     For all git repos show the currently selected branch
     #+BEGIN_SRC emacs-lisp
@@ -975,6 +1015,16 @@ An elegant editor... for a more civilized age.
       (define-key multi-git-mode-map "p" 'multi-git-push-to-remote-at-point)
     #+end_src
 
+    Syntax highlighting
+    #+begin_src emacs-lisp
+      (setq multi-git-highlights
+            '(("\\*.*\\*" . font-lock-function-name-face)
+              ("Changes: [^0][0-9]*" . font-lock-warning-face)))
+    #+end_src
+
+    #+RESULTS:
+    : ((\*.*\* . font-lock-function-name-face) (Changes: [^0][0-9]* . font-lock-warning-face))
+
     Entry function for the multi-git-mode
     #+BEGIN_SRC emacs-lisp
       (define-derived-mode multi-git-mode special-mode "multi-git"
@@ -983,6 +1033,7 @@ An elegant editor... for a more civilized age.
         (setq truncate-lines t)
         (setq buffer-read-only t)
         (setq show-trailing-whitespace nil)
+        (setq font-lock-defaults '(multi-git-highlights))
         (use-local-map multi-git-mode-map)
         (run-hooks 'multi-git-mode-hook))
     #+END_SRC
