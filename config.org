@@ -783,7 +783,8 @@ An elegant editor... for a more civilized age.
                                  (insert (concat "* " dir " *"))
                                  (newline)
                                  (mapc (lambda (item)
-                                         (insert (format "- %s" item))
+                                         (insert (format "- %s"
+                                                         (replace-regexp-in-string "\n$" "" item)))
                                          (newline))
                                        items)
                                  (newline 2)))))))
@@ -819,7 +820,10 @@ An elegant editor... for a more civilized age.
     #+BEGIN_SRC emacs-lisp
       (defun multi-git-show-current-branch-name ()
         "Show current brach name and changes that have not yet been commited"
-        (list (format "%s changes: %s" (magit-get-current-branch) (shell-command-to-string "git status --porcelain=v1 2>/dev/null | wc -l"))))
+        (list
+         (format "Current branch: %s" (magit-get-current-branch))
+         (format "changes: %s" (shell-command-to-string "git status --porcelain=v1 2>/dev/null | wc -l"))
+         (format "Unpushed: %s" (shell-command-to-string (format "git log origin/%s..HEAD | grep commit | wc -l" (magit-get-current-branch))))))
     #+END_SRC
 
     #+BEGIN_SRC emacs-lisp
