@@ -750,7 +750,25 @@ An elegant editor... for a more civilized age.
   #+BEGIN_SRC emacs-lisp
     (use-package magit-gitflow
       :ensure t)
-  #+END_SRC	    
+  #+END_SRC
+
+	Helper functions to set local git repo's
+  #+begin_src emacs-lisp
+    (defun pve/set-git-local-attributes (user-name email-addresss)
+      "Set the local variables of git to the email address"
+      (shell-command-to-string (format "git config user.name \"%s\"" user-name))
+      (shell-command-to-string (format "git config user.email \"%s\"" email-addresss)))
+
+    (defun pve/set-git-work-attributes ()
+      "Set work attributes in the git repository"
+      (interactive)
+      (pve/set-git-local-attributes my-name work-email))
+
+    (defun pve/set-git-personal-attributes ()
+      "Set personal attributes in the git repositor"
+      (interactive)
+      (pve/set-git-local-attributes my-user personal-email))
+  #+end_src
   		    
 ** Multi git
 
