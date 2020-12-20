@@ -1431,7 +1431,10 @@ An elegant editor... for a more civilized age.
      (use-package plantuml-mode
        :ensure t
        :init
-       (setq org-plantuml-jar-path (expand-file-name "/usr/share/java/plantuml/plantuml.jar"))
+       (let ((jar-path (expand-file-name "/usr/share/java/plantuml/plantuml.jar")))
+         (setq org-plantuml-jar-path jar-path
+               plantuml-jar-path jar-path
+               plantuml-default-exec-mode 'jar))
        (add-to-list 'org-src-lang-modes '("plantuml" . plantuml))
        (org-babel-do-load-languages 'org-babel-load-languages '((plantuml . t))))
    #+end_src
