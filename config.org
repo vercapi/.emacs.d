@@ -1910,22 +1910,20 @@ An elegant editor... for a more civilized age.
   #+RESULTS:
   : ((python . py) (java . java) (js . js) (emacs-lisp . el) (elisp . el))
 
-  Add java support to babel
+*** Add java support to babel
+
   #+BEGIN_SRC emacs-lisp
     (require 'ob-java)
     (add-to-list 'org-babel-load-languages '(java . t))
   #+END_SRC
 
+*** Add CLojure support tot babel
+    
   #+BEGIN_SRC emacs-lisp
-    (defun pve-enable-org-bullets ()
-      (org-bullets-mode 1))
+    (require 'ob-clojure)
+    (add-to-list 'org-babel-load-languages '(clojure . t))
   #+END_SRC
 
-  This package enables asynchronous org babel evaluation
-  #+BEGIN_SRC emacs-lisp
-    (use-package ob-async
-      :ensure t)
-  #+END_SRC
 
 ** Main configuration
 
