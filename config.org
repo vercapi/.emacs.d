@@ -1305,6 +1305,7 @@ An elegant editor... for a more civilized age.
      (use-package lsp-java
        :ensure t
        :after lsp-mode
+       :init (setq lsp-java-server-install-dir "/home/vercapi/.emacs.d/eclipse.jdt.ls/")
        :hook ((java-mode . lsp)
               (java-mode . flycheck-mode)
               (java-mode . company-mode)
