@@ -1299,17 +1299,36 @@ An elegant editor... for a more civilized age.
      #+END_SRC
 
 ** Java
-   
-   Download [[http://download.eclipse.org/jdtls/snapshots/jdt-language-server-latest.tar.gz][latest]] Eclipse JDT language server to ~/.emacs.d/eclipse.jdt.ls/server/
+
+   #+begin_src emacs-lisp
+   (defvar lombok-path "/home/vercapi/.m2/repository/org/projectlombok/lombok/1.18.16/lombok-1.18.16.jar" "Path to lombok jar for the project")
+   #+end_src
+
+   Download [[http://download.eclipse.org/jdtls/snapshots/jdt-language-server-latest.tar.gz][latest]] Eclipse JDT language server to "~/.emacs.d/.cache/lsp/eclipse.jdt.ls/"
    #+BEGIN_SRC emacs-lisp
      (use-package lsp-java
        :ensure t
        :after lsp-mode
-       :init (setq lsp-java-server-install-dir "/home/vercapi/.emacs.d/eclipse.jdt.ls/")
+       :config
+       (setq lsp-java-vmargs
+             (list "-noverify"
+                   "-Xmx2G"
+                   "-XX:+UseG1GC"
+                   "-XX:+UseStringDeduplication"
+                   (concat "-javaagent:" lombok-path)
+                   (concat "-Xbootclasspath/a:" lombok-path))
+             lsp-file-watch-ignored
+             '(".idea" ".ensime_cache" ".eunit" "node_modules"
+               ".git" ".hg" ".fslckout" "_FOSSIL_"
+               ".bzr" "_darcs" ".tox" ".svn" ".stack-work"
+               "build")
+
+             lsp-java-import-order '["" "java" "javax" "#"]
+             ;; Don't organize imports on save
+             lsp-java-save-action-organize-imports nil)
        :hook ((java-mode . lsp)
               (java-mode . flycheck-mode)
               (java-mode . company-mode)
-              (java-mode . (lambda () (lsp-ui-flycheck-enable t)))
               (java-mode . lsp-ui-sideline-mode)
               (java-mode . yas-minor-mode)
               (java-mode . (lambda () (setq c-basic-offset 2)))))
