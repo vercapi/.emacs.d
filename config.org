@@ -1663,6 +1663,7 @@ An elegant editor... for a more civilized age.
   #+BEGIN_SRC emacs-lisp
     (use-package helm
       :ensure t
+      :demand t
       :diminish helm-mode
       :config
       (setq helm-split-window-in-side-p           t ; open helm buffer inside current window, not occupy whole other window
@@ -2076,6 +2077,8 @@ k** Presenting
      (defvar org-default-calendar-dir (concat org-default-dir "calendars/") "Calendar synce;d files.")
      (defvar org-default-archive-file (concat org-default-dir "archive.org") "archive file.")
      (defvar org-attachments-dir (concat org-default-dir "attachments") "place to store attachments")
+     (defvar org-default-sticky-dir (concat org-default-dir "sticky.org") "Sticky notes")
+     (defvar org-default-stack-dir (concat org-default-dir "stack.org") "Important information")
    #+END_SRC
 
    Add files that need agenda entries
@@ -2264,7 +2267,9 @@ k** Presenting
                                          (org-default-shopping-file :level . 1)
                                          (org-default-tech-notebook :level . 2)
                                          (org-default-life-notebook :level . 1)
-                                         (org-default-hockey-notebook :level . 1))
+                                         (org-default-hockey-notebook :level . 1)
+                                         (org-default-sticky-dir :level . 1)
+                                         (org-default-stack-dir :level . 1))
                                        (mapcar (lambda (i)
                                                  (let ((lst '(:level . 1)))
                                                    (push i lst)))
