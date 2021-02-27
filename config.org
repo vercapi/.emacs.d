@@ -1300,9 +1300,12 @@ An elegant editor... for a more civilized age.
 
 ** Java
 
+   Java settings
    #+begin_src emacs-lisp
    (defvar lombok-path "/home/vercapi/.m2/repository/org/projectlombok/lombok/1.18.16/lombok-1.18.16.jar" "Path to lombok jar for the project")
    #+end_src
+
+*** Language server
 
    Download [[http://download.eclipse.org/jdtls/snapshots/jdt-language-server-latest.tar.gz][latest]] Eclipse JDT language server to "~/.emacs.d/.cache/lsp/eclipse.jdt.ls/"
    #+BEGIN_SRC emacs-lisp
@@ -1334,12 +1337,36 @@ An elegant editor... for a more civilized age.
               (java-mode . (lambda () (setq c-basic-offset 2)))))
    #+END_SRC
 
+*** Code snippets
+
    Templates for java snippets
    #+BEGIN_SRC emacs-lisp
      (use-package java-snippets
        :ensure t)
    #+END_SRC
    
+*** create project
+
+    #+begin_src emacs-lisp
+      (defun pve/new-java-project (dir project-name group-id)
+          "Create a new java project"
+          (interactive "Dlocation: 
+      sProject name: 
+      sGroup name: ")
+          (let ((final-dir (concat dir "/" project-name)))
+            (with-current-buffer (get-buffer-create "*new java project*")
+              (read-only-mode)
+              (let ((inhibit-read-only t))
+                (cd dir)
+                (insert
+                 (shell-command-to-string (format
+                                           "mvn archetype:generate -DgroupId=%s -DartifactId=%s -DarchetypeArtifactdId=maven-archetype-quickstart -DinteractiveMode=false"
+                                           group-id
+                                           project-name)))))
+            (with-current-buffer (find-file final-dir)
+              (projectile-add-known-project final-dir)
+              (treemacs-add-and-display-current-project))))
+    #+end_src
 ** Packet Capturing
 
    #+BEGIN_SRC emacs-lisp
