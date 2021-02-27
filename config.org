@@ -1508,6 +1508,7 @@ An elegant editor... for a more civilized age.
        (progn
          ;; Create theme
          (require 'treemacs)
+         (require 'f)
          (treemacs-create-theme "pve"
            :icon-directory (f-join treemacs-dir "icons/default")
            :config
@@ -1713,11 +1714,11 @@ An elegant editor... for a more civilized age.
   #+END_SRC
 
   #+begin_src emacs-lisp
-    (use-package helm-icons
-      :ensure t
-      :init (helm-icons-enable))
+    ;;(use-package helm-icons
+    ;;  :ensure t
+    ;;  :init (helm-icons-enable))
   #+end_src
-  
+
   #+begin_src emacs-lisp
     (diminish 'helm-ff-cache-mode)
   #+end_src
