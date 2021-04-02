@@ -1146,46 +1146,48 @@ An elegant editor... for a more civilized age.
       (use-package js2-mode
         :mode "\\.js\\'"
         :ensure t
+        :hook (js2-mode . lsp)
         :init
-        (setq-default js2-basic-offset 2
-	 	     js2-indent-switch-body t
-	 	     js2-auto-indent-p t
-	 	     js2-indent-on-enter-key t))
+        (setq-default
+         js-indent-level 2
+         js2-indent-switch-body t
+         js2-auto-indent-p t
+         js2-indent-on-enter-key t))
     #+END_SRC
 
-*** TODO Auto completion
-*** Indium JS development framework REPL
-   
-    Install the server
-    #+BEGIN_SRC sh
-    sudo npm install -g indium
-    #+END_SRC
- 
-    Install the emacs package for REPL
-    #+BEGIN_SRC emacs-lisp
-      (use-package indium
+
+*** Typescript mode
+
+    #+begin_src emacs-lisp
+      (use-package typescript-mode
         :ensure t
-        :after js2-mode
-        :hook ((js2-mode . indium-interaction-mode)
-               (js-mode . indium-interaction-mode)))
-    #+END_SRC  
-
+        :mode "\\.ts\\'"
+        :hook (typescript-mode . lsp))
+    #+end_src
+    
+*** TODO Auto completion
 *** Live web development
 
     #+BEGIN_SRC emacs-lisp
       (use-package impatient-mode
         :ensure t
-        :mode "\\.js\\'"
         :hook ((html-mode . impatient-mode)))
     #+END_SRC
 
 *** Angular specifics
 
+    Angular, not installed automatically by LSP
+    #+begin_src sh
+      npm install -g @angular/language-service@next typescript @angular/language-server
+    #+end_src
+    
     Snippets for angular
     #+BEGIN_SRC emacs-lisp
       (use-package angular-snippets
         :ensure t)
     #+END_SRC
+
+
 
 ** python
    
