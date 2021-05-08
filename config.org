@@ -2297,8 +2297,29 @@ k** Presenting
     #+RESULTS:
     : #s(hash-table size 65 test eql rehash-size 1.5 rehash-threshold 0.8125 data (:use-package (24397 4495 660113 189000) :init (24397 4495 660110 636000) :config (24397 4495 660105 555000) :config-secs (0 0 21 347000) :init-secs (0 0 31 859000) :use-package-secs (0 0 72 473000)))
 
+*** Lists
 
-** Plugins
+    Converting lists to tables etc. [[https://github.com/dfeich/org-listcruncher#orgf4285ac][listcruncher]]
+    #+begin_src emacs-lisp
+      (use-package org-listcruncher
+        :ensure t)
+    #+end_src
+
+    Example:
+    //#+NAME: lstTest
+    - item: item X modified by replacing values (amount: 15, recurrence: 1, end-year: 2020)
+      - modification of item X (amount: 20)
+      - another modification of item X (other: 500)
+        - modification of the modification (other: 299)
+
+    //#+NAME: src-example1
+    //#+BEGIN_SRC elisp :results value :var listname="lstTest" :exports both
+    //  (org-listcruncher-to-table listname)
+    //#+END_SRC
+
+    
+
+** Plugins / Intgration
 *** magit integration
     
     #+BEGIN_SRC emacs-lisp
