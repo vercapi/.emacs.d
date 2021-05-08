@@ -2229,19 +2229,20 @@ k** Presenting
 
     List of targets to refile to
     #+BEGIN_SRC emacs-lisp
-      (setq org-refile-targets (append '((org-default-tasks-file :level . 0)
-                                         (org-default-ideas-file :level . 0)
-                                         (org-default-archive-file :level . 0)
-                                         (org-default-shopping-file :level . 1)
-                                         (org-default-tech-notebook :level . 2)
-                                         (org-default-life-notebook :level . 1)
-                                         (org-default-hockey-notebook :level . 1)
-                                         (org-default-sticky-dir :level . 1)
-                                         (org-default-stack-dir :level . 1))
-                                       (mapcar (lambda (i)
-                                                 (let ((lst '(:level . 1)))
-                                                   (push i lst)))
-                                               (directory-files org-default-projects-dir t ".org$"))))
+      (defun pve/org-refile-candidates ()
+        (directory-files org-default-projects-dir t ".*\\.org$"))
+
+      (setq org-refile-targets (append '((org-default-tasks-file :maxlevel . 1)
+                                          (org-default-ideas-file :maxlevel . 1)
+                                          (org-default-archive-file :maxlevel . 1)
+                                          (org-default-shopping-file :maxlevel . 1)
+                                          (org-default-tech-notebook :maxlevel . 2)
+                                          (org-default-life-notebook :maxlevel . 1)
+                                          (org-default-makers-notebook :maxlevel . 2)
+                                          (org-default-hockey-notebook :maxlevel . 1)
+                                          (org-default-sticky-dir :maxlevel . 1)
+                                          (org-default-stack-dir :maxlevel . 1))))
+      (add-to-list 'org-refile-targets '(pve/org-refile-candidates :maxlevel . 3))
     #+END_SRC
 
     Create a project file from a header
