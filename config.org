@@ -318,6 +318,9 @@ An elegant editor... for a more civilized age.
 
    [[http://danmidwood.com/content/2014/11/21/animated-paredit.html][Visual tutorial]]
 
+   #+DOWNLOADED: http://www.emacswiki.org/pics/static/PareditCheatsheet.png @ 2021-05-07 08:48:01
+   [[file:../Documents/org/attachments/default/Emacs_Behavior/2021-05-07_08-48-01_PareditCheatsheet.png]]
+
    #+begin_src emacs-lisp
      (use-package paredit
        :ensure t
