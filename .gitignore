@@ -17,3 +17,10 @@ elpa/*
 /secrets.el
 /.lsp-session-v1
 /.org-id-locations
+/workspace/
+/tramp
+/persist/
+/org-gcal/
+/eln-cache/
+/eclipse.jdt.ls/
+/.org-generic-id-locations
