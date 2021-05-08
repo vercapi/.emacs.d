@@ -2113,6 +2113,7 @@ k** Presenting
      (defvar org-default-tech-notebook (concat org-default-notebooks-dir "tech-notebook.org") "Information on technical topcics.")
      (defvar org-default-life-notebook (concat org-default-notebooks-dir "life-notebook.org") "Information on any topics.")
      (defvar org-default-hockey-notebook (concat org-default-notebooks-dir "hockey-notebook.org") "Information on hockey.")
+     (defvar org-default-makers-notebook (concat org-default-notebooks-dir "makers-notebook.org") "Information on making.")
      (defvar org-default-documents (concat org-default-notebooks-dir "documents.org") "Directory for documents such as PDFs.")
      (defvar org-default-calendar-dir (concat org-default-dir "calendars/") "Calendar synce;d files.")
      (defvar org-default-archive-file (concat org-default-dir "archive.org") "archive file.")
