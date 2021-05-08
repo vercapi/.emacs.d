@@ -1949,7 +1949,14 @@ An elegant editor... for a more civilized age.
   #+BEGIN_SRC emacs-lisp
     (use-package ob-async
       :ensure t)
-  #+END_SRC   
+  #+END_SRC
+
+  We want all the results to be wrapped in a block once they are longer then one line
+  \#+begin_example
+  \#+end_example
+  #+begin_src emacs-lisp
+    (setq org-babel-min-lines-for-block-output 2)
+  #+end_src
 
 *** Add javascript support to babel
   #+BEGIN_SRC emacs-lisp
