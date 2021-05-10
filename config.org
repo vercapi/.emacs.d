@@ -2324,6 +2324,20 @@ k** Presenting
     //#+END_SRC
 
     
+*** Searching
+
+    Org Query Language
+    #+begin_src emacs-lisp
+      (use-package org-ql
+        :ensure t)
+    #+end_src
+
+    With Helm support for Org Query Language
+    #+begin_src emacs-lisp
+      (use-package helm-org-ql
+        :ensure t
+        :requires org-ql)
+    #+end_src
 
 ** Plugins / Intgration
 *** magit integration
