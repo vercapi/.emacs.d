@@ -2311,17 +2311,22 @@ k** Presenting
         :ensure t)
     #+end_src
 
-    Example:
-    //#+NAME: lstTest
+    Examxple:
+    #+NAME: lstTest
     - item: item X modified by replacing values (amount: 15, recurrence: 1, end-year: 2020)
       - modification of item X (amount: 20)
       - another modification of item X (other: 500)
         - modification of the modification (other: 299)
 
-    //#+NAME: src-example1
-    //#+BEGIN_SRC elisp :results value :var listname="lstTest" :exports both
-    //  (org-listcruncher-to-table listname)
-    //#+END_SRC
+    #+NAME: src-example1
+    #+BEGIN_SRC elisp :results value :var listname="lstTest" :exports both
+      ;;(org-listcruncher-to-table listname)
+    #+END_SRC
+
+    #+RESULTS: src-example1
+    | description                         | other | amount | recurrence | end-year |
+    |-------------------------------------+-------+--------+------------+----------|
+    | item X modified by replacing values |   299 |     20 |          1 |     2020 |
 
     
 *** Searching
