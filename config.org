@@ -2148,8 +2148,7 @@ k** Presenting
 
     #+BEGIN_SRC emacs-lisp
       (setq org-todo-keywords
-            '((sequence "TODO(t!)" "DOING(o!)" "BLOCKED(b@/!)" "WAITING(e@!)" "|" "DONE(d@!)" "CANCELED(c@)")
-              (sequence "NEEDSWORK(w)" "|" "PREPARED(p)")))
+            '((sequence "NEEDSWORK(w@!)" "TODO(t!)" "DOING(o!)" "BLOCKED(b@/!)" "WAITING(e@!)" "|" "DONE(d@!)" "CANCELED(c@!)")))
     #+END_SRC
 
 *** Capture templates
