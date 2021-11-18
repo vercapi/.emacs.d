@@ -1519,13 +1519,12 @@ An elegant editor... for a more civilized age.
        (progn
          ;; Create theme
          (require 'treemacs)
-         (require 'f)
-         (treemacs-create-theme "pve"
-           :icon-directory (f-join treemacs-dir "icons/default")
+         (treemacs-modify-theme "Default"
            :config
            (progn
              ;; directory and other icons
-             (treemacs-create-icon :icon (concat (all-the-icons-faicon "circle-o") " ")       :extensions (root))
+             (treemacs-create-icon :icon (concat (all-the-icons-faicon "circle-o") " ")       :extensions (root-closed))
+             (treemacs-create-icon :icon (concat (all-the-icons-faicon "circle-o") " ")       :extensions (root-open))
              (treemacs-create-icon :icon (concat (all-the-icons-faicon "folder") " ")         :extensions (dir-closed))
              (treemacs-create-icon :icon (concat (all-the-icons-faicon "folder") " ")         :extensions (dir-open))
              (treemacs-create-icon :icon (concat (all-the-icons-faicon "circle") " ")         :extensions (tag-leaf))
@@ -1588,8 +1587,8 @@ An elegant editor... for a more civilized age.
              (treemacs-create-icon :icon (concat (all-the-icons-icon-for-file "x.pl") " ")       :extensions ("pl" "pm" "perl"))
              (treemacs-create-icon :icon (concat (all-the-icons-icon-for-file "x.r") " ")        :extensions ("r"))
              (treemacs-create-icon :icon (concat (all-the-icons-icon-for-file "x.re") " ")       :extensions ("re" "rei"))))
-         ;; activate the theme
-         (treemacs-load-theme "pve"))
+         (require 'treemacs)
+         (require 'f))
          :config
          ;; Set the differnt config options
          (setq treemacs-collapse-dirs              (if (executable-find "python") 3 0)
