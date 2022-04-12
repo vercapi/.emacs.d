@@ -1221,27 +1221,31 @@ An elegant editor... for a more civilized age.
     #+end_src
 
 ** python
-   
-   Install langauge server for python
-   #+BEGIN_SRC sh
-   pacman -S python-language-server
-   #+END_SRC
 
-   #+BEGIN_SRC emacs-lisp
+   Standard Python mode config
+   #+begin_src emacs-lisp
      (use-package python-mode
        :ensure t
        :mode "\\.py\\'"
        :config
-       ;; Create lsp-python-enable to start lsp mode for python
-       (lsp-define-stdio-client lsp-python "python"
-         #'projectile-project-root
-         '("pyls"))
        ;; Disable eldoc, we see the info with lsp-ui
        (setq lsp-enable-eldoc nil
              python-shell-completion-native-enable nil)
-       :hook (python-mode . lsp-python-enable))
+       :hook (python-mode . yas-minor-mode))
    #+END_SRC
+
    Disabled the standard completion method for python shell. It opens a new window gets in the way and doesn't do completion very well.
+   
+   Configure lsp mode for python
+   #+BEGIN_SRC emacs-lisp
+     (use-package lsp-pyright
+            :ensure t
+            :config (with-eval-after-load "lsp-mode"
+                      (add-to-list 'lsp-enabled-clients 'pyright))
+            :hook (python-mode . (lambda ()
+                                    (require 'lsp-pyright)
+                                    (lsp))))
+   #+end_src
 
    Tool to switch to a virtualenv. To use lspl, install the server in the virtualenv too.
    #+BEGIN_SRC emacs-lisp
