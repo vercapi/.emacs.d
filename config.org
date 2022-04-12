@@ -1350,6 +1350,8 @@ An elegant editor... for a more civilized age.
        :ensure t
        :after lsp-mode
        :config
+       (with-eval-after-load "lsp-mode"
+                      (add-to-list 'lsp-enabled-clients 'jdtls))
        (setq lsp-java-vmargs
              (list "-noverify"
                    "-Xmx2G"
