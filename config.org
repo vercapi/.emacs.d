@@ -2091,7 +2091,7 @@ An elegant editor... for a more civilized age.
      (face-spec-set 'org-checkbox '((t (:box nil))))
    #+END_SRC
 
-k** Presenting
+** Presenting
 
    #+BEGIN_SRC emacs-lisp
      (defun org-present-init ()
