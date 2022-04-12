@@ -1155,9 +1155,10 @@ An elegant editor... for a more civilized age.
          js-indent-level 2
          js2-indent-switch-body t
          js2-auto-indent-p t
-         js2-indent-on-enter-key t))
+         js2-indent-on-enter-key t)
+        (with-eval-after-load "lsp-mode"
+          (add-to-list 'lsp-enabled-clients 'ts-ls)))
     #+END_SRC
-
 
 *** Typescript mode
 
@@ -1165,10 +1166,18 @@ An elegant editor... for a more civilized age.
       (use-package typescript-mode
         :ensure t
         :mode "\\.ts\\'"
-        :hook (typescript-mode . lsp))
+        :hook (typescript-mode . lsp)
+        :init
+        (with-eval-after-load "lsp-mode"
+          (add-to-list 'lsp-enabled-clients 'ts-ls)))
+    #+end_src
+
+    org bable mode
+    #+begin_src emacs-lisp
+      (use-package ob-typescript
+        :ensure t)
     #+end_src
     
-*** TODO Auto completion
 *** Live web development
 
     #+BEGIN_SRC emacs-lisp
@@ -1194,8 +1203,21 @@ An elegant editor... for a more civilized age.
     #+begin_src emacs-lisp
       (use-package ng2-mode
         :ensure t
-        :init
-        (add-hook 'ng2-html-mode-hook 'lsp))
+        :hook ((ng2-html-mode . lsp)
+               (ng2-ts-mode . lsp)
+               (ng2-html-mode . yas-minor-mode)
+               (ng2-ts-mode . yas-minor-mode))
+        :init (progn
+                  (setq lsp-clients-angular-language-server-command
+                        '("node"
+                          "/usr/lib/node_modules/@angular/language-server"
+                          "--ngProbeLocations"
+                          "/usr/lib/node_modules"
+                          "--tsProbeLocations"
+                          "/usr/lib/node_modules"
+                          "--stdio"))
+                  (with-eval-after-load "lsp-mode"
+                    (add-to-list 'lsp-enabled-clients 'angular-ls))))
     #+end_src
 
 ** python
