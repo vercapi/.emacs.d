@@ -1266,7 +1266,11 @@ An elegant editor... for a more civilized age.
    #+BEGIN_SRC emacs-lisp
      (use-package dockerfile-mode
        :ensure t
-       :mode "\\Dockerfile\\'")
+       :mode "\\Dockerfile\\'"
+       :config (with-eval-after-load "lsp-mode"
+                 (add-to-list 'lsp-enabled-clients 'dockerfile-ls))
+       :hook ((dockerfile-mode . (lambda () (lsp)))
+              (dockerfile-mode . yas/minor-mode)))
    #+END_SRC
 
 ** LUA
