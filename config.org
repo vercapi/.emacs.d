@@ -4,1939 +4,1940 @@ An elegant editor... for a more civilized age.
 
 * Environment
   
-  Check where we are running
-  #+BEGIN_SRC emacs-lisp
-    (defun pve-env/on-cygwin ()
-      "Return true if we are on cygwin"
-      (string-equal system-type "cygwin"))
+Check where we are running
+#+BEGIN_SRC emacs-lisp
+  (defun pve-env/on-cygwin ()
+    "Return true if we are on cygwin"
+    (string-equal system-type "cygwin"))
 
-    (defun pve-env/on-windows ()
-      "Return true if we are on the windows machine"
-      (string-equal system-type "windows-nt"))
+  (defun pve-env/on-windows ()
+    "Return true if we are on the windows machine"
+    (string-equal system-type "windows-nt"))
 
-    (defun pve-env/on-linux ()
-      "Return true if we are on a linux system"
-      (string-equal system-type "gnu/linux"))
-  #+END_SRC
+  (defun pve-env/on-linux ()
+    "Return true if we are on a linux system"
+    (string-equal system-type "gnu/linux"))
+#+END_SRC
 
-  Setup environment variables
-  Oracle's instaclient so it is accessible for the python runtime
-  #+BEGIN_SRC emacs-lisp
-    (when (pve-env/on-linux)
-      (let ((oracle-instaclient "/opt/apps/oracle/client/instantclient_19_8")
-            (ld_library_path "LD_LIBRARY_PATH")
-            (seperator ":"))
-        (setenv ld_library_path
-                (concat oracle-instaclient seperator (getenv ld_library_path)))))
-  #+END_SRC
+Setup environment variables
+Oracle's instaclient so it is accessible for the python runtime
+#+BEGIN_SRC emacs-lisp
+  (when (pve-env/on-linux)
+    (let ((oracle-instaclient "/opt/apps/oracle/client/instantclient_19_8")
+          (ld_library_path "LD_LIBRARY_PATH")
+          (seperator ":"))
+      (setenv ld_library_path
+              (concat oracle-instaclient seperator (getenv ld_library_path)))))
+#+END_SRC
 
-  Use the gnu core utils from git
-  #+BEGIN_SRC emacs-lisp
-    (when (pve-env/on-windows)
-      (let ((gnu-bin "C:\\Program Files\\Git\\usr\\bin")
-            (path (getenv "PATH"))
-            (seperator ";"))
-        (setenv "PATH" (concat gnu-bin seperator path))))
-  #+END_SRC
+Use the gnu core utils from git
+#+BEGIN_SRC emacs-lisp
+  (when (pve-env/on-windows)
+    (let ((gnu-bin "C:\\Program Files\\Git\\usr\\bin")
+          (path (getenv "PATH"))
+          (seperator ";"))
+      (setenv "PATH" (concat gnu-bin seperator path))))
+#+END_SRC
 
 * Core emacs setup
   
-  Various things go slower on windows (org mode, helm, ...). They all seem to pause from time to time.
-  The settings bellow stp the GC pauses from being anoying.
-  #+BEGIN_SRC emacs-lisp
-    (if (pve-env/on-windows)
-        (progn
-          (setq inhibit-compacting-font-caches t)
-          (setq gc-cons-threshold (* 511 2048 2048)
-                gc-cons-percentage 0.5
-                garbage-collection-messages t)
-          (run-with-idle-timer 5 t #'garbage-collect)))
-  #+END_SRC
+Various things go slower on windows (org mode, helm, ...). They all seem to pause from time to time.
+The settings bellow stp the GC pauses from being anoying.
+#+BEGIN_SRC emacs-lisp
+  (if (pve-env/on-windows)
+      (progn
+        (setq inhibit-compacting-font-caches t)
+        (setq gc-cons-threshold (* 511 2048 2048)
+              gc-cons-percentage 0.5
+              garbage-collection-messages t)
+        (run-with-idle-timer 5 t #'garbage-collect)))
+#+END_SRC
 
 * Packages setup
   
-  Loading all the resources so the rest of the config has access to all these resoruces.
+Loading all the resources so the rest of the config has access to all these resoruces.
 
 ** Packages sources
 
-   Configure all sources for packages to be used throughtout this config file.
-   #+BEGIN_SRC emacs-lisp
-    (setq package-archives '(("melpa" . "http://melpa.org/packages/")
-                             ("gnu" . "http://elpa.gnu.org/packages/")))
-   #+END_SRC
+Configure all sources for packages to be used throughtout this config file.
+#+BEGIN_SRC emacs-lisp
+  (setq package-archives '(("melpa" . "http://melpa.org/packages/")
+                           ("gnu" . "http://elpa.gnu.org/packages/")))
+#+END_SRC
 
 ** use-package & quelpa bootstrap
 
-   These are the packages needed to manage the packages from the package repostiories or directly from git.
+These are the packages needed to manage the packages from the package repostiories or directly from git.
 
-   Ensure that 'use-package' is installed.
-   #+BEGIN_SRC emacs-lisp
-     (if (not (package-installed-p 'use-package))
-         (progn
-           (package-refresh-contents)
-           (package-install 'use-package)))
+Ensure that 'use-package' is installed.
+#+BEGIN_SRC emacs-lisp
+  (if (not (package-installed-p 'use-package))
+      (progn
+        (package-refresh-contents)
+        (package-install 'use-package)))
 
-     (require 'use-package)
-     (setq use-package-compute-statistics t)
-   #+END_SRC
+  (require 'use-package)
+  (setq use-package-compute-statistics t)
+#+END_SRC
 
-   Ensure that 'quelpa' is installed, a dependency for quelpa-use-package, the package we really want
-   Allows to load Emacs Lisp packages built directly from source (github etc.)
-   #+BEGIN_SRC emacs-lisp
-     (use-package quelpa
-       :init (setq quelpa-update-melpa-p nil)
-       :ensure t)
-   #+END_SRC
+Ensure that 'quelpa' is installed, a dependency for quelpa-use-package, the package we really want
+Allows to load Emacs Lisp packages built directly from source (github etc.)
+#+BEGIN_SRC emacs-lisp
+  (use-package quelpa
+    :init (setq quelpa-update-melpa-p nil)
+    :ensure t)
+#+END_SRC
 
 
-   Further install quelpa-use-package
-   This is the quelpa handle for use-package
-   #+BEGIN_SRC emacs-lisp
-     (use-package quelpa-use-package
-       :ensure t
-       :after quelpa)
-   #+END_SRC
+Further install quelpa-use-package
+This is the quelpa handle for use-package
+#+BEGIN_SRC emacs-lisp
+  (use-package quelpa-use-package
+    :ensure t
+    :after quelpa)
+#+END_SRC
 
 ** Load custom local code
 
-   All custom tooling that is available within this repository.
-   #+BEGIN_SRC emacs-lisp
-   (add-to-list 'load-path "~/.emacs.d/custom/")
-   #+END_SRC
+All custom tooling that is available within this repository.
+#+BEGIN_SRC emacs-lisp
+  (add-to-list 'load-path "~/.emacs.d/custom/")
+#+END_SRC
 
-   #+BEGIN_SRC emacs-lisp
-     (load "~/.emacs.d/secrets.el")
-   #+END_SRC
+#+BEGIN_SRC emacs-lisp
+  (load "~/.emacs.d/secrets.el")
+#+END_SRC
 
 * Visual Configuration
 ** Emacs frame appearance
 
-   #+BEGIN_SRC emacs-lisp
-     (tool-bar-mode -1) ;; no toolbar
-     (menu-bar-mode -1) ;; no menubar
-     (toggle-scroll-bar -1) ;; no scrollbar
-     (fset 'yes-or-no-p 'y-or-n-p) ;; type y/n not yes/no
-   #+END_SRC
+#+BEGIN_SRC emacs-lisp
+  (tool-bar-mode -1) ;; no toolbar
+  (menu-bar-mode -1) ;; no menubar
+  (toggle-scroll-bar -1) ;; no scrollbar
+  (fset 'yes-or-no-p 'y-or-n-p) ;; type y/n not yes/no
+#+END_SRC
 
 ** mode line
 *** What to show on the modeline
     
-    Set the file size on the mode line  
-    #+BEGIN_SRC emacs-lisp
-    (setq size-indication-mode t)
-    #+END_SRC
+Set the file size on the mode line  
+#+BEGIN_SRC emacs-lisp
+  (setq size-indication-mode t)
+#+END_SRC
 
-    #+RESULTS:
-    : t
+#+RESULTS:
+: t
 
-    Add columns to the mode line
-    #+BEGIN_SRC emacs-lisp
-    (setq column-number-mode t)
-    #+END_SRC
+Add columns to the mode line
+#+BEGIN_SRC emacs-lisp
+  (setq column-number-mode t)
+#+END_SRC
 
-    #+RESULTS:
-    : t
+#+RESULTS:
+: t
 
-    Don't show everything in the mode line. Only what we deem important.
-    Or change the way it is shown. 
-    Actual configuration is done by use-packages it's :diminish keyword.
-    #+BEGIN_SRC emacs-lisp
-      (use-package diminish
-        :ensure t
-        :config (progn
-                  (diminish 'eldoc-mode)))
-    #+END_SRC
+Don't show everything in the mode line. Only what we deem important.
+Or change the way it is shown. 
+Actual configuration is done by use-packages it's :diminish keyword.
+#+BEGIN_SRC emacs-lisp
+  (use-package diminish
+    :ensure t
+    :config (progn
+              (diminish 'eldoc-mode)))
+#+END_SRC
 
-    #+RESULTS:
+#+RESULTS:
 
 *** Powerline
 
-    Activate powerline with the default theme
+Activate powerline with the default theme
 
-     #+BEGIN_SRC emacs-lisp
-         (use-package powerline
-           :ensure t
-           :config
-           (powerline-default-theme)
-           (setq powerline-default-separator 'slant
-                 solarized-high-contrast-mode-line t))
-     #+END_SRC
+#+BEGIN_SRC emacs-lisp
+  (use-package powerline
+    :ensure t
+    :config
+    (powerline-default-theme)
+    (setq powerline-default-separator 'slant
+          solarized-high-contrast-mode-line t))
+#+END_SRC
 
 ** Fonts
 
-   Set the standard fonts for emacs and other componets
-   This is based on std configuration. So if emacs adds this again in init.el or .emacs things might break and this needs to be  manually
+Set the standard fonts for emacs and other componets
+This is based on std configuration. So if emacs adds this again in init.el or .emacs things might break and this needs to be  manually
 
-   [[https://github.com/bluescan/proggyfonts/][Proggy Vector]] font was downloaded from [[https://app.programmingfonts.org/][programming fonts]].
+[[https://github.com/bluescan/proggyfonts/][Proggy Vector]] font was downloaded from [[https://app.programmingfonts.org/][programming fonts]].
    
-   #+BEGIN_SRC emacs-lisp
-     (custom-set-faces
-      '(default ((t (:family "ProggyVector" :foundry "PfEd" :slant normal :weight normal :height 120 :width normal))))
-      '(minimap-font-face ((t (:height 40 :family "ProggyVector"))))
-      '(mode-line ((t (:family "ProggyVector" :foundry "PfEd" :slant normal :weight normal :height 120 :width normal)))))
-    #+END_SRC
+#+BEGIN_SRC emacs-lisp
+  (custom-set-faces
+   '(default ((t (:family "ProggyVector" :foundry "PfEd" :slant normal :weight normal :height 120 :width normal))))
+   '(minimap-font-face ((t (:height 40 :family "ProggyVector"))))
+   '(mode-line ((t (:family "ProggyVector" :foundry "PfEd" :slant normal :weight normal :height 120 :width normal)))))
+#+END_SRC
 
-    #+RESULTS:
+#+RESULTS:
 
-    Simple shortcuts to switch between to common used font sizes
-    #+BEGIN_SRC emacs-lisp
-      (defun pve-small-fonts ()
-        "Set font to work on desktop screens."
-        (interactive)
-        (pve-set-fonts 100)
-        )
+Simple shortcuts to switch between to common used font sizes
+#+BEGIN_SRC emacs-lisp
+  (defun pve-small-fonts ()
+    "Set font to work on desktop screens."
+    (interactive)
+    (pve-set-fonts 100)
+    )
 
-      (defun pve-big-fonts ()
-        "Set font for use on laptop screens."
-        (interactive)
-        (pve-set-fonts 150)
-        )
+  (defun pve-big-fonts ()
+    "Set font for use on laptop screens."
+    (interactive)
+    (pve-set-fonts 150)
+    )
 
-      (defun pve-set-fonts (font-height)
-        "Set size of fonts to FONT-HEIGHT, and only the size of the fonts."
-        (set-face-attribute 'default nil :height font-height)
-        (set-face-attribute 'mode-line nil :height font-height)
-        (set-face-attribute 'org-level-1 nil :height font-height)
-        (set-face-attribute 'org-level-2 nil :height font-height)
-        (set-face-attribute 'org-level-3 nil :height font-height)
-        (set-face-attribute 'org-level-4 nil :height font-height)
-        (set-face-attribute 'org-level-5 nil :height font-height)
-        (set-face-attribute 'org-level-6 nil :height font-height)
-        (set-face-attribute 'org-level-7 nil :height font-height)
-        (set-face-attribute 'org-level-8 nil :height font-height)
-        )
-    #+END_SRC
+  (defun pve-set-fonts (font-height)
+    "Set size of fonts to FONT-HEIGHT, and only the size of the fonts."
+    (set-face-attribute 'default nil :height font-height)
+    (set-face-attribute 'mode-line nil :height font-height)
+    (set-face-attribute 'org-level-1 nil :height font-height)
+    (set-face-attribute 'org-level-2 nil :height font-height)
+    (set-face-attribute 'org-level-3 nil :height font-height)
+    (set-face-attribute 'org-level-4 nil :height font-height)
+    (set-face-attribute 'org-level-5 nil :height font-height)
+    (set-face-attribute 'org-level-6 nil :height font-height)
+    (set-face-attribute 'org-level-7 nil :height font-height)
+    (set-face-attribute 'org-level-8 nil :height font-height)
+    )
+#+END_SRC
 
-    #+RESULTS:
-    : pve-set-fonts
+#+RESULTS:
+: pve-set-fonts
     
 ** Theme/Syntax sugar
 
-   [[https://pawelbx.github.io/emacs-theme-gallery/][Theme gallery]]
+[[https://pawelbx.github.io/emacs-theme-gallery/][Theme gallery]]
    
-   Define theme
-   #+BEGIN_SRC emacs-lisp
-     (use-package flucui-themes
-       :ensure t
-       :config (flucui-themes-load-style 'dark))
-   #+END_SRC
+Define theme
+#+BEGIN_SRC emacs-lisp
+  (use-package flucui-themes
+    :ensure t
+    :config (flucui-themes-load-style 'dark))
+#+END_SRC
 
-   Colorize delimters (,[,... different colors for every level
-   #+BEGIN_SRC emacs-lisp
-     (use-package rainbow-delimiters
-       :ensure t
-       :hook (prog-mode . rainbow-delimiters-mode))
-   #+END_SRC
+Colorize delimters (,[,... different colors for every level
+#+BEGIN_SRC emacs-lisp
+  (use-package rainbow-delimiters
+    :ensure t
+    :hook (prog-mode . rainbow-delimiters-mode))
+#+END_SRC
 
-   Highlight the other parentheses
-   #+BEGIN_SRC emacs-lisp
-     (add-hook 'prog-mode-hook (lambda () (show-paren-mode 1)))
-   #+END_SRC
+Highlight the other parentheses
+#+BEGIN_SRC emacs-lisp
+  (add-hook 'prog-mode-hook (lambda () (show-paren-mode 1)))
+#+END_SRC
 
 *** Pretiify Symbols
 
-   Change some code in more elegant symbols, per programming language
+Change some code in more elegant symbols, per programming language
 
-   Configuration for lisp
-   #+BEGIN_SRC emacs-lisp
-     (add-hook 'emacs-lisp-mode-hook
-	       (lambda ()
-		 (push '("lambda" . 955) prettify-symbols-alist)))
-     (add-hook 'emacs-lisp-mode-hook 'prettify-symbols-mode)
-   #+END_SRC
+Configuration for lisp
+#+BEGIN_SRC emacs-lisp
+  (add-hook 'emacs-lisp-mode-hook
+            (lambda ()
+              (push '("lambda" . 955) prettify-symbols-alist)))
+  (add-hook 'emacs-lisp-mode-hook 'prettify-symbols-mode)
+#+END_SRC
  
 ** Buffer/window
 
-   Turn on line mode, show the line numbers in the gutter
-   #+BEGIN_SRC emacs-lisp
-     (add-hook 'prog-mode-hook #'display-line-numbers-mode)
-   #+END_SRC
+Turn on line mode, show the line numbers in the gutter
+#+BEGIN_SRC emacs-lisp
+  (add-hook 'prog-mode-hook #'display-line-numbers-mode)
+#+END_SRC
 
-   This function wil setup the emacs with a standard layout of windows and buffers
-   - treemacs file browser on the left
-   - eshell in a window at the botom
-   
-   All this is setup in the eyebrowse window config 0
-   #+BEGIN_SRC emacs-lisp
-     (defun pve-startup ()
-       (interactive)
-        (progn (eyebrowse-init)
-               (eyebrowse-switch-to-window-config-0)
-               (split-window-vertically)
-               (with-selected-window (nth 1 (window-list))
-                 (progn
-                   (window-resize (selected-window) (- 15 (window-total-height)) nil t nil)
-                   (set-window-parameter (selected-window) 'no-other-window t)
-                   (eshell)))
-               (treemacs)))
-   #+END_SRC
+This function wil setup the emacs with a standard layout of windows and buffers
+- treemacs file browser on the left
+- eshell in a window at the botom
+
+  All this is setup in the eyebrowse window config 0
+  #+BEGIN_SRC emacs-lisp
+    (defun pve-startup ()
+      (interactive)
+      (progn (eyebrowse-init)
+             (eyebrowse-switch-to-window-config-0)
+             (split-window-vertically)
+             (with-selected-window (nth 1 (window-list))
+               (progn
+                 (window-resize (selected-window) (- 15 (window-total-height)) nil t nil)
+                 (set-window-parameter (selected-window) 'no-other-window t)
+                 (eshell)))
+             (treemacs)))
+  #+END_SRC
 
 * Emacs Behavior
 ** General Emacs behavior 
 
-   Turn of the bell alarm
-   #+BEGIN_SRC emacs-lisp
-   (setq ring-bell-function 'ignore)
-   #+END_SRC
+Turn of the bell alarm
+#+BEGIN_SRC emacs-lisp
+  (setq ring-bell-function 'ignore)
+#+END_SRC
 
-   Start the server
-   #+BEGIN_SRC emacs-lisp
-   (server-start)
-   #+END_SRC
+Start the server
+#+BEGIN_SRC emacs-lisp
+  (server-start)
+#+END_SRC
 
-   No splash screen
-   #+BEGIN_SRC emacs-lisp
-   (setq inhibit-splash-screen t)
-   #+END_SRC
+No splash screen
+#+BEGIN_SRC emacs-lisp
+  (setq inhibit-splash-screen t)
+#+END_SRC
 
-   Set all encodings etc. to utf-8
-   #+BEGIN_SRC emacs-lisp
-   ;;(set-language-environment 'utf-8)
-   ;;(set-terminal-coding-system 'utf-8)
-   ;;(setq locale-coding-system 'utf-8)
-   ;;(set-default-coding-systems 'utf-8)
-   ;;(set-selection-coding-system 'utf-8)
-   ;;(prefer-coding-system 'utf-8)
-   #+END_SRC
+Set all encodings etc. to utf-8
+#+BEGIN_SRC emacs-lisp
+  ;;(set-language-environment 'utf-8)
+  ;;(set-terminal-coding-system 'utf-8)
+  ;;(setq locale-coding-system 'utf-8)
+  ;;(set-default-coding-systems 'utf-8)
+  ;;(set-selection-coding-system 'utf-8)
+  ;;(prefer-coding-system 'utf-8)
+#+END_SRC
 
-   Show completion of keybindings
-   #+BEGIN_SRC emacs-lisp
-     (use-package which-key
-       :ensure t
-       :diminish which-key-mode
-       :config (progn
-     (which-key-mode)
-     (which-key-setup-minibuffer)))
-   #+END_SRC
+Show completion of keybindings
+#+BEGIN_SRC emacs-lisp
+  (use-package which-key
+    :ensure t
+    :diminish which-key-mode
+    :config (progn
+              (which-key-mode)
+              (which-key-setup-minibuffer)))
+#+END_SRC
 
-   Fix long line issue
-   #+begin_src emacs-lisp
-     (so-long-enable)
-   #+end_src
+Fix long line issue
+#+begin_src emacs-lisp
+  (so-long-enable)
+#+end_src
 
 ** Parentheses
 
-   [[http://danmidwood.com/content/2014/11/21/animated-paredit.html][Visual tutorial]]
+[[http://danmidwood.com/content/2014/11/21/animated-paredit.html][Visual tutorial]]
 
-   #+DOWNLOADED: http://www.emacswiki.org/pics/static/PareditCheatsheet.png @ 2021-05-07 08:48:01
-   [[file:../Documents/org/attachments/default/Emacs_Behavior/2021-05-07_08-48-01_PareditCheatsheet.png]]
+#+DOWNLOADED: http://www.emacswiki.org/pics/static/PareditCheatsheet.png @ 2021-05-07 08:48:01
+[[file:../Documents/org/attachments/default/Emacs_Behavior/2021-05-07_08-48-01_PareditCheatsheet.png]]
 
-   #+begin_src emacs-lisp
-     (use-package paredit
-       :ensure t
-       :hook
-       (emacs-lisp-mode . paredit-mode)
-       (clojure-mode . paredit-mode))
-   #+end_src
+#+begin_src emacs-lisp
+  (use-package paredit
+    :ensure t
+    :hook
+    (emacs-lisp-mode . paredit-mode)
+    (clojure-mode . paredit-mode))
+#+end_src
 
 ** Working with files  
    
-   No backup or autosave files. We want to autosave directly to the file itself
-   #+BEGIN_SRC emacs-lisp
-     (setq make-backup-files nil
-           auto-save-default nil)
-   #+END_SRC
+No backup or autosave files. We want to autosave directly to the file itself
+#+BEGIN_SRC emacs-lisp
+  (setq make-backup-files nil
+        auto-save-default nil)
+#+END_SRC
 
-   Auto saving files to the actual file, no backups.
-   #+BEGIN_SRC emacs-lisp
-     (auto-save-visited-mode)
-   #+END_SRC
+Auto saving files to the actual file, no backups.
+#+BEGIN_SRC emacs-lisp
+  (auto-save-visited-mode)
+#+END_SRC
 
-   Disable lock files
-   #+BEGIN_SRC emacs-lisp
-     (setq create-lockfiles nil)
-   #+END_SRC
+Disable lock files
+#+BEGIN_SRC emacs-lisp
+  (setq create-lockfiles nil)
+#+END_SRC
 
-   Edit file as root
-   #+BEGIN_SRC emacs-lisp
-     (defun sudo-edit (&optional arg)
-       "Edit currently visited file as root. With a prefix ARG prompt for a file to visit. Will also prompt for a file to visit if current buffer is not visiting a file."
-       (interactive "P")
-       (if (or arg (not buffer-file-name))
-	   (find-file (concat "/sudo:root@localhost:" (ido-read-file-name "Find file(as root): ")))
-	 (find-alternate-file (concat "/sudo:root@localhost:" buffer-file-name))))
-    #+END_SRC
+Edit file as root
+#+BEGIN_SRC emacs-lisp
+  (defun sudo-edit (&optional arg)
+    "Edit currently visited file as root. With a prefix ARG prompt for a file to visit. Will also prompt for a file to visit if current buffer is not visiting a file."
+    (interactive "P")
+    (if (or arg (not buffer-file-name))
+        (find-file (concat "/sudo:root@localhost:" (ido-read-file-name "Find file(as root): ")))
+      (find-alternate-file (concat "/sudo:root@localhost:" buffer-file-name))))
+#+END_SRC
 
-    Copy file name and path to clipboard
-    #+BEGIN_SRC emacs-lisp
-      (defun pve-copy-full-file-name-to-clipboard ()
-        "Copy the current buffer file name and path to the clipboard."
-        (interactive)
-        (let ((filename (if (equal major-mode 'dired-mode)
-                            default-directory
-                          (buffer-file-name))))
-          (when filename
-            (kill-new filename)
-            (message "Copied buffer file name '%s' to the clipboard." filename))))
+Copy file name and path to clipboard
+#+BEGIN_SRC emacs-lisp
+  (defun pve-copy-full-file-name-to-clipboard ()
+    "Copy the current buffer file name and path to the clipboard."
+    (interactive)
+    (let ((filename (if (equal major-mode 'dired-mode)
+                        default-directory
+                      (buffer-file-name))))
+      (when filename
+        (kill-new filename)
+        (message "Copied buffer file name '%s' to the clipboard." filename))))
 
-      (defun pve-copy-file-name-to-clipboard ()
-        "Copy the current buffer name to the clipboard, only the name of the file or current directory."
-        (interactive)
-        (let ((filename (if (equal major-mode 'dired-mode)
-                            (string-match "[^/]+/*$" default-directory)
-                          (buffer-name))))
-          (when filename
-            (kill-new filename)
-            (message "Copied buffer file name '%s' to the clipboard." filename))))
-    #+END_SRC
+  (defun pve-copy-file-name-to-clipboard ()
+    "Copy the current buffer name to the clipboard, only the name of the file or current directory."
+    (interactive)
+    (let ((filename (if (equal major-mode 'dired-mode)
+                        (string-match "[^/]+/*$" default-directory)
+                      (buffer-name))))
+      (when filename
+        (kill-new filename)
+        (message "Copied buffer file name '%s' to the clipboard." filename))))
+#+END_SRC
    
 ** Window behavior
 
-   Winner mode to undo and redo window configuration
-   #+BEGIN_SRC emacs-lisp
-     (winner-mode 1)
-   #+END_SRC
+Winner mode to undo and redo window configuration
+#+BEGIN_SRC emacs-lisp
+  (winner-mode 1)
+#+END_SRC
 
-   #+RESULTS:
-   : t
+#+RESULTS:
+: t
 
-   Set S-<arrows> to move around the windows (S- <arrow> to move along windows)
-   And also ensure this works in org mode. See org-mode [[https://orgmode.org/manual/Conflicts.html][manual]] on 'Conflicts'
-   #+BEGIN_SRC emacs-lisp
-     (windmove-default-keybindings)
+Set S-<arrows> to move around the windows (S- <arrow> to move along windows)
+And also ensure this works in org mode. See org-mode [[https://orgmode.org/manual/Conflicts.html][manual]] on 'Conflicts'
+#+BEGIN_SRC emacs-lisp
+  (windmove-default-keybindings)
 
-     (setq org-replace-disputed-keys t)
-     (add-hook 'org-shiftup-final-hook 'windmove-up)
-     (add-hook 'org-shiftleft-final-hook 'windmove-left)
-     (add-hook 'org-shiftdown-final-hook 'windmove-down)
-     (add-hook 'org-shiftright-final-hook 'windmove-right)
-     (setq org-support-shift-select 'always)
-   #+END_SRC
+  (setq org-replace-disputed-keys t)
+  (add-hook 'org-shiftup-final-hook 'windmove-up)
+  (add-hook 'org-shiftleft-final-hook 'windmove-left)
+  (add-hook 'org-shiftdown-final-hook 'windmove-down)
+  (add-hook 'org-shiftright-final-hook 'windmove-right)
+  (setq org-support-shift-select 'always)
+#+END_SRC
 
-   #+RESULTS:
-   : always
+#+RESULTS:
+: always
    
-   Eybrowse allows a virutal desktop like solution to be used within emacs.
-   #+BEGIN_SRC emacs-lisp
-     (use-package eyebrowse
-       :ensure t
-       :init (eyebrowse-mode t)
-       :bind
-       (("C-c C-w 0" . eyebrowse-switch-to-window-config-0)
-        ("C-c C-w 1" . eyebrowse-switch-to-window-config-1)))
-   #+END_SRC
+Eybrowse allows a virutal desktop like solution to be used within emacs.
+#+BEGIN_SRC emacs-lisp
+  (use-package eyebrowse
+    :ensure t
+    :init (eyebrowse-mode t)
+    :bind
+    (("C-c C-w 0" . eyebrowse-switch-to-window-config-0)
+     ("C-c C-w 1" . eyebrowse-switch-to-window-config-1)))
+#+END_SRC
 
-   Scroll without moving cursor
-   #+BEGIN_SRC emacs-lisp
-     (global-set-key (kbd "M-n") (kbd "C-u 1 C-v"))
-     (global-set-key (kbd "M-p") (kbd "C-u 1 M-v"))
-   #+END_SRC
+Scroll without moving cursor
+#+BEGIN_SRC emacs-lisp
+  (global-set-key (kbd "M-n") (kbd "C-u 1 C-v"))
+  (global-set-key (kbd "M-p") (kbd "C-u 1 M-v"))
+#+END_SRC
 
 ** Logins
    
-   Set the time emacs caches a password in seconds, tramp, sudo, ...?
-   #+BEGIN_SRC emacs-lisp
-     (setq password-cache t
-	   password-cache-expiry 1200)
-   #+END_SRC
+Set the time emacs caches a password in seconds, tramp, sudo, ...?
+#+BEGIN_SRC emacs-lisp
+  (setq password-cache t
+        password-cache-expiry 1200)
+#+END_SRC
 
-   Ensure that emacs is actually using the eshell/sudo so that the cache above works
-   #+BEGIN_SRC emacs-lisp
-     (require 'em-tramp)
-     (add-hook 'eshell-mode-hook
-	       (lambda ()
-		 (eshell/alias "sudo" "eshell/sudo $*")))
-   #+END_SRC
+Ensure that emacs is actually using the eshell/sudo so that the cache above works
+#+BEGIN_SRC emacs-lisp
+  (require 'em-tramp)
+  (add-hook 'eshell-mode-hook
+            (lambda ()
+              (eshell/alias "sudo" "eshell/sudo $*")))
+#+END_SRC
 
 ** Cursor Navigation
 
 *** Visual awareness
 
-    #+BEGIN_SRC emacs-lisp
-      (global-hl-line-mode)
-    #+END_SRC
+#+BEGIN_SRC emacs-lisp
+  (global-hl-line-mode)
+#+END_SRC
 
 *** Jumping
 
-    Jump to anywhere you can see.
-    Also enables jumping back from where you jumped from
-    #+BEGIN_SRC emacs-lisp
-      (use-package avy
-        :ensure t
-        :bind (("C-;" . avy-goto-char-timer)
-               ("C-:" . avy-pop-mark)
-               ("C-c g" . avy-goto-line)))
-    #+END_SRC
+Jump to anywhere you can see.
+Also enables jumping back from where you jumped from
+#+BEGIN_SRC emacs-lisp
+  (use-package avy
+    :ensure t
+    :bind (("C-;" . avy-goto-char-timer)
+           ("C-:" . avy-pop-mark)
+           ("C-c g" . avy-goto-line)))
+#+END_SRC
 
-    Navigate back to previous changes
-    #+BEGIN_SRC emacs-lisp
-      (use-package goto-last-change
-        :ensure t
-        :bind ("C-. " . goto-last-change))
-    #+END_SRC
+Navigate back to previous changes
+#+BEGIN_SRC emacs-lisp
+  (use-package goto-last-change
+    :ensure t
+    :bind ("C-. " . goto-last-change))
+#+END_SRC
 
-    Parentheses navigation as done by [[http://ergoemacs.org/emacs/emacs_navigating_keys_for_brackets.html][ergo-emacs]]
-    #+BEGIN_SRC emacs-lisp
-      (load "~/.emacs.d/custom/brackets-movement.el")
-      (global-set-key (kbd "C-(") 'xah-backward-left-bracket)
-      (global-set-key (kbd "C-)") 'xah-forward-right-bracket)
-    #+END_SRC
+Parentheses navigation as done by [[http://ergoemacs.org/emacs/emacs_navigating_keys_for_brackets.html][ergo-emacs]]
+#+BEGIN_SRC emacs-lisp
+  (load "~/.emacs.d/custom/brackets-movement.el")
+  (global-set-key (kbd "C-(") 'xah-backward-left-bracket)
+  (global-set-key (kbd "C-)") 'xah-forward-right-bracket)
+#+END_SRC
 
 *** Zapping
 
-    #+BEGIN_SRC emacs-lisp
-      (use-package avy-zap
-        :ensure t
-        :bind (("C-z" . 'avy-zap-up-to-char)
-               ("M-z" . 'avy-zap-to-char)))
-    #+END_SRC
+#+BEGIN_SRC emacs-lisp
+  (use-package avy-zap
+    :ensure t
+    :bind (("C-z" . 'avy-zap-up-to-char)
+           ("M-z" . 'avy-zap-to-char)))
+#+END_SRC
 
 *** Bookmarks
-    #+BEGIN_SRC emacs-lisp
-      (use-package bm
-        :ensure t
-        :demand t
-        :init
-        (setq bm-restore-repository-on-load t) ;; restore on load (even before you require bm)
-        :config
-        (setq bm-cycle-all-buffers nil  ;; Don't llow cross-buffer 'next'
-              bm-repository-file "~/.emacs.d/bm-repository")
-        (setq-default bm-buffer-persistence t)  ;; save bookmarks
-        ;; Loading the repository from file when on start up.
-        (add-hook' after-init-hook 'bm-repository-load)
-        ;; Restoring bookmarks when on file find.
-        (add-hook 'find-file-hooks 'bm-buffer-restore)
-        ;; Saving bookmarks
-        (add-hook 'kill-buffer-hook #'bm-buffer-save)
-        ;; Saving the repository to file when on exit.
-        ;; kill-buffer-hook is not called when Emacs is killed, so we
-        ;; must save all bookmarks first.
-        (add-hook 'kill-emacs-hook #'(lambda nil
-                                       (bm-buffer-save-all)
-                                       (bm-repository-save)))
-        ;; The `after-save-hook' is not necessary to use to achieve persistence,
-        ;; but it makes the bookmark data in repository more in sync with the file
-        ;; state.
-        (add-hook 'after-save-hook #'bm-buffer-save)
-        ;; Restoring bookmarks
-        (add-hook 'find-file-hooks   #'bm-buffer-restore)
-        (add-hook 'after-revert-hook #'bm-buffer-restore)
-        ;; The `after-revert-hook' is not necessary to use to achieve persistence,
-        ;; but it makes the bookmark data in repository more in sync with the file
-        ;; state. This hook might cause trouble when using packages
-        ;; that automatically reverts the buffer (like vc after a check-in).
-        ;; This can easily be avoided if the package provides a hook that is
-        ;; called before the buffer is reverted (like `vc-before-checkin-hook').
-        ;; Then new bookmarks can be saved before the buffer is reverted.
-        ;; Make sure bookmarks is saved before check-in (and revert-buffer)
-        (add-hook 'vc-before-checkin-hook #'bm-buffer-save)
-        :bind (("C-c b" . bm-next)
-               ("C-c B" . bm-previous)
-               ("C-c m" . bm-toggle))
-        )
-    #+END_SRC
+#+BEGIN_SRC emacs-lisp
+  (use-package bm
+    :ensure t
+    :demand t
+    :init
+    (setq bm-restore-repository-on-load t) ;; restore on load (even before you require bm)
+    :config
+    (setq bm-cycle-all-buffers nil  ;; Don't llow cross-buffer 'next'
+          bm-repository-file "~/.emacs.d/bm-repository")
+    (setq-default bm-buffer-persistence t)  ;; save bookmarks
+    ;; Loading the repository from file when on start up.
+    (add-hook' after-init-hook 'bm-repository-load)
+    ;; Restoring bookmarks when on file find.
+    (add-hook 'find-file-hooks 'bm-buffer-restore)
+    ;; Saving bookmarks
+    (add-hook 'kill-buffer-hook #'bm-buffer-save)
+    ;; Saving the repository to file when on exit.
+    ;; kill-buffer-hook is not called when Emacs is killed, so we
+    ;; must save all bookmarks first.
+    (add-hook 'kill-emacs-hook #'(lambda nil
+                                   (bm-buffer-save-all)
+                                   (bm-repository-save)))
+    ;; The `after-save-hook' is not necessary to use to achieve persistence,
+    ;; but it makes the bookmark data in repository more in sync with the file
+    ;; state.
+    (add-hook 'after-save-hook #'bm-buffer-save)
+    ;; Restoring bookmarks
+    (add-hook 'find-file-hooks   #'bm-buffer-restore)
+    (add-hook 'after-revert-hook #'bm-buffer-restore)
+    ;; The `after-revert-hook' is not necessary to use to achieve persistence,
+    ;; but it makes the bookmark data in repository more in sync with the file
+    ;; state. This hook might cause trouble when using packages
+    ;; that automatically reverts the buffer (like vc after a check-in).
+    ;; This can easily be avoided if the package provides a hook that is
+    ;; called before the buffer is reverted (like `vc-before-checkin-hook').
+    ;; Then new bookmarks can be saved before the buffer is reverted.
+    ;; Make sure bookmarks is saved before check-in (and revert-buffer)
+    (add-hook 'vc-before-checkin-hook #'bm-buffer-save)
+    :bind (("C-c b" . bm-next)
+           ("C-c B" . bm-previous)
+           ("C-c m" . bm-toggle))
+    )
+#+END_SRC
     
 *** Homing
 
-    Moving smater to the beginning of a line
+Moving smater to the beginning of a line
     
-    [[https://emacsredux.com/blog/2013/05/22/smarter-navigation-to-the-beginning-of-a-line/][src]]
+[[https://emacsredux.com/blog/2013/05/22/smarter-navigation-to-the-beginning-of-a-line/][src]]
 
-    This is a short example
-        text|
-        # pressing C-a once
-     |text
-        # pressing C-a again
-    |   text
-        # pressing C-a again
-     |text
+This is a short example
+text|
+# pressing C-a once
+|text
+# pressing C-a again
+|   text
+# pressing C-a again
+|text
 
-    #+begin_src emacs-lisp
-      (defun smarter-move-beginning-of-line (arg)
-        "Move point back to indentation of beginning of line.
+#+begin_src emacs-lisp
+  (defun smarter-move-beginning-of-line (arg)
+    "Move point back to indentation of beginning of line.
 
-      Move point to the first non-whitespace character on this line.
-      If point is already there, move to the beginning of the line.
-      Effectively toggle between the first non-whitespace character and
-      the beginning of the line.
+  Move point to the first non-whitespace character on this line.
+  If point is already there, move to the beginning of the line.
+  Effectively toggle between the first non-whitespace character and
+  the beginning of the line.
 
-      If ARG is not nil or 1, move forward ARG - 1 lines first.  If
-      point reaches the beginning or end of the buffer, stop there."
-        (interactive "^p")
-        (setq arg (or arg 1))
+  If ARG is not nil or 1, move forward ARG - 1 lines first.  If
+  point reaches the beginning or end of the buffer, stop there."
+    (interactive "^p")
+    (setq arg (or arg 1))
 
-        ;; Move lines first
-        (when (/= arg 1)
-          (let ((line-move-visual nil))
-            (forward-line (1- arg))))
+    ;; Move lines first
+    (when (/= arg 1)
+      (let ((line-move-visual nil))
+        (forward-line (1- arg))))
 
-        (let ((orig-point (point)))
-          (back-to-indentation)
-          (when (= orig-point (point))
-            (move-beginning-of-line 1))))
+    (let ((orig-point (point)))
+      (back-to-indentation)
+      (when (= orig-point (point))
+        (move-beginning-of-line 1))))
 
-      ;; remap C-a to `smarter-move-beginning-of-line'
-      (global-set-key [remap move-beginning-of-line]
-                      'smarter-move-beginning-of-line)
-    #+end_src
+  ;; remap C-a to `smarter-move-beginning-of-line'
+  (global-set-key [remap move-beginning-of-line]
+                  'smarter-move-beginning-of-line)
+#+end_src
     
 ** Search & Replace 
    
-   Helm swoop, a more dynamic version of hem-occur
-   Find all occurences in a/multiple file(s) follow along in the files while browsing the results.
-   #+BEGIN_SRC emacs-lisp
-     (use-package helm-swoop
-       :ensure t
-       :bind (("M-i" . helm-swoop)
-	      ("M-I" . helm-swoop-back-to-last-point)
-	      ("C-c M-i" . helm-multi-swoop)
-	      ("C-x M-i" . helm-multi-swoop-all)))
-   #+END_SRC
+Helm swoop, a more dynamic version of hem-occur
+Find all occurences in a/multiple file(s) follow along in the files while browsing the results.
+#+BEGIN_SRC emacs-lisp
+  (use-package helm-swoop
+    :ensure t
+    :bind (("M-i" . helm-swoop)
+           ("M-I" . helm-swoop-back-to-last-point)
+           ("C-c M-i" . helm-multi-swoop)
+           ("C-x M-i" . helm-multi-swoop-all)))
+#+END_SRC
 
-   Visual-regexp gives visual feedback on the regexp
-   Key combination replace the regular query-regepx-replace
-   #+BEGIN_SRC emacs-lisp
-     (use-package visual-regexp
-       :ensure t
-       :bind (
-	      ("M-C-%" . vr/query-replace)
-	      ("C-c m" . vr/mc-mark)))
-   #+END_SRC
+Visual-regexp gives visual feedback on the regexp
+Key combination replace the regular query-regepx-replace
+#+BEGIN_SRC emacs-lisp
+  (use-package visual-regexp
+    :ensure t
+    :bind (
+           ("M-C-%" . vr/query-replace)
+           ("C-c m" . vr/mc-mark)))
+#+END_SRC
 
-   Finding references with helm and xref as backend
-   This also uses the LSP integration if it is enabled in the current buffer.
-   #+BEGIN_SRC emacs-lisp
-     (use-package helm-xref
-       :ensure t       
-       :config (setq xref-show-xrefs-function 'helm-xref-show-xrefs))
-   #+END_SRC
+Finding references with helm and xref as backend
+This also uses the LSP integration if it is enabled in the current buffer.
+#+BEGIN_SRC emacs-lisp
+  (use-package helm-xref
+    :ensure t       
+    :config (setq xref-show-xrefs-function 'helm-xref-show-xrefs))
+#+END_SRC
 
 ** Autocomplete
 
-   Company (complete anything) is the front end system to autocomplete. Has mutliple backends that can provide autocompletion
-   #+BEGIN_SRC emacs-lisp
-     (use-package company
-       :ensure t
-       :demand t
-       :diminish company-mode
-       :hook (after-init . global-company-mode)
-       :bind ("C-<tab>" . company-complete)
-       :config (push 'company-capf company-backends)
-       :init (setq company-minimum-prefix-length 1
-                   company-dabbrev-downcase nil
-                   company-idle-delay 0
-                   company-global-modes '(not eshell-mode)))
-   #+END_SRC
+Company (complete anything) is the front end system to autocomplete. Has mutliple backends that can provide autocompletion
+#+BEGIN_SRC emacs-lisp
+  (use-package company
+    :ensure t
+    :demand t
+    :diminish company-mode
+    :hook (after-init . global-company-mode)
+    :bind ("C-<tab>" . company-complete)
+    :config (push 'company-capf company-backends)
+    :init (setq company-minimum-prefix-length 1
+                company-dabbrev-downcase nil
+                company-idle-delay 0
+                company-global-modes '(not eshell-mode)))
+#+END_SRC
 
-   Company box. Adds icons and backround colors to company autocomplete. To distinguish between sources and types.
-   #+BEGIN_SRC emacs-lisp
-     (use-package company-box
-       :ensure t
-       :demand t
-       :after (company)
-       :diminish company-box-mode
-       :hook (company-mode . company-box-mode))
-   #+END_SRC
+Company box. Adds icons and backround colors to company autocomplete. To distinguish between sources and types.
+#+BEGIN_SRC emacs-lisp
+  (use-package company-box
+    :ensure t
+    :demand t
+    :after (company)
+    :diminish company-box-mode
+    :hook (company-mode . company-box-mode))
+#+END_SRC
 
-   Auto insert the other pair of a bracket
-   And the config for elements that are not supported by default
-   #+BEGIN_SRC emacs-lisp
-     (setq electric-pair-pairs '((?\{ . ?\})))
-     (electric-pair-mode 1)
-   #+END_SRC
+Auto insert the other pair of a bracket
+And the config for elements that are not supported by default
+#+BEGIN_SRC emacs-lisp
+  (setq electric-pair-pairs '((?\{ . ?\})))
+  (electric-pair-mode 1)
+#+END_SRC
 
 ** Syntax checking
    
-   Using flycheck as the syntax checker
-   #+BEGIN_SRC emacs-lisp
-     (use-package flycheck
-       :ensure t
-       :diminish flycheck-mode
-       :init (global-flycheck-mode))
-   #+END_SRC
+Using flycheck as the syntax checker
+#+BEGIN_SRC emacs-lisp
+  (use-package flycheck
+    :ensure t
+    :diminish flycheck-mode
+    :init (global-flycheck-mode))
+#+END_SRC
 
 ** Selection
 
-   Enable multiple cursors.
-   #+BEGIN_SRC emacs-lisp
-     (use-package multiple-cursors
-       :ensure t
-       :bind (("C->" . mc/mark-next-like-this)
-        ("C-<" . mc/mark-previous-like-this)
-        ("C-c C-<" . mc/mark-all-like-this)
-        ("C-M->" . mc/unmark-next-like-this)
-        ("C-M-<" . mc/unmark-previous-like-this)
-        ("C-c C-n" . mc/insert-numbers)))
-   #+END_SRC   
-   Visual regepx also has an extansion  to visually add multiple cursors
+Enable multiple cursors.
+#+BEGIN_SRC emacs-lisp
+  (use-package multiple-cursors
+    :ensure t
+    :bind (("C->" . mc/mark-next-like-this)
+           ("C-<" . mc/mark-previous-like-this)
+           ("C-c C-<" . mc/mark-all-like-this)
+           ("C-M->" . mc/unmark-next-like-this)
+           ("C-M-<" . mc/unmark-previous-like-this)
+           ("C-c C-n" . mc/insert-numbers)
+           ("C-c C-l" . mc/insert-letters)))
+#+END_SRC   
+Visual regepx also has an extansion  to visually add multiple cursors
 
-   Expande selection by semantic units
-   #+BEGIN_SRC emacs-lisp
-     (use-package expand-region
-       :ensure t
-       :bind ("C-=" . er/expand-region))
-   #+END_SRC
+Expande selection by semantic units
+#+BEGIN_SRC emacs-lisp
+  (use-package expand-region
+    :ensure t
+    :bind ("C-=" . er/expand-region))
+#+END_SRC
 ** Clipboard
    
-   Use emacs as a clipbaord manger for the OS.
-   Removes the issues with copying from OS and the kill ring like overwriting the past from the OS
-   Also makes the kill ring system of emacs avialable for the OS via emacs interface
-   #+BEGIN_SRC emacs-lisp
-     (use-package clipmon
-       :ensure t
-       :config (clipmon-mode))
-   #+END_SRC
+Use emacs as a clipbaord manger for the OS.
+Removes the issues with copying from OS and the kill ring like overwriting the past from the OS
+Also makes the kill ring system of emacs avialable for the OS via emacs interface
+#+BEGIN_SRC emacs-lisp
+  (use-package clipmon
+    :ensure t
+    :config (clipmon-mode))
+#+END_SRC
 
-   Custom el to change behavior of std copy/cut paste behavior
-   Some code based on xah-lee's version on http://ergoemacs.org/emacs/emacs_copy_cut_current_line.html
+Custom el to change behavior of std copy/cut paste behavior
+Some code based on xah-lee's version on http://ergoemacs.org/emacs/emacs_copy_cut_current_line.html
 
-   #+BEGIN_SRC emacs-lisp
-   (load "~/.emacs.d/custom/copy-paste-behavior.el")
-   (global-set-key (kbd "C-w") 'custom-cut-line-or-region) ; cut
-   (global-set-key (kbd "M-w") 'custom-copy-line-or-region) ; copy
-   #+END_SRC
+#+BEGIN_SRC emacs-lisp
+  (load "~/.emacs.d/custom/copy-paste-behavior.el")
+  (global-set-key (kbd "C-w") 'custom-cut-line-or-region) ; cut
+  (global-set-key (kbd "M-w") 'custom-copy-line-or-region) ; copy
+#+END_SRC
    
 ** Undo
 
-   Visual aid to see all undo history in a tree
-   #+BEGIN_SRC emacs-lisp
-     (use-package undo-tree
-       :ensure t
-       :diminish undo-tree-mode
-       :bind ("C-x u" . undo-tree-visualize)
-       :config (setq undo-tree-visualizer-relative-timestamps t
-                     undo-tree-visualizer-timestamps t
-                     undo-tree-enable-undo-in-region t)
-                (global-undo-tree-mode))
-   #+END_SRC
+Visual aid to see all undo history in a tree
+#+BEGIN_SRC emacs-lisp
+  (use-package undo-tree
+    :ensure t
+    :diminish undo-tree-mode
+    :bind ("C-x u" . undo-tree-visualize)
+    :config (setq undo-tree-visualizer-relative-timestamps t
+                  undo-tree-visualizer-timestamps t
+                  undo-tree-enable-undo-in-region t)
+    (global-undo-tree-mode))
+#+END_SRC
 ** Text format
 
-   Indent with 2 spaces, no tabs
-   #+BEGIN_SRC emacs-lisp
-     (setq-default indent-tabs-mode nil) ;; don't use tabs
-     (setq-default tab-width 2) ;; use 2 space tabs
-   #+END_SRC
-
+Indent with 2 spaces, no tabs
+#+BEGIN_SRC emacs-lisp
+  (setq-default indent-tabs-mode nil) ;; don't use tabs
+  (setq-default tab-width 2) ;; use 2 space tabs
+#+END_SRC
+   
 ** Folding
 
-   Set Folding characters for every programming mode
-   #+BEGIN_SRC emacs-lisp
-     (defvar hs-special-modes-alist
-       (mapcar 'purecopy
-               '((c-mode "{" "}" "/[*/]" nil nil)
-                 (c++-mode "{" "}" "/[*/]" nil nil)
-                 (bibtex-mode ("@\\S(*\\(\\s(\\)" 1))
-                 (java-mode "{" "}" "/[*/]" nil nil)
-                 (js-mode "{" "}" "/[*/]" nil))))
-   #+END_SRC
+Set Folding characters for every programming mode
+#+BEGIN_SRC emacs-lisp
+  (defvar hs-special-modes-alist
+    (mapcar 'purecopy
+            '((c-mode "{" "}" "/[*/]" nil nil)
+              (c++-mode "{" "}" "/[*/]" nil nil)
+              (bibtex-mode ("@\\S(*\\(\\s(\\)" 1))
+              (java-mode "{" "}" "/[*/]" nil nil)
+              (js-mode "{" "}" "/[*/]" nil))))
+#+END_SRC
 
-   Enable Folding in programming modes
-   #+BEGIN_SRC emacs-lisp
-     (add-hook 'prog-mode-hook 'hs-minor-mode)
-   #+END_SRC
+Enable Folding in programming modes
+#+BEGIN_SRC emacs-lisp
+  (add-hook 'prog-mode-hook 'hs-minor-mode)
+#+END_SRC
 
-   Don't show hideshow mode in the mode line
-   #+BEGIN_SRC emacs-lisp
-     (diminish 'hs-minor-mode)
-   #+END_SRC
+Don't show hideshow mode in the mode line
+#+BEGIN_SRC emacs-lisp
+  (diminish 'hs-minor-mode)
+#+END_SRC
 ** Minibuffer
 
-   Enable the use of minibuffer commands in the minibuffer
-   e.g. call on helm-lastpass when inserting password in the minibuffer
-   #+begin_src emacs-lisp
-     (setq enable-recursive-minibuffers t)
-   #+end_src
+Enable the use of minibuffer commands in the minibuffer
+e.g. call on helm-lastpass when inserting password in the minibuffer
+#+begin_src emacs-lisp
+  (setq enable-recursive-minibuffers t)
+#+end_src
 
 * Source control
 ** Magit config
 
-  Using magit for soruce control
-  #+BEGIN_SRC emacs-lisp
-    (use-package magit
-      :ensure t
-      :bind ("C-x t" . magit-status)
-      :hook ((magit-mode . magit-gitflow-mode))
-      :after (magit-gitflow))
-  #+END_SRC
+Using magit for soruce control
+#+BEGIN_SRC emacs-lisp
+  (use-package magit
+    :ensure t
+    :bind ("C-x t" . magit-status)
+    :hook ((magit-mode . magit-gitflow-mode))
+    :after (magit-gitflow))
+#+END_SRC
 
-  Add git flow extension to magit. This enables feature branches etc.
-  #+BEGIN_SRC emacs-lisp
-    (use-package magit-gitflow
-      :ensure t)
-  #+END_SRC
+Add git flow extension to magit. This enables feature branches etc.
+#+BEGIN_SRC emacs-lisp
+  (use-package magit-gitflow
+    :ensure t)
+#+END_SRC
 
-	Helper functions to set local git repo's
-  #+begin_src emacs-lisp
-    (defun pve/set-git-local-attributes (user-name email-addresss)
-      "Set the local variables of git to the email address"
-      (shell-command-to-string (format "git config user.name \"%s\"" user-name))
-      (shell-command-to-string (format "git config user.email \"%s\"" email-addresss)))
+Helper functions to set local git repo's
+#+begin_src emacs-lisp
+  (defun pve/set-git-local-attributes (user-name email-addresss)
+    "Set the local variables of git to the email address"
+    (shell-command-to-string (format "git config user.name \"%s\"" user-name))
+    (shell-command-to-string (format "git config user.email \"%s\"" email-addresss)))
 
-    (defun pve/set-git-work-attributes ()
-      "Set work attributes in the git repository"
-      (interactive)
-      (pve/set-git-local-attributes my-name work-email))
+  (defun pve/set-git-work-attributes ()
+    "Set work attributes in the git repository"
+    (interactive)
+    (pve/set-git-local-attributes my-name work-email))
 
-    (defun pve/set-git-personal-attributes ()
-      "Set personal attributes in the git repositor"
-      (interactive)
-      (pve/set-git-local-attributes my-user personal-email))
-  #+end_src
+  (defun pve/set-git-personal-attributes ()
+    "Set personal attributes in the git repositor"
+    (interactive)
+    (pve/set-git-local-attributes my-user personal-email))
+#+end_src
   		    
 ** Multi git
 
-   Do actions on multiple git objects.
-   A buffer is used to show status/log in a buffer
+Do actions on multiple git objects.
+A buffer is used to show status/log in a buffer
    
 *** Core
 
-   Core of the multi-git. 
-   - Find all git dirs (emacs-lisp)
-   - Setup the needed state for magit
-   - Execute the function passed
+Core of the multi-git. 
+- Find all git dirs (emacs-lisp)
+- Setup the needed state for magit
+- Execute the function passed
 
-   #+BEGIN_SRC emacs-lisp
-     (defun multi-git-exec (rootdir action)
-       "Run the ACTION function for every git repo in ROOTDIR."
-       (progn
-         (with-current-buffer (get-buffer-create "*Multi git log*")
-           (multi-git-mode)
-           (let ((inhibit-read-only t))
-             (erase-buffer)
-             (insert (concat "Root directory: " rootdir))
-             (newline 2)
-             (mapc (lambda (dir)
-                     (let ((default-directory (concat rootdir dir)))
-                       (progn
-                         (let ((items (funcall action)))
-                           (if items
-                               (progn
-                                 (insert (concat "* " dir " " (car items) " *"))
-                                 (newline 2)
-                                 (mapc (lambda (item)
-                                         (insert (format "  %s"
-                                                         (replace-regexp-in-string "\n$" "" item)))
-                                         (newline))
-                                       (cdr items))
-                                 (newline 2)))))))
-                   (multi-git-dirs rootdir))))))
-   #+END_SRC
+  #+BEGIN_SRC emacs-lisp
+    (defun multi-git-exec (rootdir action)
+      "Run the ACTION function for every git repo in ROOTDIR."
+      (progn
+        (with-current-buffer (get-buffer-create "*Multi git log*")
+          (multi-git-mode)
+          (let ((inhibit-read-only t))
+            (erase-buffer)
+            (insert (concat "Root directory: " rootdir))
+            (newline 2)
+            (mapc (lambda (dir)
+                    (let ((default-directory (concat rootdir dir)))
+                      (progn
+                        (let ((items (funcall action)))
+                          (if items
+                              (progn
+                                (insert (concat "* " dir " " (car items) " *"))
+                                (newline 2)
+                                (mapc (lambda (item)
+                                        (insert (format "  %s"
+                                                        (replace-regexp-in-string "\n$" "" item)))
+                                        (newline))
+                                      (cdr items))
+                                (newline 2)))))))
+                  (multi-git-dirs rootdir))))))
+  #+END_SRC
 
-   #+RESULTS:
-   : multi-git-exec
+  #+RESULTS:
+  : multi-git-exec
 
-   This actually finds all the directories
-   #+BEGIN_SRC emacs-lisp
-     (defun multi-git-dirs (rootdir)
-       "Get all subdirectories that are git repos in ROOTDIR."
-       (seq-filter (lambda (dir)
-                     (magit-git-repo-p (concat rootdir dir)))
-                   (directory-files rootdir)))
-   #+END_SRC
+  This actually finds all the directories
+  #+BEGIN_SRC emacs-lisp
+    (defun multi-git-dirs (rootdir)
+      "Get all subdirectories that are git repos in ROOTDIR."
+      (seq-filter (lambda (dir)
+                    (magit-git-repo-p (concat rootdir dir)))
+                  (directory-files rootdir)))
+  #+END_SRC
    
 *** Git operators 
 
-    Here are the functions that can be passed to multi-get-exec.
-    In essence these are the actions that will be applied to all git repo's
+Here are the functions that can be passed to multi-get-exec.
+In essence these are the actions that will be applied to all git repo's
     
-    #+begin_src emacs-lisp
-      (defun multi-git-info ()
-        "Get the information to build the mulit git buffer"
-        (append
-         (multi-git-header)
-         (multi-git-show-current-branch-name)
-         (multi-git-ahead-behind (magit-get-current-branch) (concat (magit-get-remote) "/" (magit-get-current-branch)))))
-    #+end_src
+#+begin_src emacs-lisp
+  (defun multi-git-info ()
+    "Get the information to build the mulit git buffer"
+    (append
+     (multi-git-header)
+     (multi-git-show-current-branch-name)
+     (multi-git-ahead-behind (magit-get-current-branch) (concat (magit-get-remote) "/" (magit-get-current-branch)))))
+#+end_src
 
-    #+RESULTS:
-    : multi-git-info
+#+RESULTS:
+: multi-git-info
 
-    #+BEGIN_SRC emacs-lisp
-      (defun multi-git-switch-to-branch (branch-name)
-        "Switch to specified branch BRANCH-NAME."
-        (let ((old-branch (magit-get-current-branch)))
-          (if branch-name
-              (progn
-                (magit-checkout (format "%s" branch-name))
-                (list (concat "old: " old-branch)
-                      (concat "attempted: " branch-name)
-                      (concat "new: " (magit-get-current-branch)))))))
-    #+END_SRC
+#+BEGIN_SRC emacs-lisp
+  (defun multi-git-switch-to-branch (branch-name)
+    "Switch to specified branch BRANCH-NAME."
+    (let ((old-branch (magit-get-current-branch)))
+      (if branch-name
+          (progn
+            (magit-checkout (format "%s" branch-name))
+            (list (concat "old: " old-branch)
+                  (concat "attempted: " branch-name)
+                  (concat "new: " (magit-get-current-branch)))))))
+#+END_SRC
 
-    Header info
-    #+begin_src emacs-lisp
-      (defun multi-git-header ()
-        "Get the header info for the git repo"
-        (let ((num-of-changes
-               (string-to-number
-                (replace-regexp-in-string "\n$" ""
-                                          (shell-command-to-string "git status --porcelain=v1 2>/dev/null | wc -l")))))
-          (list
-           (format "on %s"
-                   (magit-get-current-branch)))))
-    #+end_src
+Header info
+#+begin_src emacs-lisp
+  (defun multi-git-header ()
+    "Get the header info for the git repo"
+    (let ((num-of-changes
+           (string-to-number
+            (replace-regexp-in-string "\n$" ""
+                                      (shell-command-to-string "git status --porcelain=v1 2>/dev/null | wc -l")))))
+      (list
+       (format "on %s"
+               (magit-get-current-branch)))))
+#+end_src
 
-    #+BEGIN_SRC emacs-lisp
-      (defun multi-git-show-current-branch-name ()
-        "Show current brach name and changes that have not yet been commited"
-        (let ((num-of-changes
-               (string-to-number
-                (replace-regexp-in-string "\n$" ""
-                                          (shell-command-to-string "git status --porcelain=v1 2>/dev/null | wc -l")))))
-          (list (format "Changes: %s" num-of-changes))))
-    #+END_SRC
+#+BEGIN_SRC emacs-lisp
+  (defun multi-git-show-current-branch-name ()
+    "Show current brach name and changes that have not yet been commited"
+    (let ((num-of-changes
+           (string-to-number
+            (replace-regexp-in-string "\n$" ""
+                                      (shell-command-to-string "git status --porcelain=v1 2>/dev/null | wc -l")))))
+      (list (format "Changes: %s" num-of-changes))))
+#+END_SRC
 
-    #+RESULTS:
-    : multi-git-show-current-branch-name
+#+RESULTS:
+: multi-git-show-current-branch-name
 
-    #+BEGIN_SRC emacs-lisp
-      (defun multi-git-fetch ()
-        "Fetch from default-dir, returns number of not pulled commits"
-        (magit-git-fetch "origin" "")
-          (let ((n (cadr (magit-rev-diff-count "HEAD" (magit-get-upstream-branch)))))
-            (list (format "Number of unpulled commits: %s" n))))
-    #+END_SRC
+#+BEGIN_SRC emacs-lisp
+  (defun multi-git-fetch ()
+    "Fetch from default-dir, returns number of not pulled commits"
+    (magit-git-fetch "origin" "")
+    (let ((n (cadr (magit-rev-diff-count "HEAD" (magit-get-upstream-branch)))))
+      (list (format "Number of unpulled commits: %s" n))))
+#+END_SRC
     
-    #+BEGIN_SRC emacs-lisp
-      (defun multi-git-ahead-behind (first-branch second-branch)
-        "Check how much second branch is behind/ahead on the first branch"
-        (list (let ((result (shell-command-to-string (format "git rev-list --left-right --count %s...%s" first-branch second-branch))))
-                (if (string= (car (split-string result " ")) "fatal:")
-                    (format "One or both branches don't exist: %s, %s" first-branch second-branch)
-                  (let ((behind (car (split-string result)))
-                        (ahead (cdr (split-string result))))
-                    (format "%s is %s behind on %s and %s ahead on %s" second-branch behind first-branch ahead first-branch))))))
-    #+END_SRC
+#+BEGIN_SRC emacs-lisp
+  (defun multi-git-ahead-behind (first-branch second-branch)
+    "Check how much second branch is behind/ahead on the first branch"
+    (list (let ((result (shell-command-to-string (format "git rev-list --left-right --count %s...%s" first-branch second-branch))))
+            (if (string= (car (split-string result " ")) "fatal:")
+                (format "One or both branches don't exist: %s, %s" first-branch second-branch)
+              (let ((behind (car (split-string result)))
+                    (ahead (cdr (split-string result))))
+                (format "%s is %s behind on %s and %s ahead on %s" second-branch behind first-branch ahead first-branch))))))
+#+END_SRC
     
 *** Interactive functions
 
-    Functions actually used by the user
+Functions actually used by the user
 
-    Startup multigit
-    #+BEGIN_SRC emacs-lisp
-      (defun multi-git-load (dir)
-        "Show current branch for all git repos in DIR."
-        (interactive "DRoot directory of repos: ")
-        (multi-git-exec dir 'multi-git-info))
-    #+END_SRC
+Startup multigit
+#+BEGIN_SRC emacs-lisp
+  (defun multi-git-load (dir)
+    "Show current branch for all git repos in DIR."
+    (interactive "DRoot directory of repos: ")
+    (multi-git-exec dir 'multi-git-info))
+#+END_SRC
 
-    For all git repos show the currently selected branch
-    #+BEGIN_SRC emacs-lisp
-      (defun multi-git-current-branches (dir)
-        "Show current branch for all git repos in DIR."
-        (interactive "DRoot directory of repos: ")
-        (multi-git-exec dir 'multi-git-show-current-branch-name))
-    #+END_SRC
+For all git repos show the currently selected branch
+#+BEGIN_SRC emacs-lisp
+  (defun multi-git-current-branches (dir)
+    "Show current branch for all git repos in DIR."
+    (interactive "DRoot directory of repos: ")
+    (multi-git-exec dir 'multi-git-show-current-branch-name))
+#+END_SRC
 
-    Fetch from all repo's
-    #+BEGIN_SRC emacs-lisp
-      (defun multi-git-fetch-from-all (dir)
-        "Fetch for all git repos in DIR."
-        (interactive "DRoot directory of repos: ")
-        (multi-git-exec dir 'multi-git-fetch))
-    #+END_SRC
+Fetch from all repo's
+#+BEGIN_SRC emacs-lisp
+  (defun multi-git-fetch-from-all (dir)
+    "Fetch for all git repos in DIR."
+    (interactive "DRoot directory of repos: ")
+    (multi-git-exec dir 'multi-git-fetch))
+#+END_SRC
 
-    Switch to a specific branch
-    #+BEGIN_SRC emacs-lisp
-      (defun multi-git-switch-branch (dir branch-name)
-        "Switch all git repos in DIR to BRANCH-NAME."
-        (interactive "DRoot directory of repos: \nsBranch name:")
-        (multi-git-exec dir '(lambda () (multi-git-switch-to-branch branch-name))))
-    #+END_SRC
+Switch to a specific branch
+#+BEGIN_SRC emacs-lisp
+  (defun multi-git-switch-branch (dir branch-name)
+    "Switch all git repos in DIR to BRANCH-NAME."
+    (interactive "DRoot directory of repos: \nsBranch name:")
+    (multi-git-exec dir '(lambda () (multi-git-switch-to-branch branch-name))))
+#+END_SRC
 
-    Check the how many commits a branch is ahead/behind another branch
-    #+BEGIN_SRC emacs-lisp
-      (defun multi-git-compare-branches (dir first-branch second-branch)
-        "Compare how far second branch is behind ahead first branch"
-        (interactive "DRoot directory of repos: \nsFirst branch name: \nsSecond branch name:")
-        (multi-git-exec dir '(lambda () (multi-git-ahead-behind first-branch second-branch))))
-    #+END_SRC
+Check the how many commits a branch is ahead/behind another branch
+#+BEGIN_SRC emacs-lisp
+  (defun multi-git-compare-branches (dir first-branch second-branch)
+    "Compare how far second branch is behind ahead first branch"
+    (interactive "DRoot directory of repos: \nsFirst branch name: \nsSecond branch name:")
+    (multi-git-exec dir '(lambda () (multi-git-ahead-behind first-branch second-branch))))
+#+END_SRC
 
 *** Helpers
 
-    This includes functions that can be used from within git operators
+This includes functions that can be used from within git operators
 
-    #+BEGIN_SRC emacs-lisp
-      (defun multi-git-get-release-branches ()
-        "Get *local* release branch for repo in DIR. 
-        There should only be one release branch at all times."
-        (mapcar
-         (lambda (item)
-           (replace-regexp-in-string "refs/heads/" "" item))
-         (seq-filter (lambda (item)
-                       (if (and (string-match ".*/release/*" item) (not (string-match "/remotes/" item)))
-                           item))
-                     (magit-list-branches))))
-    #+END_SRC
+#+BEGIN_SRC emacs-lisp
+  (defun multi-git-get-release-branches ()
+    "Get *local* release branch for repo in DIR. 
+    There should only be one release branch at all times."
+    (mapcar
+     (lambda (item)
+       (replace-regexp-in-string "refs/heads/" "" item))
+     (seq-filter (lambda (item)
+                   (if (and (string-match ".*/release/*" item) (not (string-match "/remotes/" item)))
+                       item))
+                 (magit-list-branches))))
+#+END_SRC
     
 
 *** Mode
 
-    Do any anctions on the current repo in the mulit-git buffer
-    #+begin_src emacs-lisp
-      (defun multi-git-action-for-repo (action)
-        "Do any actions on the current repo in the multi-git buffer
-      ACTION is the fucnton to call accepts the rootdir as parameter"
-        (save-excursion
-          (search-backward "*" nil t 2)
-          (setq start-repo-name (+ 2 (point)))
-          (search-forward "*" nil t 2)
-          (setq end-repo-name (- (point) 2))
-          (goto-char (point-min))
-          (search-forward ":")
-          (goto-char (+ 1 (point)))
-          (let ((rootdir (buffer-substring (point) (line-end-position)))
-                (repo-name (buffer-substring start-repo-name end-repo-name)))
-            (funcall action (concat rootdir "/" repo-name)))))
-    #+end_src
+Do any anctions on the current repo in the mulit-git buffer
+#+begin_src emacs-lisp
+  (defun multi-git-action-for-repo (action)
+    "Do any actions on the current repo in the multi-git buffer
+  ACTION is the fucnton to call accepts the rootdir as parameter"
+    (save-excursion
+      (search-backward "*" nil t 2)
+      (setq start-repo-name (+ 2 (point)))
+      (search-forward "*" nil t 2)
+      (setq end-repo-name (- (point) 2))
+      (goto-char (point-min))
+      (search-forward ":")
+      (goto-char (+ 1 (point)))
+      (let ((rootdir (buffer-substring (point) (line-end-position)))
+            (repo-name (buffer-substring start-repo-name end-repo-name)))
+        (funcall action (concat rootdir "/" repo-name)))))
+#+end_src
 
-    Function to open magit status buffer for the git repo shown in the multi-git buffer
-    #+BEGIN_SRC emacs-lisp
-      (defun multi-git-open-magit-at-point ()
-          "Open magit buffer for repository the point is at in the multi-git buffer"
-          (interactive)
-          (multi-git-action-for-repo 'multi-git-status-single))
-    #+END_SRC
+Function to open magit status buffer for the git repo shown in the multi-git buffer
+#+BEGIN_SRC emacs-lisp
+  (defun multi-git-open-magit-at-point ()
+    "Open magit buffer for repository the point is at in the multi-git buffer"
+    (interactive)
+    (multi-git-action-for-repo 'multi-git-status-single))
+#+END_SRC
 
-    Fucntion to let a user push the repo to the configured remote
-    #+begin_src emacs-lisp 
-      (defun multi-git-push-to-remote-at-point ()
-        "Push the current branch at point to it's configured remote"
-        (interactive)
-        (multi-git-action-for-repo 'multi-git-push-single))
-    #+end_src
+Fucntion to let a user push the repo to the configured remote
+#+begin_src emacs-lisp 
+  (defun multi-git-push-to-remote-at-point ()
+    "Push the current branch at point to it's configured remote"
+    (interactive)
+    (multi-git-action-for-repo 'multi-git-push-single))
+#+end_src
 
 
-    How we need to check the status in magit
-    #+begin_src emacs-lisp
-      (defun multi-git-status-single (reponame)
-        "Show the status screen of the current repo"
-        (magit-status reponame))
-    #+end_src
+How we need to check the status in magit
+#+begin_src emacs-lisp
+  (defun multi-git-status-single (reponame)
+    "Show the status screen of the current repo"
+    (magit-status reponame))
+#+end_src
 
-    How we need to do the pus in magit
-    #+begin_src emacs-lisp
-      (defun multi-git-push-single (reponame)
-        "Push multi git selected repo to it's configured push remote"
-        (let ((default-directory reponame))
-          (magit-run-git-async "push" "-v" "-u" "origin" (magit-get-current-branch))))
-    #+end_src
+How we need to do the pus in magit
+#+begin_src emacs-lisp
+  (defun multi-git-push-single (reponame)
+    "Push multi git selected repo to it's configured push remote"
+    (let ((default-directory reponame))
+      (magit-run-git-async "push" "-v" "-u" "origin" (magit-get-current-branch))))
+#+end_src
 
-    #+RESULTS:
-    : multi-git-push-single
+#+RESULTS:
+: multi-git-push-single
 
-    Hooks for multi-git-mode
-    #+BEGIN_SRC emacs-lisp
-      (defvar multi-git-mode-hook nil
-        "Hook for multi-git mode run once the mode is loaded")
-    #+END_SRC
+Hooks for multi-git-mode
+#+BEGIN_SRC emacs-lisp
+  (defvar multi-git-mode-hook nil
+    "Hook for multi-git mode run once the mode is loaded")
+#+END_SRC
 
-    Keymap for multi-git-mode
-    #+BEGIN_SRC emacs-lisp
-      (defvar multi-git-mode-map
-        (let ((map (make-keymap)))
-          (define-key map "t" 'multi-git-open-magit-at-point)
-              map)
-        "Keymap for multi-git major mode")
-    #+END_SRC
+Keymap for multi-git-mode
+#+BEGIN_SRC emacs-lisp
+  (defvar multi-git-mode-map
+    (let ((map (make-keymap)))
+      (define-key map "t" 'multi-git-open-magit-at-point)
+      map)
+    "Keymap for multi-git major mode")
+#+END_SRC
 
-    Add aditional keys
-    This doesn't need a restart from emacs as it updates the map instead of defining as in the statement above.
-    #+begin_src emacs-lisp
-      (define-key multi-git-mode-map "p" 'multi-git-push-to-remote-at-point)
-    #+end_src
+Add aditional keys
+This doesn't need a restart from emacs as it updates the map instead of defining as in the statement above.
+#+begin_src emacs-lisp
+  (define-key multi-git-mode-map "p" 'multi-git-push-to-remote-at-point)
+#+end_src
 
-    Syntax highlighting
-    #+begin_src emacs-lisp
-      (setq multi-git-highlights
-            '(("\\*.*\\*" . font-lock-function-name-face)
-              ("Changes: [^0][0-9]*" . font-lock-warning-face)))
-    #+end_src
+Syntax highlighting
+#+begin_src emacs-lisp
+  (setq multi-git-highlights
+        '(("\\*.*\\*" . font-lock-function-name-face)
+          ("Changes: [^0][0-9]*" . font-lock-warning-face)))
+#+end_src
 
-    #+RESULTS:
-    : ((\*.*\* . font-lock-function-name-face) (Changes: [^0][0-9]* . font-lock-warning-face))
+#+RESULTS:
+: ((\*.*\* . font-lock-function-name-face) (Changes: [^0][0-9]* . font-lock-warning-face))
 
-    Entry function for the multi-git-mode
-    #+BEGIN_SRC emacs-lisp
-      (define-derived-mode multi-git-mode special-mode "multi-git"
-        "A major mode for managing multiple git repostiories."
-        (buffer-disable-undo)
-        (setq truncate-lines t)
-        (setq buffer-read-only t)
-        (setq show-trailing-whitespace nil)
-        (setq font-lock-defaults '(multi-git-highlights))
-        (use-local-map multi-git-mode-map)
-        (run-hooks 'multi-git-mode-hook))
-    #+END_SRC
+Entry function for the multi-git-mode
+#+BEGIN_SRC emacs-lisp
+  (define-derived-mode multi-git-mode special-mode "multi-git"
+    "A major mode for managing multiple git repostiories."
+    (buffer-disable-undo)
+    (setq truncate-lines t)
+    (setq buffer-read-only t)
+    (setq show-trailing-whitespace nil)
+    (setq font-lock-defaults '(multi-git-highlights))
+    (use-local-map multi-git-mode-map)
+    (run-hooks 'multi-git-mode-hook))
+#+END_SRC
 
 * Project management
   
-  The base of projectmanangement is projectile
-  #+BEGIN_SRC emacs-lisp
-    (use-package projectile
-      :ensure t
-      :bind-keymap ("C-c p" . projectile-command-map)
-      :hook (after-init . projectile-global-mode))
-  #+END_SRC
+The base of projectmanangement is projectile
+#+BEGIN_SRC emacs-lisp
+  (use-package projectile
+    :ensure t
+    :bind-keymap ("C-c p" . projectile-command-map)
+    :hook (after-init . projectile-global-mode))
+#+END_SRC
 
-  [[https://tuhdo.github.io/helm-projectile.html][Documentation]] on helm projectile.
-  #+begin_src emacs-lisp 
-    (use-package helm-projectile
-      :ensure t
-      :init
-      (setq projectile-completion-system 'helm)
-      (helm-projectile-on)
-      :bind (:map projectile-mode-map
-                  ("C-c p h" . helm-projectile)
-                  ("C-c p p" . helm-projectile-switch-project)))
-  #+end_src
+[[https://tuhdo.github.io/helm-projectile.html][Documentation]] on helm projectile.
+#+begin_src emacs-lisp 
+  (use-package helm-projectile
+    :ensure t
+    :init
+    (setq projectile-completion-system 'helm)
+    (helm-projectile-on)
+    :bind (:map projectile-mode-map
+                ("C-c p h" . helm-projectile)
+                ("C-c p p" . helm-projectile-switch-project)))
+#+end_src
 
 * Programming environments
 ** restclient
 
-   Do restcalls from witin an emacs buffer
+Do restcalls from witin an emacs buffer
 
-   Install restclient
-   #+BEGIN_SRC emacs-lisp
-     (use-package restclient
-       :ensure t
-       :mode ("\\.http\\'" . restclient-mode))
-   #+END_SRC
+Install restclient
+#+BEGIN_SRC emacs-lisp
+  (use-package restclient
+    :ensure t
+    :mode ("\\.http\\'" . restclient-mode))
+#+END_SRC
 
-   Setup auto completion for restclient
-   #+BEGIN_SRC emacs-lisp
-     (use-package company-restclient
-       :ensure t
-       :after restclient
-       :config (add-to-list 'company-backends 'company-restclient))
-   #+END_SRC
+Setup auto completion for restclient
+#+BEGIN_SRC emacs-lisp
+  (use-package company-restclient
+    :ensure t
+    :after restclient
+    :config (add-to-list 'company-backends 'company-restclient))
+#+END_SRC
 
-   Add integration into org mode for restclient
-   #+BEGIN_SRC emacs-lisp
-      (use-package ob-restclient
-        :ensure t
-        :config (org-babel-do-load-languages
-                 'org-babel-load-languages
-                 '((restclient . t))))
-   #+END_SRC
+Add integration into org mode for restclient
+#+BEGIN_SRC emacs-lisp
+  (use-package ob-restclient
+    :ensure t
+    :config (org-babel-do-load-languages
+             'org-babel-load-languages
+             '((restclient . t))))
+#+END_SRC
 
-   In Org mode we want to tangle URI's with parameters, following fucntions allow for thsi
-   #+BEGIN_SRC emacs-lisp
-     (defun pve-get-tangled-result ()
-       "Get the tangled result of a source block 
-     RETURNS the tangled result"
-       (interactive)
-       (progn
-         (let ((tmp-file "/tmp/tangle.tmp"))
-           (org-babel-tangle '(4) tmp-file)
-           (with-temp-buffer
-             (insert-file-contents tmp-file)
-             (buffer-string)))))
+In Org mode we want to tangle URI's with parameters, following fucntions allow for thsi
+#+BEGIN_SRC emacs-lisp
+  (defun pve-get-tangled-result ()
+    "Get the tangled result of a source block 
+  RETURNS the tangled result"
+    (interactive)
+    (progn
+      (let ((tmp-file "/tmp/tangle.tmp"))
+        (org-babel-tangle '(4) tmp-file)
+        (with-temp-buffer
+          (insert-file-contents tmp-file)
+          (buffer-string)))))
 
-   #+END_SRC
+#+END_SRC
 
-   #+BEGIN_SRC emacs-lisp
-     (defun pve-tangle-to-kill-ring ()
-       "Tangle a source block and copy the result to a source block"
-       (interactive)
-       (kill-new (pve-get-tangled-result)))
-   #+END_SRC
+#+BEGIN_SRC emacs-lisp
+  (defun pve-tangle-to-kill-ring ()
+    "Tangle a source block and copy the result to a source block"
+    (interactive)
+    (kill-new (pve-get-tangled-result)))
+#+END_SRC
 
-   #+BEGIN_SRC emacs-lisp
-     (defun pve-tangle-to-browser-url ()
-       "Tangle a source block and copy it to the browser"
-       (interactive)
-       (progn
-         (require 'browse-url)
-         (browse-url (pve-get-tangled-result))))
-   #+END_SRC
+#+BEGIN_SRC emacs-lisp
+  (defun pve-tangle-to-browser-url ()
+    "Tangle a source block and copy it to the browser"
+    (interactive)
+    (progn
+      (require 'browse-url)
+      (browse-url (pve-get-tangled-result))))
+#+END_SRC
 
 ** javascript
 
 *** An enhanced Javascript mode
 
-    #+BEGIN_SRC emacs-lisp
-      (use-package js2-mode
-        :mode "\\.js\\'"
-        :ensure t
-        :hook (js2-mode . lsp)
-        :init
-        (setq-default
-         js-indent-level 2
-         js2-indent-switch-body t
-         js2-auto-indent-p t
-         js2-indent-on-enter-key t)
-        (with-eval-after-load "lsp-mode"
-          (add-to-list 'lsp-enabled-clients 'ts-ls)))
-    #+END_SRC
+#+BEGIN_SRC emacs-lisp
+  (use-package js2-mode
+    :mode "\\.js\\'"
+    :ensure t
+    :hook (js2-mode . lsp)
+    :init
+    (setq-default
+     js-indent-level 2
+     js2-indent-switch-body t
+     js2-auto-indent-p t
+     js2-indent-on-enter-key t)
+    (with-eval-after-load "lsp-mode"
+      (add-to-list 'lsp-enabled-clients 'ts-ls)))
+#+END_SRC
 
 *** Typescript mode
 
-    #+begin_src emacs-lisp
-      (use-package typescript-mode
-        :ensure t
-        :mode "\\.ts\\'"
-        :hook (typescript-mode . lsp)
-        :init
-        (with-eval-after-load "lsp-mode"
-          (add-to-list 'lsp-enabled-clients 'ts-ls)))
-    #+end_src
+#+begin_src emacs-lisp
+  (use-package typescript-mode
+    :ensure t
+    :mode "\\.ts\\'"
+    :hook (typescript-mode . lsp)
+    :init
+    (with-eval-after-load "lsp-mode"
+      (add-to-list 'lsp-enabled-clients 'ts-ls)))
+#+end_src
 
-    org bable mode
-    #+begin_src emacs-lisp
-      (use-package ob-typescript
-        :ensure t)
-    #+end_src
+org bable mode
+#+begin_src emacs-lisp
+  (use-package ob-typescript
+    :ensure t)
+#+end_src
     
 *** Live web development
 
-    #+BEGIN_SRC emacs-lisp
-      (use-package impatient-mode
-        :ensure t
-        :hook ((html-mode . impatient-mode)))
-    #+END_SRC
+#+BEGIN_SRC emacs-lisp
+  (use-package impatient-mode
+    :ensure t
+    :hook ((html-mode . impatient-mode)))
+#+END_SRC
 
 *** Angular specifics
 
-    Angular, not installed automatically by LSP
-    #+begin_src sh
-      npm install -g @angular/language-service@next typescript @angular/language-server
-    #+end_src
+Angular, not installed automatically by LSP
+#+begin_src sh
+  npm install -g @angular/language-service@next typescript @angular/language-server
+#+end_src
     
-    Snippets for angular
-    #+BEGIN_SRC emacs-lisp
-      (use-package angular-snippets
-        :ensure t)
-    #+END_SRC
+Snippets for angular
+#+BEGIN_SRC emacs-lisp
+  (use-package angular-snippets
+    :ensure t)
+#+END_SRC
 
-    Angular modes (ng2-ts-mode, ng2-html-mode)
-    #+begin_src emacs-lisp
-      (use-package ng2-mode
-        :ensure t
-        :hook ((ng2-html-mode . lsp)
-               (ng2-ts-mode . lsp)
-               (ng2-html-mode . yas-minor-mode)
-               (ng2-ts-mode . yas-minor-mode))
-        :init (progn
-                  (setq lsp-clients-angular-language-server-command
-                        '("node"
-                          "/usr/lib/node_modules/@angular/language-server"
-                          "--ngProbeLocations"
-                          "/usr/lib/node_modules"
-                          "--tsProbeLocations"
-                          "/usr/lib/node_modules"
-                          "--stdio"))
-                  (with-eval-after-load "lsp-mode"
-                    (add-to-list 'lsp-enabled-clients 'angular-ls))))
-    #+end_src
+Angular modes (ng2-ts-mode, ng2-html-mode)
+#+begin_src emacs-lisp
+  (use-package ng2-mode
+    :ensure t
+    :hook ((ng2-html-mode . lsp)
+           (ng2-ts-mode . lsp)
+           (ng2-html-mode . yas-minor-mode)
+           (ng2-ts-mode . yas-minor-mode))
+    :init (progn
+            (setq lsp-clients-angular-language-server-command
+                  '("node"
+                    "/usr/lib/node_modules/@angular/language-server"
+                    "--ngProbeLocations"
+                    "/usr/lib/node_modules"
+                    "--tsProbeLocations"
+                    "/usr/lib/node_modules"
+                    "--stdio"))
+            (with-eval-after-load "lsp-mode"
+              (add-to-list 'lsp-enabled-clients 'angular-ls))))
+#+end_src
 
 ** python
 
-   Standard Python mode config
-   #+begin_src emacs-lisp
-     (use-package python-mode
-       :ensure t
-       :mode "\\.py\\'"
-       :config
-       ;; Disable eldoc, we see the info with lsp-ui
-       (setq lsp-enable-eldoc nil
-             python-shell-completion-native-enable nil)
-       :hook (python-mode . yas-minor-mode))
-   #+END_SRC
+Standard Python mode config
+#+begin_src emacs-lisp
+  (use-package python-mode
+    :ensure t
+    :mode "\\.py\\'"
+    :config
+    ;; Disable eldoc, we see the info with lsp-ui
+    (setq lsp-enable-eldoc nil
+          python-shell-completion-native-enable nil)
+    :hook (python-mode . yas-minor-mode))
+#+END_SRC
 
-   Disabled the standard completion method for python shell. It opens a new window gets in the way and doesn't do completion very well.
+Disabled the standard completion method for python shell. It opens a new window gets in the way and doesn't do completion very well.
    
-   Configure lsp mode for python
-   #+BEGIN_SRC emacs-lisp
-     (use-package lsp-pyright
-            :ensure t
-            :config (with-eval-after-load "lsp-mode"
-                      (add-to-list 'lsp-enabled-clients 'pyright))
-            :hook (python-mode . (lambda ()
-                                    (require 'lsp-pyright)
-                                    (lsp))))
-   #+end_src
+Configure lsp mode for python
+#+BEGIN_SRC emacs-lisp
+  (use-package lsp-pyright
+    :ensure t
+    :config (with-eval-after-load "lsp-mode"
+              (add-to-list 'lsp-enabled-clients 'pyright))
+    :hook (python-mode . (lambda ()
+                           (require 'lsp-pyright)
+                           (lsp))))
+#+end_src
 
-   Tool to switch to a virtualenv. To use lspl, install the server in the virtualenv too.
-   #+BEGIN_SRC emacs-lisp
-     (use-package pyvenv
-       :ensure t)
-   #+END_SRC
+Tool to switch to a virtualenv. To use lspl, install the server in the virtualenv too.
+#+BEGIN_SRC emacs-lisp
+  (use-package pyvenv
+    :ensure t)
+#+END_SRC
         
 ** Docker
 
-   Manage dockers from within emacs.
-   #+BEGIN_SRC emacs-lisp
-     (use-package docker
-       :ensure t
-       :defer 2)
-   #+END_SRC
+Manage dockers from within emacs.
+#+BEGIN_SRC emacs-lisp
+  (use-package docker
+    :ensure t
+    :defer 2)
+#+END_SRC
 
-   Mode for editing docker files
-   #+BEGIN_SRC emacs-lisp
-     (use-package dockerfile-mode
-       :ensure t
-       :mode "\\Dockerfile\\'"
-       :config (with-eval-after-load "lsp-mode"
-                 (add-to-list 'lsp-enabled-clients 'dockerfile-ls))
-       :hook ((dockerfile-mode . (lambda () (lsp)))
-              (dockerfile-mode . yas/minor-mode)))
-   #+END_SRC
+Mode for editing docker files
+#+BEGIN_SRC emacs-lisp
+  (use-package dockerfile-mode
+    :ensure t
+    :mode "\\Dockerfile\\'"
+    :config (with-eval-after-load "lsp-mode"
+              (add-to-list 'lsp-enabled-clients 'dockerfile-ls))
+    :hook ((dockerfile-mode . (lambda () (lsp)))
+           (dockerfile-mode . yas/minor-mode)))
+#+END_SRC
 
 ** LUA
 
-   LUA mode
-   Currently doesn't work
-   (Error (use-package): lua-mode/:catch: Unknown rx form ‘symbol’)
-   #+BEGIN_SRC emacs-lisp :tangle no
-     (use-package lua-mode
-       :ensure t
-       :mode "\\.lua\\'")
-   #+END_SRC
+LUA mode
+Currently doesn't work
+(Error (use-package): lua-mode/:catch: Unknown rx form ‘symbol’)
+#+BEGIN_SRC emacs-lisp :tangle no
+  (use-package lua-mode
+    :ensure t
+    :mode "\\.lua\\'")
+#+END_SRC
    
-   #+BEGIN_SRC emacs-lisp
-     (defun lua-mode-config ()
-       "Change some settings when lua mode is loaded"
-       (local-set-key (kbd "C-c C-t") 'lua-test)
-       )
+#+BEGIN_SRC emacs-lisp
+  (defun lua-mode-config ()
+    "Change some settings when lua mode is loaded"
+    (local-set-key (kbd "C-c C-t") 'lua-test)
+    )
 
-     ;; Ensure function is ecxecuted when lua mode loads
-     (add-hook 'lua-mode-hook 'lua-mode-config)
-   #+END_SRC
+  ;; Ensure function is ecxecuted when lua mode loads
+  (add-hook 'lua-mode-hook 'lua-mode-config)
+#+END_SRC
 
 *** Awesome WM
 
-    Awesome WM uses LUA to create a window manager.
+Awesome WM uses LUA to create a window manager.
 
 **** Dependencies
 
-     Install testing tools that emacs can use to run tests
+Install testing tools that emacs can use to run tests
  
-    Install xephyr 
-    #+BEGIN_SRC shell
-    pacman -S xorg-server-xephyr
-    #+END_SRC
-    xephyr can show a x server inside of a window.
+Install xephyr 
+#+BEGIN_SRC shell
+  pacman -S xorg-server-xephyr
+#+END_SRC
+xephyr can show a x server inside of a window.
 
-    Get the testing tool [[https://github.com/serialoverflow/awmtt][awmtt]]
-    #+BEGIN_SRC sh
-    wget -O ./awmtt  https://raw.githubusercontent.com/mikar/awmtt/master/awmtt.sh
-    chmod u+x ./awmtt
-    #+END_SRC
+Get the testing tool [[https://github.com/serialoverflow/awmtt][awmtt]]
+#+BEGIN_SRC sh
+  wget -O ./awmtt  https://raw.githubusercontent.com/mikar/awmtt/master/awmtt.sh
+  chmod u+x ./awmtt
+#+END_SRC
 
 
 **** Awesome integration
      
-     Functions to control the awesome wm testing util awmtt (xephyr).
-     #+BEGIN_SRC emacs-lisp
-       (defun awesome-awmtt (arguments)
-         "run awmt command with arguments, assuming script is available in project directory"
-         (async-shell-command (format "%sawmtt %s" (projectile-project-root) arguments)))
+Functions to control the awesome wm testing util awmtt (xephyr).
+#+BEGIN_SRC emacs-lisp
+  (defun awesome-awmtt (arguments)
+    "run awmt command with arguments, assuming script is available in project directory"
+    (async-shell-command (format "%sawmtt %s" (projectile-project-root) arguments)))
 
-       (defun awesome-run ()
-         "run the rc.lua in project directory"
-         (interactive)
-         (awesome-awmtt (format "start -C %src.lua" (projectile-project-root))))
+  (defun awesome-run ()
+    "run the rc.lua in project directory"
+    (interactive)
+    (awesome-awmtt (format "start -C %src.lua" (projectile-project-root))))
 
-       (defun awesome-stop ()
-         "Stop all awmtt xephyr instances"
-         (interactive)
-         (awesome-awmtt "stop all"))
+  (defun awesome-stop ()
+    "Stop all awmtt xephyr instances"
+    (interactive)
+    (awesome-awmtt "stop all"))
 
-       (defun awesome-restart ()
-         "restart all awmtt xephyr instances"
-         (interactive)
-         (awesome-awmtt "restart"))
-     #+END_SRC
+  (defun awesome-restart ()
+    "restart all awmtt xephyr instances"
+    (interactive)
+    (awesome-awmtt "restart"))
+#+END_SRC
 
 ** Java
 
-   Java settings
-   #+begin_src emacs-lisp
-   (defvar lombok-path "/home/vercapi/.m2/repository/org/projectlombok/lombok/1.18.16/lombok-1.18.16.jar" "Path to lombok jar for the project")
-   #+end_src
+Java settings
+#+begin_src emacs-lisp
+  (defvar lombok-path "/home/vercapi/.m2/repository/org/projectlombok/lombok/1.18.16/lombok-1.18.16.jar" "Path to lombok jar for the project")
+#+end_src
 
 *** Language server
 
-   Download [[http://download.eclipse.org/jdtls/snapshots/jdt-language-server-latest.tar.gz][latest]] Eclipse JDT language server to "~/.emacs.d/.cache/lsp/eclipse.jdt.ls/"
-   #+BEGIN_SRC emacs-lisp
-     (use-package lsp-java
-       :ensure t
-       :after lsp-mode
-       :config
-       (with-eval-after-load "lsp-mode"
-                      (add-to-list 'lsp-enabled-clients 'jdtls))
-       (setq lsp-java-vmargs
-             (list "-noverify"
-                   "-Xmx2G"
-                   "-XX:+UseG1GC"
-                   "-XX:+UseStringDeduplication"
-                   (concat "-javaagent:" lombok-path)
-                   (concat "-Xbootclasspath/a:" lombok-path))
-             lsp-file-watch-ignored
-             '(".idea" ".ensime_cache" ".eunit" "node_modules"
-               ".git" ".hg" ".fslckout" "_FOSSIL_"
-               ".bzr" "_darcs" ".tox" ".svn" ".stack-work"
-               "build")
+Download [[http://download.eclipse.org/jdtls/snapshots/jdt-language-server-latest.tar.gz][latest]] Eclipse JDT language server to "~/.emacs.d/.cache/lsp/eclipse.jdt.ls/"
+#+BEGIN_SRC emacs-lisp
+  (use-package lsp-java
+    :ensure t
+    :after lsp-mode
+    :config
+    (with-eval-after-load "lsp-mode"
+      (add-to-list 'lsp-enabled-clients 'jdtls))
+    (setq lsp-java-vmargs
+          (list "-noverify"
+                "-Xmx2G"
+                "-XX:+UseG1GC"
+                "-XX:+UseStringDeduplication"
+                (concat "-javaagent:" lombok-path)
+                (concat "-Xbootclasspath/a:" lombok-path))
+          lsp-file-watch-ignored
+          '(".idea" ".ensime_cache" ".eunit" "node_modules"
+            ".git" ".hg" ".fslckout" "_FOSSIL_"
+            ".bzr" "_darcs" ".tox" ".svn" ".stack-work"
+            "build")
 
-             lsp-java-import-order '["" "java" "javax" "#"]
-             ;; Don't organize imports on save
-             lsp-java-save-action-organize-imports nil)
-       :hook ((java-mode . lsp)
-              (java-mode . flycheck-mode)
-              (java-mode . company-mode)
-              (java-mode . lsp-ui-sideline-mode)
-              (java-mode . yas-minor-mode)
-              (java-mode . (lambda () (setq c-basic-offset 2)))))
-   #+END_SRC
+          lsp-java-import-order '["" "java" "javax" "#"]
+          ;; Don't organize imports on save
+          lsp-java-save-action-organize-imports nil)
+    :hook ((java-mode . lsp)
+           (java-mode . flycheck-mode)
+           (java-mode . company-mode)
+           (java-mode . lsp-ui-sideline-mode)
+           (java-mode . yas-minor-mode)
+           (java-mode . (lambda () (setq c-basic-offset 2)))))
+#+END_SRC
 
 *** Code snippets
 
-   Templates for java snippets
-   #+BEGIN_SRC emacs-lisp
-     (use-package java-snippets
-       :ensure t)
-   #+END_SRC
+Templates for java snippets
+#+BEGIN_SRC emacs-lisp
+  (use-package java-snippets
+    :ensure t)
+#+END_SRC
    
 *** create project
 
-    #+begin_src emacs-lisp
-      (defun pve/new-java-project (dir project-name group-id)
-          "Create a new java project"
-          (interactive "Dlocation: 
-      sProject name: 
-      sGroup name: ")
-          (let ((final-dir (concat dir "/" project-name)))
-            (with-current-buffer (get-buffer-create "*new java project*")
-              (read-only-mode)
-              (let ((inhibit-read-only t))
-                (cd dir)
-                (insert
-                 (shell-command-to-string (format
-                                           "mvn archetype:generate -DgroupId=%s -DartifactId=%s -DarchetypeArtifactdId=maven-archetype-quickstart -DinteractiveMode=false"
-                                           group-id
-                                           project-name)))))
-            (with-current-buffer (find-file final-dir)
-              (projectile-add-known-project final-dir)
-              (treemacs-add-and-display-current-project))))
-    #+end_src
+#+begin_src emacs-lisp
+  (defun pve/new-java-project (dir project-name group-id)
+    "Create a new java project"
+    (interactive "Dlocation: 
+  sProject name: 
+  sGroup name: ")
+    (let ((final-dir (concat dir "/" project-name)))
+      (with-current-buffer (get-buffer-create "*new java project*")
+        (read-only-mode)
+        (let ((inhibit-read-only t))
+          (cd dir)
+          (insert
+           (shell-command-to-string (format
+                                     "mvn archetype:generate -DgroupId=%s -DartifactId=%s -DarchetypeArtifactdId=maven-archetype-quickstart -DinteractiveMode=false"
+                                     group-id
+                                     project-name)))))
+      (with-current-buffer (find-file final-dir)
+        (projectile-add-known-project final-dir)
+        (treemacs-add-and-display-current-project))))
+#+end_src
 ** Packet Capturing
 
-   #+BEGIN_SRC emacs-lisp
-     (use-package pcap-mode
-       :ensure t
-       :mode "\\.pcap\\'")
-   #+END_SRC
+#+BEGIN_SRC emacs-lisp
+  (use-package pcap-mode
+    :ensure t
+    :mode "\\.pcap\\'")
+#+END_SRC
    
 ** YAML
 *** Standard YAML
 
-   Hide show rules for YAML files
-   #+BEGIN_SRC emacs-lisp
-     (defun +data-hideshow-forward-sexp (arg)
-       (let ((start (current-indentation)))
-         (forward-line)
-         (while (< start (current-indentation))
-           (forward-line))
-         (forward-line -1)
-         (end-of-line)))
+Hide show rules for YAML files
+#+BEGIN_SRC emacs-lisp
+  (defun +data-hideshow-forward-sexp (arg)
+    (let ((start (current-indentation)))
+      (forward-line)
+      (while (< start (current-indentation))
+        (forward-line))
+      (forward-line -1)
+      (end-of-line)))
 
-     (map-put hs-special-modes-alist
-              'yaml-mode
-              '("\\s-*\\_<\\(?:[^:]+\\)\\_>" "" "#" +data-hideshow-forward-sexp nil))
+  (map-put hs-special-modes-alist
+           'yaml-mode
+           '("\\s-*\\_<\\(?:[^:]+\\)\\_>" "" "#" +data-hideshow-forward-sexp nil))
 
-     (map-put hs-special-modes-alist
-              'openapi-yaml-mode
-              '("\\s-*\\_<\\(?:[^:]+\\)\\_>" "" "#" +data-hideshow-forward-sexp nil))
-   #+END_SRC
+  (map-put hs-special-modes-alist
+           'openapi-yaml-mode
+           '("\\s-*\\_<\\(?:[^:]+\\)\\_>" "" "#" +data-hideshow-forward-sexp nil))
+#+END_SRC
 
-   Yaml mode
-   #+BEGIN_SRC emacs-lisp
-     (use-package yaml-mode
-       :ensure t
-       :mode "\\.yml\\'"
-       :hook((yaml-mode . hs-minor-mode)
-             (yaml-mode . (lambda ()
-                            (define-key yaml-mode-map "\C-m" 'newline-and-indent)))))
-   #+END_SRC
+Yaml mode
+#+BEGIN_SRC emacs-lisp
+  (use-package yaml-mode
+    :ensure t
+    :mode "\\.yml\\'"
+    :hook((yaml-mode . hs-minor-mode)
+          (yaml-mode . (lambda ()
+                         (define-key yaml-mode-map "\C-m" 'newline-and-indent)))))
+#+END_SRC
    
-   By default yaml mode doesn't use newline-and-indent (as python mode does). So this was added as a hook on he yaml-mode.
+By default yaml mode doesn't use newline-and-indent (as python mode does). So this was added as a hook on he yaml-mode.
 
 *** Swagger/OpenAPI YAML
 
-   Swagger/OpenAPI mode
-   #+BEGIN_SRC emacs-lisp
-     (use-package openapi-yaml-mode
-       :quelpa (openapi-yaml-mode :fetcher github :repo "magoyette/openapi-yaml-mode")
-       :ensure t
-       :hook ((openapi-yaml-mode . hs-minor-mode)
-              (openapi-yaml-mode . yas-minor-mode)))
-   #+END_SRC
+Swagger/OpenAPI mode
+#+BEGIN_SRC emacs-lisp
+  (use-package openapi-yaml-mode
+    :quelpa (openapi-yaml-mode :fetcher github :repo "magoyette/openapi-yaml-mode")
+    :ensure t
+    :hook ((openapi-yaml-mode . hs-minor-mode)
+           (openapi-yaml-mode . yas-minor-mode)))
+#+END_SRC
 
 ** Database
 
 *** SQLite
 
-    #+BEGIN_SRC emacs-lisp
-      (setq sql-sqlite-program "sqlite3")
-    #+END_SRC
+#+BEGIN_SRC emacs-lisp
+  (setq sql-sqlite-program "sqlite3")
+#+END_SRC
 ** elisp
 
-   EROS emacs inline, in buffer evaluation
-   #+BEGIN_SRC emacs-lisp
-     (use-package eros
-       :ensure t
-       :config (eros-mode 1))
-   #+END_SRC
+EROS emacs inline, in buffer evaluation
+#+BEGIN_SRC emacs-lisp
+  (use-package eros
+    :ensure t
+    :config (eros-mode 1))
+#+END_SRC
 
 ** Saltstack
 
-   #+begin_src emacs-lisp
-     (use-package salt-mode
-       :ensure t
-       :mode "\\.sls\\'"
-       )
-   #+end_src
+#+begin_src emacs-lisp
+  (use-package salt-mode
+    :ensure t
+    :mode "\\.sls\\'"
+    )
+#+end_src
 ** Haskell
    
-   #+begin_src emacs-lisp 
-     (use-package haskell-mode
-       :ensure t
-       :mode "\\.hs\\'")
-   #+end_src
+#+begin_src emacs-lisp 
+  (use-package haskell-mode
+    :ensure t
+    :mode "\\.hs\\'")
+#+end_src
 ** Clojure
 
-   #+begin_src emacs-lisp
-     (use-package cider
-       :ensure t)
-   #+end_src
+#+begin_src emacs-lisp
+  (use-package cider
+    :ensure t)
+#+end_src
 ** openscad
 
-   Currently not using LSP because this requires a rust toolchain.
+Currently not using LSP because this requires a rust toolchain.
 
-   Editing open scad files
-   #+begin_src emacs-lisp
-     (use-package scad-mode
-       :ensure t)
-   #+end_src
+Editing open scad files
+#+begin_src emacs-lisp
+  (use-package scad-mode
+    :ensure t)
+#+end_src
 
-   Preview mode
-   #+begin_src emacs-lisp
-     (use-package scad-preview
-       :ensure t)
-   #+end_src
+Preview mode
+#+begin_src emacs-lisp
+  (use-package scad-preview
+    :ensure t)
+#+end_src
 ** CSS
 
-  #+begin_src emacs-lisp
-    (use-package css-mode
-      :config (with-eval-after-load "lsp-mode"
-                (add-to-list 'lsp-enabled-clients 'css-ls))
-      :hook ((css-mode . (lambda () (lsp)))
-             (css-mode . yas/minor-mode)))
-  #+end_src
+#+begin_src emacs-lisp
+  (use-package css-mode
+    :config (with-eval-after-load "lsp-mode"
+              (add-to-list 'lsp-enabled-clients 'css-ls))
+    :hook ((css-mode . (lambda () (lsp)))
+           (css-mode . yas/minor-mode)))
+#+end_src
 
 * Drawing
 ** UML
    
-   #+begin_src emacs-lisp
-     (use-package plantuml-mode
-       :ensure t
-       :init
-       (let ((jar-path (expand-file-name "/usr/share/java/plantuml/plantuml.jar")))
-         (setq org-plantuml-jar-path jar-path
-               plantuml-jar-path jar-path
-               plantuml-default-exec-mode 'jar))
-       (add-to-list 'org-src-lang-modes '("plantuml" . plantuml))
-       (org-babel-do-load-languages 'org-babel-load-languages '((plantuml . t))))
-   #+end_src
+#+begin_src emacs-lisp
+  (use-package plantuml-mode
+    :ensure t
+    :init
+    (let ((jar-path (expand-file-name "/usr/share/java/plantuml/plantuml.jar")))
+      (setq org-plantuml-jar-path jar-path
+            plantuml-jar-path jar-path
+            plantuml-default-exec-mode 'jar))
+    (add-to-list 'org-src-lang-modes '("plantuml" . plantuml))
+    (org-babel-do-load-languages 'org-babel-load-languages '((plantuml . t))))
+#+end_src
 
 * File browsing
 ** Side bar
 
-   For the side bar the package we use treemacs. 
-   It feels more like the side bar from vs code and other modern editors.
+For the side bar the package we use treemacs. 
+It feels more like the side bar from vs code and other modern editors.
    
-   Install and config the treemacs package.
-   #+BEGIN_SRC emacs-lisp
-     (use-package treemacs
-       :ensure t
-       :defer t
-       :after (all-the-icons)
-       :init
-       (progn
-         ;; Create theme
-         (require 'treemacs)
-         (treemacs-modify-theme "Default"
-           :config
-           (progn
-             ;; directory and other icons
-             (treemacs-create-icon :icon (concat (all-the-icons-faicon "circle-o") " ")       :extensions (root-closed))
-             (treemacs-create-icon :icon (concat (all-the-icons-faicon "circle-o") " ")       :extensions (root-open))
-             (treemacs-create-icon :icon (concat (all-the-icons-faicon "folder") " ")         :extensions (dir-closed))
-             (treemacs-create-icon :icon (concat (all-the-icons-faicon "folder") " ")         :extensions (dir-open))
-             (treemacs-create-icon :icon (concat (all-the-icons-faicon "circle") " ")         :extensions (tag-leaf))
-             (treemacs-create-icon :icon (concat (all-the-icons-faicon "minus-square") " ")   :extensions (tag-open))
-             (treemacs-create-icon :icon (concat (all-the-icons-faicon "plus-square") " ")    :extensions (tag-closed))
-             (treemacs-create-icon :icon (concat (all-the-icons-material "error") " ")        :extensions (error))
-             (treemacs-create-icon :icon (concat (all-the-icons-material "warning") " ")      :extensions (warning))
-             (treemacs-create-icon :icon (concat (all-the-icons-material "info_outline") " ") :extensions (info))
+Install and config the treemacs package.
+#+BEGIN_SRC emacs-lisp
+  (use-package treemacs
+    :ensure t
+    :defer t
+    :after (all-the-icons)
+    :init
+    (progn
+      ;; Create theme
+      (require 'treemacs)
+      (treemacs-modify-theme "Default"
+        :config
+        (progn
+          ;; directory and other icons
+          (treemacs-create-icon :icon (concat (all-the-icons-faicon "circle-o") " ")       :extensions (root-closed))
+          (treemacs-create-icon :icon (concat (all-the-icons-faicon "circle-o") " ")       :extensions (root-open))
+          (treemacs-create-icon :icon (concat (all-the-icons-faicon "folder") " ")         :extensions (dir-closed))
+          (treemacs-create-icon :icon (concat (all-the-icons-faicon "folder") " ")         :extensions (dir-open))
+          (treemacs-create-icon :icon (concat (all-the-icons-faicon "circle") " ")         :extensions (tag-leaf))
+          (treemacs-create-icon :icon (concat (all-the-icons-faicon "minus-square") " ")   :extensions (tag-open))
+          (treemacs-create-icon :icon (concat (all-the-icons-faicon "plus-square") " ")    :extensions (tag-closed))
+          (treemacs-create-icon :icon (concat (all-the-icons-material "error") " ")        :extensions (error))
+          (treemacs-create-icon :icon (concat (all-the-icons-material "warning") " ")      :extensions (warning))
+          (treemacs-create-icon :icon (concat (all-the-icons-material "info_outline") " ") :extensions (info))
 
-             ;; ;; file icons
-             (treemacs-create-icon :icon (concat (all-the-icons-fileicon "default") " ")         :extensions (fallback))
-             (treemacs-create-icon :icon (concat (all-the-icons-fileicon "emacs") " ")           :extensions ("el" "elc"))
-             (treemacs-create-icon :icon (concat (all-the-icons-icon-for-file "x.yml") " ")      :extensions ("yml" "yaml"))
-             (treemacs-create-icon :icon (concat (all-the-icons-fileicon "powershell") " ")      :extensions ("sh" "zsh" "fish"))
-             (treemacs-create-icon :icon (concat (all-the-icons-octicon "file-pdf") " ")         :extensions ("pdf"))
-             (treemacs-create-icon :icon (concat (all-the-icons-icon-for-file "x.c") " ")        :extensions ("c"))
-             (treemacs-create-icon :icon (concat (all-the-icons-icon-for-file "x.h") " ")        :extensions ("h"))
-             (treemacs-create-icon :icon (concat (all-the-icons-icon-for-file "x.cc") " ")       :extensions ("cpp" "cxx" "cc"))
-             (treemacs-create-icon :icon (concat (all-the-icons-icon-for-file "x.hh") " ")       :extensions ("hpp" "tpp" "hh"))
-             (treemacs-create-icon :icon (concat (all-the-icons-icon-for-file "x.hs") " ")       :extensions ("hs" "lhs" "cabal"))
-             (treemacs-create-icon :icon (concat (all-the-icons-icon-for-file "x.py") " ")       :extensions ("py" "pyc"))
-             (treemacs-create-icon :icon (concat (all-the-icons-icon-for-file "x.md") " ")       :extensions ("md"))
-             (treemacs-create-icon :icon (concat (all-the-icons-icon-for-file "x.rs") " ")       :extensions ("rs"))
-             (treemacs-create-icon :icon (concat (all-the-icons-icon-for-file "x.jpg") " ")      :extensions ("jpg" "jpeg" "bmp" "svg" "png" "xpm" "gif"))
-             (treemacs-create-icon :icon (concat (all-the-icons-icon-for-file "x.clj") " ")      :extensions ("clj" "cljs" "cljc"))
-             (treemacs-create-icon :icon (concat (all-the-icons-icon-for-file "x.ts") " ")       :extensions ("ts" "tsx"))
-             (treemacs-create-icon :icon (concat (all-the-icons-icon-for-file "x.vue") " ")      :extensions ("vue"))
-             (treemacs-create-icon :icon (concat (all-the-icons-icon-for-file "x.css") " ")      :extensions ("css"))
-             (treemacs-create-icon :icon (concat (all-the-icons-icon-for-file "x.ini") " ")      :extensions ("properties" "conf" "config" "cfg" "ini" "xdefaults" "xresources" "terminalrc" "ledgerrc"))
-             (treemacs-create-icon :icon (concat (all-the-icons-icon-for-file "x.html") " ")     :extensions ("html" "htm"))
-             (treemacs-create-icon :icon (concat (all-the-icons-icon-for-file "x.git") " ")      :extensions ("git" "gitignore" "gitconfig" "gitmodules"))
-             (treemacs-create-icon :icon (concat (all-the-icons-icon-for-file "x.java") " ")     :extensions ("java"))
-             (treemacs-create-icon :icon (concat (all-the-icons-icon-for-file "x.kt") " ")       :extensions ("kt"))
-             (treemacs-create-icon :icon (concat (all-the-icons-icon-for-file "x.scala") " ")    :extensions ("scala"))
-             (treemacs-create-icon :icon (concat (all-the-icons-icon-for-file "x.sbt") " ")      :extensions ("sbt"))
-             (treemacs-create-icon :icon (concat (all-the-icons-icon-for-file "x.go") " ")       :extensions ("go"))
-             (treemacs-create-icon :icon (concat (all-the-icons-icon-for-file "x.js") " ")       :extensions ("js" "jsx"))
-             (treemacs-create-icon :icon (concat (all-the-icons-icon-for-file "x.json") " ")     :extensions ("json"))
-             (treemacs-create-icon :icon (concat (all-the-icons-icon-for-file "x.jl") " ")       :extensions ("jl"))
-             (treemacs-create-icon :icon (concat (all-the-icons-icon-for-file "x.ex") " ")       :extensions ("ex"))
-             (treemacs-create-icon :icon (concat (all-the-icons-icon-for-file "x.exs") " ")      :extensions ("exs" "eex"))
-             (treemacs-create-icon :icon (all-the-icons-icon-for-file "x.ml")       :extensions ("ml" "mli"))
-             (treemacs-create-icon :icon (concat (all-the-icons-icon-for-file "Dockerfile") " ") :extensions ("dockerfile"))
-             (treemacs-create-icon :icon (concat (all-the-icons-icon-for-file "x.mov") " ")      :extensions ("webm" "mp4" "avi" "mkv" "flv" "mov" "wmv" "mpg" "mpeg" "mpv"))
-             (treemacs-create-icon :icon (concat (all-the-icons-icon-for-file "x.tex") " ")      :extensions ("tex"))
-             (treemacs-create-icon :icon (concat (all-the-icons-icon-for-file "x.rkt") " ")      :extensions ("racket" "rkt" "rktl" "rktd" "scrbl" "scribble" "plt"))
-             (treemacs-create-icon :icon (concat (all-the-icons-icon-for-file "makefile") " ")   :extensions ("makefile"))
-             (treemacs-create-icon :icon (concat (all-the-icons-icon-for-file "license") " ")    :extensions ("license"))
-             (treemacs-create-icon :icon (concat (all-the-icons-icon-for-file "x.zip") " ")      :extensions ("zip" "7z" "tar" "gz" "rar"))
-             (treemacs-create-icon :icon (concat (all-the-icons-icon-for-file "x.elm") " ")      :extensions ("elm"))
-             (treemacs-create-icon :icon (concat (all-the-icons-icon-for-file "x.xml") " ")      :extensions ("xml" "xsl"))
-             (treemacs-create-icon :icon (concat (all-the-icons-icon-for-file "x.dll") " ")      :extensions ("exe" "dll" "obj" "so" "o"))
-             (treemacs-create-icon :icon (concat (all-the-icons-icon-for-file "x.rb") " ")       :extensions ("rb"))
-             (treemacs-create-icon :icon (concat (all-the-icons-icon-for-file "x.scss") " ")     :extensions ("scss"))
-             (treemacs-create-icon :icon (concat (all-the-icons-icon-for-file "x.lua") " ")      :extensions ("lua"))
-             (treemacs-create-icon :icon (concat (all-the-icons-icon-for-file "x.log") " ")      :extensions ("log"))
-             (treemacs-create-icon :icon (concat (all-the-icons-icon-for-file "x.lisp") " ")     :extensions ("lisp"))
-             (treemacs-create-icon :icon (concat (all-the-icons-icon-for-file "x.sql") " ")      :extensions ("sql"))
-             (treemacs-create-icon :icon (concat (all-the-icons-icon-for-file "x.org") " ")      :extensions ("org"))
-             (treemacs-create-icon :icon (concat (all-the-icons-icon-for-file "x.pl") " ")       :extensions ("pl" "pm" "perl"))
-             (treemacs-create-icon :icon (concat (all-the-icons-icon-for-file "x.r") " ")        :extensions ("r"))
-             (treemacs-create-icon :icon (concat (all-the-icons-icon-for-file "x.re") " ")       :extensions ("re" "rei"))))
-         (require 'treemacs)
-         (require 'f))
-         :config
-         ;; Set the differnt config options
-         (setq treemacs-collapse-dirs              (if (executable-find "python") 3 0)
-               treemacs-file-event-delay           5000
-               treemacs-follow-after-init          t
-               treemacs-recenter-distance          0.1
-               treemacs-goto-tag-strategy          'refetch-index
-               treemacs-indentation                2
-               treemacs-indentation-string         " "
-               treemacs-is-never-other-window      nil
-               treemacs-no-png-images              nil
-               treemacs-project-follow-cleanup     nil
-               treemacs-persist-file               (expand-file-name ".cache/treemacs-persist" user-emacs-directory)
-               treemacs-recenter-after-file-follow nil
-               treemacs-recenter-after-tag-follow  nil
-               treemacs-show-hidden-files          t
-               treemacs-silent-filewatch           nil
-               treemacs-silent-refresh             nil
-               treemacs-sorting                    'alphabetic-desc
-               treemacs-space-between-root-nodes   t
-               treemacs-tag-follow-cleanup         t
-               treemacs-tag-follow-delay           1.5
-               treemacs-width                      35)
+          ;; ;; file icons
+          (treemacs-create-icon :icon (concat (all-the-icons-fileicon "default") " ")         :extensions (fallback))
+          (treemacs-create-icon :icon (concat (all-the-icons-fileicon "emacs") " ")           :extensions ("el" "elc"))
+          (treemacs-create-icon :icon (concat (all-the-icons-icon-for-file "x.yml") " ")      :extensions ("yml" "yaml"))
+          (treemacs-create-icon :icon (concat (all-the-icons-fileicon "powershell") " ")      :extensions ("sh" "zsh" "fish"))
+          (treemacs-create-icon :icon (concat (all-the-icons-octicon "file-pdf") " ")         :extensions ("pdf"))
+          (treemacs-create-icon :icon (concat (all-the-icons-icon-for-file "x.c") " ")        :extensions ("c"))
+          (treemacs-create-icon :icon (concat (all-the-icons-icon-for-file "x.h") " ")        :extensions ("h"))
+          (treemacs-create-icon :icon (concat (all-the-icons-icon-for-file "x.cc") " ")       :extensions ("cpp" "cxx" "cc"))
+          (treemacs-create-icon :icon (concat (all-the-icons-icon-for-file "x.hh") " ")       :extensions ("hpp" "tpp" "hh"))
+          (treemacs-create-icon :icon (concat (all-the-icons-icon-for-file "x.hs") " ")       :extensions ("hs" "lhs" "cabal"))
+          (treemacs-create-icon :icon (concat (all-the-icons-icon-for-file "x.py") " ")       :extensions ("py" "pyc"))
+          (treemacs-create-icon :icon (concat (all-the-icons-icon-for-file "x.md") " ")       :extensions ("md"))
+          (treemacs-create-icon :icon (concat (all-the-icons-icon-for-file "x.rs") " ")       :extensions ("rs"))
+          (treemacs-create-icon :icon (concat (all-the-icons-icon-for-file "x.jpg") " ")      :extensions ("jpg" "jpeg" "bmp" "svg" "png" "xpm" "gif"))
+          (treemacs-create-icon :icon (concat (all-the-icons-icon-for-file "x.clj") " ")      :extensions ("clj" "cljs" "cljc"))
+          (treemacs-create-icon :icon (concat (all-the-icons-icon-for-file "x.ts") " ")       :extensions ("ts" "tsx"))
+          (treemacs-create-icon :icon (concat (all-the-icons-icon-for-file "x.vue") " ")      :extensions ("vue"))
+          (treemacs-create-icon :icon (concat (all-the-icons-icon-for-file "x.css") " ")      :extensions ("css"))
+          (treemacs-create-icon :icon (concat (all-the-icons-icon-for-file "x.ini") " ")      :extensions ("properties" "conf" "config" "cfg" "ini" "xdefaults" "xresources" "terminalrc" "ledgerrc"))
+          (treemacs-create-icon :icon (concat (all-the-icons-icon-for-file "x.html") " ")     :extensions ("html" "htm"))
+          (treemacs-create-icon :icon (concat (all-the-icons-icon-for-file "x.git") " ")      :extensions ("git" "gitignore" "gitconfig" "gitmodules"))
+          (treemacs-create-icon :icon (concat (all-the-icons-icon-for-file "x.java") " ")     :extensions ("java"))
+          (treemacs-create-icon :icon (concat (all-the-icons-icon-for-file "x.kt") " ")       :extensions ("kt"))
+          (treemacs-create-icon :icon (concat (all-the-icons-icon-for-file "x.scala") " ")    :extensions ("scala"))
+          (treemacs-create-icon :icon (concat (all-the-icons-icon-for-file "x.sbt") " ")      :extensions ("sbt"))
+          (treemacs-create-icon :icon (concat (all-the-icons-icon-for-file "x.go") " ")       :extensions ("go"))
+          (treemacs-create-icon :icon (concat (all-the-icons-icon-for-file "x.js") " ")       :extensions ("js" "jsx"))
+          (treemacs-create-icon :icon (concat (all-the-icons-icon-for-file "x.json") " ")     :extensions ("json"))
+          (treemacs-create-icon :icon (concat (all-the-icons-icon-for-file "x.jl") " ")       :extensions ("jl"))
+          (treemacs-create-icon :icon (concat (all-the-icons-icon-for-file "x.ex") " ")       :extensions ("ex"))
+          (treemacs-create-icon :icon (concat (all-the-icons-icon-for-file "x.exs") " ")      :extensions ("exs" "eex"))
+          (treemacs-create-icon :icon (all-the-icons-icon-for-file "x.ml")       :extensions ("ml" "mli"))
+          (treemacs-create-icon :icon (concat (all-the-icons-icon-for-file "Dockerfile") " ") :extensions ("dockerfile"))
+          (treemacs-create-icon :icon (concat (all-the-icons-icon-for-file "x.mov") " ")      :extensions ("webm" "mp4" "avi" "mkv" "flv" "mov" "wmv" "mpg" "mpeg" "mpv"))
+          (treemacs-create-icon :icon (concat (all-the-icons-icon-for-file "x.tex") " ")      :extensions ("tex"))
+          (treemacs-create-icon :icon (concat (all-the-icons-icon-for-file "x.rkt") " ")      :extensions ("racket" "rkt" "rktl" "rktd" "scrbl" "scribble" "plt"))
+          (treemacs-create-icon :icon (concat (all-the-icons-icon-for-file "makefile") " ")   :extensions ("makefile"))
+          (treemacs-create-icon :icon (concat (all-the-icons-icon-for-file "license") " ")    :extensions ("license"))
+          (treemacs-create-icon :icon (concat (all-the-icons-icon-for-file "x.zip") " ")      :extensions ("zip" "7z" "tar" "gz" "rar"))
+          (treemacs-create-icon :icon (concat (all-the-icons-icon-for-file "x.elm") " ")      :extensions ("elm"))
+          (treemacs-create-icon :icon (concat (all-the-icons-icon-for-file "x.xml") " ")      :extensions ("xml" "xsl"))
+          (treemacs-create-icon :icon (concat (all-the-icons-icon-for-file "x.dll") " ")      :extensions ("exe" "dll" "obj" "so" "o"))
+          (treemacs-create-icon :icon (concat (all-the-icons-icon-for-file "x.rb") " ")       :extensions ("rb"))
+          (treemacs-create-icon :icon (concat (all-the-icons-icon-for-file "x.scss") " ")     :extensions ("scss"))
+          (treemacs-create-icon :icon (concat (all-the-icons-icon-for-file "x.lua") " ")      :extensions ("lua"))
+          (treemacs-create-icon :icon (concat (all-the-icons-icon-for-file "x.log") " ")      :extensions ("log"))
+          (treemacs-create-icon :icon (concat (all-the-icons-icon-for-file "x.lisp") " ")     :extensions ("lisp"))
+          (treemacs-create-icon :icon (concat (all-the-icons-icon-for-file "x.sql") " ")      :extensions ("sql"))
+          (treemacs-create-icon :icon (concat (all-the-icons-icon-for-file "x.org") " ")      :extensions ("org"))
+          (treemacs-create-icon :icon (concat (all-the-icons-icon-for-file "x.pl") " ")       :extensions ("pl" "pm" "perl"))
+          (treemacs-create-icon :icon (concat (all-the-icons-icon-for-file "x.r") " ")        :extensions ("r"))
+          (treemacs-create-icon :icon (concat (all-the-icons-icon-for-file "x.re") " ")       :extensions ("re" "rei"))))
+      (require 'treemacs)
+      (require 'f))
+    :config
+    ;; Set the differnt config options
+    (setq treemacs-collapse-dirs              (if (executable-find "python") 3 0)
+          treemacs-file-event-delay           5000
+          treemacs-follow-after-init          t
+          treemacs-recenter-distance          0.1
+          treemacs-goto-tag-strategy          'refetch-index
+          treemacs-indentation                2
+          treemacs-indentation-string         " "
+          treemacs-is-never-other-window      nil
+          treemacs-no-png-images              nil
+          treemacs-project-follow-cleanup     nil
+          treemacs-persist-file               (expand-file-name ".cache/treemacs-persist" user-emacs-directory)
+          treemacs-recenter-after-file-follow nil
+          treemacs-recenter-after-tag-follow  nil
+          treemacs-show-hidden-files          t
+          treemacs-silent-filewatch           nil
+          treemacs-silent-refresh             nil
+          treemacs-sorting                    'alphabetic-desc
+          treemacs-space-between-root-nodes   t
+          treemacs-tag-follow-cleanup         t
+          treemacs-tag-follow-delay           1.5
+          treemacs-width                      35)
 
-         ;; The default width and height of the icons is 22 pixels. If you are
-         ;; using a Hi-DPI display, uncomment this to double the icon size.
-         ;;(treemacs-resize-icons 44)
+    ;; The default width and height of the icons is 22 pixels. If you are
+    ;; using a Hi-DPI display, uncomment this to double the icon size.
+    ;;(treemacs-resize-icons 44)
 
-         (treemacs-follow-mode t)
-         (treemacs-filewatch-mode t)
-         (treemacs-fringe-indicator-mode t)
-         (treemacs-git-mode 'extended)
-       :bind
-       (("M-0"       . treemacs-select-window)
-        ("C-c t 1"   . treemacs-delete-other-windows)
-        ("C-c t t"   . treemacs)
-        ("C-c t B"   . treemacs-bookmark)
-        ("C-c t f" . treemacs-find-file)))
+    (treemacs-follow-mode t)
+    (treemacs-filewatch-mode t)
+    (treemacs-fringe-indicator-mode t)
+    (treemacs-git-mode 'extended)
+    :bind
+    (("M-0"       . treemacs-select-window)
+     ("C-c t 1"   . treemacs-delete-other-windows)
+     ("C-c t t"   . treemacs)
+     ("C-c t B"   . treemacs-bookmark)
+     ("C-c t f" . treemacs-find-file)))
 
-     (use-package treemacs-projectile
-       :after treemacs projectile
-       :ensure t)
-   #+END_SRC
+  (use-package treemacs-projectile
+    :after treemacs projectile
+    :ensure t)
+#+END_SRC
 
-   Customization of faces for treemacs
-   #+BEGIN_SRC emacs-lisp
-     (custom-set-faces
-      '(treemacs-directory-face ((t :inherit default)))
-      '(treemacs-git-untracked-face ((t :inherit default))))
+Customization of faces for treemacs
+#+BEGIN_SRC emacs-lisp
+  (custom-set-faces
+   '(treemacs-directory-face ((t :inherit default)))
+   '(treemacs-git-untracked-face ((t :inherit default))))
 
-     (defface pve-treemacs-directory-icon-face
-       '((t :inherit treemacs-directory-face :height 1.5))
-       "Face used for the folder icons, to make them bigger compared to other icons"
-       :group 'treemacs-faces)
+  (defface pve-treemacs-directory-icon-face
+    '((t :inherit treemacs-directory-face :height 1.5))
+    "Face used for the folder icons, to make them bigger compared to other icons"
+    :group 'treemacs-faces)
 
-     (defface pve-treemacs-file-icon-face
-       '((t :inherit treemacs-file-face :height 1.5))
-       "Face used for the file icons, to make them bigger compared to other icons"
-       :group 'treemacs-faces)
+  (defface pve-treemacs-file-icon-face
+    '((t :inherit treemacs-file-face :height 1.5))
+    "Face used for the file icons, to make them bigger compared to other icons"
+    :group 'treemacs-faces)
 
-     (face-spec-set
-      'treemacs-root-face
-      '((t :weight bold
-           :height 1.2))
-      'face-defface-spec)
-   #+END_SRC
+  (face-spec-set
+   'treemacs-root-face
+   '((t :weight bold
+        :height 1.2))
+   'face-defface-spec)
+#+END_SRC
 
-   Custom fucntion to add projects in a dir in buld to the current treemacs workspace
-   #+begin_src emacs-lisp
-     (defun pve-add-subdirs-to-project (base-path)
-       "Add all folders of this subdir as projects to the current workspace"
-         (let ((path base-path))
-           (mapc (lambda (project)
-                   (if (not (or (string= project ".") (string= project "..")))
-                       (progn 
-                              (treemacs-do-add-project-to-workspace (concat path project) project))))
-                 (directory-files path))))
-   #+end_src
+Custom fucntion to add projects in a dir in buld to the current treemacs workspace
+#+begin_src emacs-lisp
+  (defun pve-add-subdirs-to-project (base-path)
+    "Add all folders of this subdir as projects to the current workspace"
+    (let ((path base-path))
+      (mapc (lambda (project)
+              (if (not (or (string= project ".") (string= project "..")))
+                  (progn 
+                    (treemacs-do-add-project-to-workspace (concat path project) project))))
+            (directory-files path))))
+#+end_src
 
 ** Sunrise Commander
 
-   Disabled doesn't work on windows, only windows?
-   #+BEGIN_SRC emacs-lisp
-     (if (pve-env/on-linux)
-         (use-package sunrise-commander
-           :quelpa (sunrise-commander
-                    :fetcher github
-                    :repo "escherdragon/sunrise-commander"
-                    :defer 2)))
-   #+END_SRC
+Disabled doesn't work on windows, only windows?
+#+BEGIN_SRC emacs-lisp
+  (if (pve-env/on-linux)
+      (use-package sunrise-commander
+        :quelpa (sunrise-commander
+                 :fetcher github
+                 :repo "escherdragon/sunrise-commander"
+                 :defer 2)))
+#+END_SRC
 
 ** Dired config
    
-   Enable to use 'a' to close previous buffer.
-   This is used to not keep open all these bufer when browsing files
-   #+begin_src emacs-lisp
-     (put 'dired-find-alternate-file 'disabled nil)
-   #+end_src
+Enable to use 'a' to close previous buffer.
+This is used to not keep open all these bufer when browsing files
+#+begin_src emacs-lisp
+  (put 'dired-find-alternate-file 'disabled nil)
+#+end_src
    
-   Sorting for dired
-   #+begin_src emacs-lisp
-     (use-package dired-quick-sort
-       :ensure t
-       :config (dired-quick-sort-setup))
-   #+end_src
+Sorting for dired
+#+begin_src emacs-lisp
+  (use-package dired-quick-sort
+    :ensure t
+    :config (dired-quick-sort-setup))
+#+end_src
 
 * Utils
 ** Helm
 
-  #+BEGIN_SRC emacs-lisp
-    (use-package helm
-      :ensure t
-      :demand t
-      :diminish helm-mode
-      :config
-      (setq helm-split-window-in-side-p           t ; open helm buffer inside current window, not occupy whole other window
-            helm-move-to-line-cycle-in-source     t ; move to end or beginning of source when reaching top or bottom of source.
-            helm-ff-search-library-in-sexp        t ; search for library in `require' and `declare-function' sexp.
-            helm-scroll-amount                    8 ; scroll 8 lines other window using M-<next>/M-<prior>
-            helm-ff-file-name-history-use-recentf t ; use recentf-list instead of file-name-history
-            helm-follow-input-idle-delay 0.5
-            helm-ff-keep-cached-candidates nil)     ; Don't cache results, it had a memory leak
-      (customize-set-variable 'helm-ff-lynx-style-map t)
-      :bind (("M-x" . helm-M-x)
-             ("C-x b" . helm-mini)
-             ("C-x C-f" . helm-find-files)
-             ("C-c h o" . helm-occur)
-             ("M-y" . helm-show-kill-ring)
-             :map helm-map
-             ("<tab>" . helm-execute-persistent-action)
-             ("C-z" . helm-select-action))
-      :init (helm-mode))
-  #+END_SRC
+#+BEGIN_SRC emacs-lisp
+  (use-package helm
+    :ensure t
+    :demand t
+    :diminish helm-mode
+    :config
+    (setq helm-split-window-in-side-p           t ; open helm buffer inside current window, not occupy whole other window
+          helm-move-to-line-cycle-in-source     t ; move to end or beginning of source when reaching top or bottom of source.
+          helm-ff-search-library-in-sexp        t ; search for library in `require' and `declare-function' sexp.
+          helm-scroll-amount                    8 ; scroll 8 lines other window using M-<next>/M-<prior>
+          helm-ff-file-name-history-use-recentf t ; use recentf-list instead of file-name-history
+          helm-follow-input-idle-delay 0.5
+          helm-ff-keep-cached-candidates nil)     ; Don't cache results, it had a memory leak
+    (customize-set-variable 'helm-ff-lynx-style-map t)
+    :bind (("M-x" . helm-M-x)
+           ("C-x b" . helm-mini)
+           ("C-x C-f" . helm-find-files)
+           ("C-c h o" . helm-occur)
+           ("M-y" . helm-show-kill-ring)
+           :map helm-map
+           ("<tab>" . helm-execute-persistent-action)
+           ("C-z" . helm-select-action))
+    :init (helm-mode))
+#+END_SRC
 
-  #+begin_src emacs-lisp
-    ;;(use-package helm-icons
-    ;;  :ensure t
-    ;;  :init (helm-icons-enable))
-  #+end_src
+#+begin_src emacs-lisp
+  ;;(use-package helm-icons
+  ;;  :ensure t
+  ;;  :init (helm-icons-enable))
+#+end_src
 
-  #+begin_src emacs-lisp
-    (diminish 'helm-ff-cache-mode)
-  #+end_src
+#+begin_src emacs-lisp
+  (diminish 'helm-ff-cache-mode)
+#+end_src
 	
 ** Hydra
    
-   Navigation with keys
-   #+BEGIN_SRC emacs-lisp
-     (use-package hydra
-       :ensure t)
-   #+END_SRC
+Navigation with keys
+#+BEGIN_SRC emacs-lisp
+  (use-package hydra
+    :ensure t)
+#+END_SRC
 
-   #+RESULTS:
+#+RESULTS:
 	 
 ** Artist mode
 	      
-   Artist mode doesn't work within org mode. This narrows the buffer to a place you want to work.
-   And then turns on artist mode. It is turned of and widens the buffer again
-   #+BEGIN_SRC emacs-lisp
-     (defun pve-artist-org-mode-on ()
-       (interactive)
-       (org-narrow-to-element)
-       (artist-mode))
+Artist mode doesn't work within org mode. This narrows the buffer to a place you want to work.
+And then turns on artist mode. It is turned of and widens the buffer again
+#+BEGIN_SRC emacs-lisp
+  (defun pve-artist-org-mode-on ()
+    (interactive)
+    (org-narrow-to-element)
+    (artist-mode))
 
-     (defun pve-artist-org-mode-off ()
-       (interactive)
-       (artist-mode)
-       (widen))
-   #+END_SRC
+  (defun pve-artist-org-mode-off ()
+    (interactive)
+    (artist-mode)
+    (widen))
+#+END_SRC
    
 ** PDF
    
-   Enable viewing and working with PDFs inside emacs
-   #+BEGIN_SRC emacs-lisp
-     (use-package pdf-tools
-       :ensure t
-       :config
-       (pdf-tools-install)
-       (setq-default pdf-view-display-size 'fit-page))
-   #+END_SRC
+Enable viewing and working with PDFs inside emacs
+#+BEGIN_SRC emacs-lisp
+  (use-package pdf-tools
+    :ensure t
+    :config
+    (pdf-tools-install)
+    (setq-default pdf-view-display-size 'fit-page))
+#+END_SRC
 ** Lastpass
 
-   lastpass software provedis the lpass cli utlity.
-   #+BEGIN_SRC sh
-     sudo pacman -S lastpass
-   #+END_SRC
+lastpass software provedis the lpass cli utlity.
+#+BEGIN_SRC sh
+  sudo pacman -S lastpass
+#+END_SRC
 
-   Lastpass core utils
-   #+BEGIN_SRC emacs-lisp
-     (use-package lastpass
-       :ensure t
-       :init (setq lastpass-user personal-email))
-   #+END_SRC
+Lastpass core utils
+#+BEGIN_SRC emacs-lisp
+  (use-package lastpass
+    :ensure t
+    :init (setq lastpass-user personal-email))
+#+END_SRC
 
-   Helm interface to lastpass
-   #+BEGIN_SRC emacs-lisp
-     (require 'utils)
+Helm interface to lastpass
+#+BEGIN_SRC emacs-lisp
+  (require 'utils)
 
-     (defun helm-lastpass-source ()
-       "Creates a source for helm using lastpass command line"
-       (mapcar
-        (lambda (entry)
-          (let ((formatted (replace-regexp-in-string "^ " "ALL " entry)))
-            (let ((last-space (pve-last-char formatted " " 1)))
-              (list (substring formatted 0 last-space)
-                     (substring formatted (+ 1 last-space))))))
-          (split-string
-         (nth 1
-              (let ((formatstr (concat "--format=%ag"
-                                       " " "%an"
-                                       " " "%au"
-                                       " " "%ai")))
-                (lastpass-runcmd "ls" formatstr))) "\n" t)))
+  (defun helm-lastpass-source ()
+    "Creates a source for helm using lastpass command line"
+    (mapcar
+     (lambda (entry)
+       (let ((formatted (replace-regexp-in-string "^ " "ALL " entry)))
+         (let ((last-space (pve-last-char formatted " " 1)))
+           (list (substring formatted 0 last-space)
+                 (substring formatted (+ 1 last-space))))))
+     (split-string
+      (nth 1
+           (let ((formatstr (concat "--format=%ag"
+                                    " " "%an"
+                                    " " "%au"
+                                    " " "%ai")))
+             (lastpass-runcmd "ls" formatstr))) "\n" t)))
 
-     (defun helm-lastpass ()
-       "Helm interface to get password from lastpass"
-       (interactive)
-       (let ((data (helm-lastpass-source)))
-         (helm :sources (helm-build-sync-source "test"
-                          :candidates data
-                          :action (lambda (candidate) (insert (lastpass-getpass (car candidate)))))
-               :buffer "*helm lastpass*")))
+  (defun helm-lastpass ()
+    "Helm interface to get password from lastpass"
+    (interactive)
+    (let ((data (helm-lastpass-source)))
+      (helm :sources (helm-build-sync-source "test"
+                       :candidates data
+                       :action (lambda (candidate) (insert (lastpass-getpass (car candidate)))))
+            :buffer "*helm lastpass*")))
 
-     (global-set-key (kbd "C-c C-p") 'helm-lastpass)
-   #+END_SRC
+  (global-set-key (kbd "C-c C-p") 'helm-lastpass)
+#+END_SRC
 
 ** RFC mode
 
-   Read/search RFC documents directly from emacs
-   #+BEGIN_SRC emacs-lisp
-     (use-package rfc-mode
-       :ensure t)
-   #+END_SRC
+Read/search RFC documents directly from emacs
+#+BEGIN_SRC emacs-lisp
+  (use-package rfc-mode
+    :ensure t)
+#+END_SRC
 ** Lyrics
 
-   Just download and see song lyrics within emacs
-   #+BEGIN_SRC emacs-lisp
-     (use-package lyrics
-       :ensure t)
-   #+END_SRC
+Just download and see song lyrics within emacs
+#+BEGIN_SRC emacs-lisp
+  (use-package lyrics
+    :ensure t)
+#+END_SRC
 ** Proced extension
 
-   Utilities to work within the proced vuffer
+Utilities to work within the proced vuffer
 
-   Kill all process with some name
-   #+begin_src emacs-lisp
-     (defun proced-killall ()
-         "Within proced buffer kill all processes with word at point"
-         (interactive)
-         (let ((bounds (bounds-of-thing-at-point 'word)))
-           (goto-char 0)
-           (while (search-forward
-                   (buffer-substring-no-properties (car bounds) (cdr bounds))
-                   nil t)
-             (proced-do-mark t))
-           (proced-send-signal)))
-   #+end_src
+Kill all process with some name
+#+begin_src emacs-lisp
+  (defun proced-killall ()
+    "Within proced buffer kill all processes with word at point"
+    (interactive)
+    (let ((bounds (bounds-of-thing-at-point 'word)))
+      (goto-char 0)
+      (while (search-forward
+              (buffer-substring-no-properties (car bounds) (cdr bounds))
+              nil t)
+        (proced-do-mark t))
+      (proced-send-signal)))
+#+end_src
 
-   Set the killall function key binding
-   #+begin_src emacs-lisp
-     (add-hook 'proced-mode-hook
-       (lambda () (define-key proced-mode-map (kbd "a") 'proced-killall)))
-   #+end_src
+Set the killall function key binding
+#+begin_src emacs-lisp
+  (add-hook 'proced-mode-hook
+            (lambda () (define-key proced-mode-map (kbd "a") 'proced-killall)))
+#+end_src
    
 * Shells
 ** Eshell
 
-   Set paths depending on the environment we are running
-   #+BEGIN_SRC emacs-lisp
-     (defun pve-set-eshell-path-env ()
-       "Settig the eshell-path-env"
-       (if (pve-env/on-cygwin)
-	   (progn
-	     (setq cygwin-paths "/cygdrive/c/Program Files/nodejs/:")
-	     (setq eshell-path-env (concat cygwin-paths eshell-path-env))
-	     (setenv "PATH" (concat cygwin-paths (getenv "PATH"))))))
-   #+END_SRC
+Set paths depending on the environment we are running
+#+BEGIN_SRC emacs-lisp
+  (defun pve-set-eshell-path-env ()
+    "Settig the eshell-path-env"
+    (if (pve-env/on-cygwin)
+        (progn
+          (setq cygwin-paths "/cygdrive/c/Program Files/nodejs/:")
+          (setq eshell-path-env (concat cygwin-paths eshell-path-env))
+          (setenv "PATH" (concat cygwin-paths (getenv "PATH"))))))
+#+END_SRC
 
-   Add hook to eshell to set paths when eshell starts
-   #+BEGIN_SRC emacs-lisp
-     (add-hook 'eshell-mode-hook 'pve-set-eshell-path-env)
-   #+END_SRC
+Add hook to eshell to set paths when eshell starts
+#+BEGIN_SRC emacs-lisp
+  (add-hook 'eshell-mode-hook 'pve-set-eshell-path-env)
+#+END_SRC
 
-   Enable eshell history to be accessses by helm instead of the static history
-   #+BEGIN_SRC emacs-lisp
-     (add-hook 'eshell-mode-hook
-	       '(lambda ()
-		  (define-key eshell-mode-map (kbd "C-c C-l")  'helm-eshell-history)))
-   #+END_SRC
+Enable eshell history to be accessses by helm instead of the static history
+#+BEGIN_SRC emacs-lisp
+  (add-hook 'eshell-mode-hook
+            '(lambda ()
+               (define-key eshell-mode-map (kbd "C-c C-l")  'helm-eshell-history)))
+#+END_SRC
 
-   Ensure history of eshell opens in the same frame.
-   #+BEGIN_SRC emacs-lisp
-     (setq helm-show-completion-display-function #'helm-show-completion-default-display-function)
-   #+END_SRC
+Ensure history of eshell opens in the same frame.
+#+BEGIN_SRC emacs-lisp
+  (setq helm-show-completion-display-function #'helm-show-completion-default-display-function)
+#+END_SRC
 	   
 ** vterm
 
-   Complete terminal emulator inside of emacs
-   #+begin_src emacs-lisp
-     (use-package vterm
-       :ensure t
-       :hook (vterm-mode . (lambda () (setq-local global-hl-line-mode nil))))
-   #+end_src
+Complete terminal emulator inside of emacs
+#+begin_src emacs-lisp
+  (use-package vterm
+    :ensure t
+    :hook (vterm-mode . (lambda () (setq-local global-hl-line-mode nil))))
+#+end_src
 
-   Named vterm [[https://pmiddend.github.io/posts/named-terminals/][source]]
-   #+begin_src emacs-lisp
-     (defun pve/named-term (term-name)
-         "Generate a terminal with buffer name TERM-NAME."
-         (interactive "sTerminal purpose: ")
-         (vterm (concat "term-" term-name)))
-   #+end_src
+Named vterm [[https://pmiddend.github.io/posts/named-terminals/][source]]
+#+begin_src emacs-lisp
+  (defun pve/named-term (term-name)
+    "Generate a terminal with buffer name TERM-NAME."
+    (interactive "sTerminal purpose: ")
+    (vterm (concat "term-" term-name)))
+#+end_src
 
 * Org Mode
 ** Custom key bindings
@@ -1983,171 +1984,171 @@ Global shortcuts
 
 ** Babel configuration
 
-  #+BEGIN_SRC emacs-lisp
-    (defun pve-enable-org-bullets ()
-      (org-bullets-mode 1))
-  #+END_SRC
+#+BEGIN_SRC emacs-lisp
+  (defun pve-enable-org-bullets ()
+    (org-bullets-mode 1))
+#+END_SRC
 
-  This package enables asynchronous org babel evaluation
-  #+BEGIN_SRC emacs-lisp
-    (use-package ob-async
-      :ensure t)
-  #+END_SRC
+This package enables asynchronous org babel evaluation
+#+BEGIN_SRC emacs-lisp
+  (use-package ob-async
+    :ensure t)
+#+END_SRC
 
-  We want all the results to be wrapped in a block once they are longer then one line
-  \#+begin_example
-  \#+end_example
-  #+begin_src emacs-lisp
-    (setq org-babel-min-lines-for-block-output 2)
-  #+end_src
+We want all the results to be wrapped in a block once they are longer then one line
+\#+begin_example
+\#+end_example
+#+begin_src emacs-lisp
+  (setq org-babel-min-lines-for-block-output 2)
+#+end_src
 
 *** Add javascript support to babel
-  #+BEGIN_SRC emacs-lisp
-    (require 'ob-js)
+#+BEGIN_SRC emacs-lisp
+  (require 'ob-js)
 
-    (org-babel-do-load-languages
-     'org-babel-load-languages
-     '((shell . t) (js . t) (sqlite . t) (python . t)))
-    (add-to-list 'org-babel-tangle-lang-exts '("js" . "js"))
-  #+END_SRC
+  (org-babel-do-load-languages
+   'org-babel-load-languages
+   '((shell . t) (js . t) (sqlite . t) (python . t)))
+  (add-to-list 'org-babel-tangle-lang-exts '("js" . "js"))
+#+END_SRC
 
-  #+RESULTS:
-  : ((python . py) (java . java) (js . js) (emacs-lisp . el) (elisp . el))
+#+RESULTS:
+: ((python . py) (java . java) (js . js) (emacs-lisp . el) (elisp . el))
 
 *** Add java support to babel
 
-  #+BEGIN_SRC emacs-lisp
-    (require 'ob-java)
-    (add-to-list 'org-babel-load-languages '(java . t))
-  #+END_SRC
+#+BEGIN_SRC emacs-lisp
+  (require 'ob-java)
+  (add-to-list 'org-babel-load-languages '(java . t))
+#+END_SRC
 
 *** Add Clojure support tot babel
     
-  #+BEGIN_SRC emacs-lisp
-    (require 'ob-clojure)
-    (add-to-list 'org-babel-load-languages '(clojure . t))
-  #+END_SRC
+#+BEGIN_SRC emacs-lisp
+  (require 'ob-clojure)
+  (add-to-list 'org-babel-load-languages '(clojure . t))
+#+END_SRC
 
 
 ** Main configuration
 
-  #+BEGIN_SRC emacs-lisp
-    (use-package org-mode
-      :mode "\\.org\\'"
-      :init
-      (setq org-confirm-babel-evaluate nil) ;;No need to confirm executing babel code blocks
-      (require 'ob-async)
-      (setq org-catch-invisible-edits 'error) ;; Don't edit what is hidden in org mode (e.g. after closed headers)
-      (setq org-cycle-separator-lines 0) ;; No spaces in between headings
-      (require 'org-tempo) ;; Get easy template completion with TAB
-      (setq org-startup-folded t)
-      :hook
-      ((org-mode . pve-org-keys)
-       (org-mode . pve-enable-org-bullets)
-       (org-mode . helm-mode)
-       (org-mode . (lambda ()
-                     (setq-local electric-pair-inhibit-predicate
-                                 `(lambda (c)
-                                    (if (char-equal c ?<) t (,electric-pair-inhibit-predicate c)))))))
-      :after (hydra org-bullets ob-async))
-  #+END_SRC
+#+BEGIN_SRC emacs-lisp
+  (use-package org-mode
+    :mode "\\.org\\'"
+    :init
+    (setq org-confirm-babel-evaluate nil) ;;No need to confirm executing babel code blocks
+    (require 'ob-async)
+    (setq org-catch-invisible-edits 'error) ;; Don't edit what is hidden in org mode (e.g. after closed headers)
+    (setq org-cycle-separator-lines 0) ;; No spaces in between headings
+    (require 'org-tempo) ;; Get easy template completion with TAB
+    (setq org-startup-folded t)
+    :hook
+    ((org-mode . pve-org-keys)
+     (org-mode . pve-enable-org-bullets)
+     (org-mode . helm-mode)
+     (org-mode . (lambda ()
+                   (setq-local electric-pair-inhibit-predicate
+                               `(lambda (c)
+                                  (if (char-equal c ?<) t (,electric-pair-inhibit-predicate c)))))))
+    :after (hydra org-bullets ob-async))
+#+END_SRC
 
 ** Editing org code blocks
    
-   [[https://erick.navarro.io/blog/avoid-losing-windows-layout-when-editing-org-code-blocks/][source]]
+[[https://erick.navarro.io/blog/avoid-losing-windows-layout-when-editing-org-code-blocks/][source]]
 
-   Store and restore the configuration setting before opening the window to edit the src code   
-   #+begin_src emacs-lisp
-     (defvar pve/org-src-block-tmp-window-configuration nil)
+Store and restore the configuration setting before opening the window to edit the src code   
+#+begin_src emacs-lisp
+  (defvar pve/org-src-block-tmp-window-configuration nil)
 
-     (defun pve/org-edit-special (&optional arg)
-       "Save current window configuration before a org-edit buffer is open."
-       (setq pve/org-src-block-tmp-window-configuration (current-window-configuration)))
+  (defun pve/org-edit-special (&optional arg)
+    "Save current window configuration before a org-edit buffer is open."
+    (setq pve/org-src-block-tmp-window-configuration (current-window-configuration)))
 
-     (defun pve/org-edit-src-exit ()
-       "Restore the window configuration that was saved before org-edit-special was called."
-       (set-window-configuration pve/org-src-block-tmp-window-configuration))
-   #+end_src
+  (defun pve/org-edit-src-exit ()
+    "Restore the window configuration that was saved before org-edit-special was called."
+    (set-window-configuration pve/org-src-block-tmp-window-configuration))
+#+end_src
 
-   We need to execute this code after org is loaded so we use eval-after-load.
-   #+begin_src emacs-lisp
-     (eval-after-load "org"
-       `(progn
-          (advice-add 'org-edit-special :before 'pve/org-edit-special)
-          (advice-add 'org-edit-src-exit :after 'pve/org-edit-src-exit)))
-   #+end_src
+We need to execute this code after org is loaded so we use eval-after-load.
+#+begin_src emacs-lisp
+  (eval-after-load "org"
+    `(progn
+       (advice-add 'org-edit-special :before 'pve/org-edit-special)
+       (advice-add 'org-edit-src-exit :after 'pve/org-edit-src-exit)))
+#+end_src
 
 ** Eye candy
 
-  Show bullets as images not just '*'s
-  #+BEGIN_SRC emacs-lisp
-    (use-package org-bullets
-      :ensure t)
-  #+END_SRC
+Show bullets as images not just '*'s
+#+BEGIN_SRC emacs-lisp
+  (use-package org-bullets
+    :ensure t)
+#+END_SRC
 
-  #+BEGIN_SRC emacs-lisp
-    (unless (pve-env/on-windows)
-      (add-hook 'org-mode-hook
-                (lambda ()
-                  (push '("[ ]" . ?) prettify-symbols-alist)
-                  (push '("[X]" . ?) prettify-symbols-alist)
-                  (push '("NEEDSWORK" . ?) prettify-symbols-alist)
-                  (push '("#+TITLE:" . ?) prettify-symbols-alist)
-                  (push '("#+BEGIN_SRC" . ?) prettify-symbols-alist)
-                  (push '("#+begin_src" . ?) prettify-symbols-alist)
-                  (push '("#+END_SRC" . ?) prettify-symbols-alist)
-                  (push '("#+end_src" . ?) prettify-symbols-alist)
-                  (prettify-symbols-mode))))
-   #+END_SRC
+#+BEGIN_SRC emacs-lisp
+  (unless (pve-env/on-windows)
+    (add-hook 'org-mode-hook
+              (lambda ()
+                (push '("[ ]" . ?) prettify-symbols-alist)
+                (push '("[X]" . ?) prettify-symbols-alist)
+                (push '("NEEDSWORK" . ?) prettify-symbols-alist)
+                (push '("#+TITLE:" . ?) prettify-symbols-alist)
+                (push '("#+BEGIN_SRC" . ?) prettify-symbols-alist)
+                (push '("#+begin_src" . ?) prettify-symbols-alist)
+                (push '("#+END_SRC" . ?) prettify-symbols-alist)
+                (push '("#+end_src" . ?) prettify-symbols-alist)
+                (prettify-symbols-mode))))
+#+END_SRC
    
-   Change font of checkboxes. Checkbox is already replaced with an icon so we don't want emacs to draw an additional box
-   #+BEGIN_SRC emacs-lisp
-     (face-spec-set 'org-checkbox '((t (:box nil))))
-   #+END_SRC
+Change font of checkboxes. Checkbox is already replaced with an icon so we don't want emacs to draw an additional box
+#+BEGIN_SRC emacs-lisp
+  (face-spec-set 'org-checkbox '((t (:box nil))))
+#+END_SRC
 
 ** Presenting
 
-   #+BEGIN_SRC emacs-lisp
-     (defun org-present-init ()
-       "Initial setting when presenting"
-       (progn
-         (org-present-big)
-         (org-display-inline-images)
-         (org-present-hide-cursor)
-         (org-present-read-only)))
+#+BEGIN_SRC emacs-lisp
+  (defun org-present-init ()
+    "Initial setting when presenting"
+    (progn
+      (org-present-big)
+      (org-display-inline-images)
+      (org-present-hide-cursor)
+      (org-present-read-only)))
 
-     (defun org-present-cleanup ()
-       "Clean up all presenetation sepecific settings"
-       (progn
-         (org-present-small)
-         (org-remove-inline-images)
-         (org-present-show-cursor)
-         (org-present-read-write)))
+  (defun org-present-cleanup ()
+    "Clean up all presenetation sepecific settings"
+    (progn
+      (org-present-small)
+      (org-remove-inline-images)
+      (org-present-show-cursor)
+      (org-present-read-write)))
 
-     (use-package org-present
-       :ensure t
-       :after org-mode
-       :hook ((org-present-mode . org-present-init)
-              (org-present-mode-qui . org-present-cleanup)))
-   #+END_SRC
+  (use-package org-present
+    :ensure t
+    :after org-mode
+    :hook ((org-present-mode . org-present-init)
+           (org-present-mode-qui . org-present-cleanup)))
+#+END_SRC
 
 ** WorkFlow
 *** File setup
 
-   More or less loosly based on: [[http://howardism.org/Technical/Emacs/getting-more-boxes-done.html][Getting boxes done]]
+More or less loosly based on: [[http://howardism.org/Technical/Emacs/getting-more-boxes-done.html][Getting boxes done]]
 
-   The flow works as follows
+The flow works as follows
 
-   1. everything goes into inbox
-   2. Go through inbox
-      - Not actionable
-        1. *Delete* if no longer relevant
-        2. Create an *idea* that neads further work
-        3. *References* for information that can be used later on
-      - Actionable
-        1. if t < 5 min. *Do it*
-        2. create a *tasklist* if small (Can grow into projects)
-        3. Create a *project* for a big thing
+1. everything goes into inbox
+2. Go through inbox
+   - Not actionable
+     1. *Delete* if no longer relevant
+     2. Create an *idea* that neads further work
+     3. *References* for information that can be used later on
+   - Actionable
+     1. if t < 5 min. *Do it*
+     2. create a *tasklist* if small (Can grow into projects)
+     3. Create a *project* for a big thing
 
    List of files and directories for an org flow.
    #+BEGIN_SRC emacs-lisp
@@ -2181,183 +2182,183 @@ Global shortcuts
 
 *** Workflow states
 
-    We want to keep a logbook of the actions done but keep it tucked a way in the LOGBOOK drawer
-    #+BEGIN_SRC emacs-lisp
-      (setq org-log-into-drawer 'LOGBOOK)
-    #+END_SRC
-    Will look create :LOGBOOK: under the heading
+We want to keep a logbook of the actions done but keep it tucked a way in the LOGBOOK drawer
+#+BEGIN_SRC emacs-lisp
+  (setq org-log-into-drawer 'LOGBOOK)
+#+END_SRC
+Will look create :LOGBOOK: under the heading
 
-    #+BEGIN_SRC emacs-lisp
-      (setq org-todo-keywords
-            '((sequence "NEEDSWORK(w@!)" "TODO(t!)" "DOING(o!)" "BLOCKED(b@/!)" "WAITING(e@!)" "|" "DONE(d@!)" "CANCELED(c@!)")))
-    #+END_SRC
+#+BEGIN_SRC emacs-lisp
+  (setq org-todo-keywords
+        '((sequence "NEEDSWORK(w@!)" "TODO(t!)" "DOING(o!)" "BLOCKED(b@/!)" "WAITING(e@!)" "|" "DONE(d@!)" "CANCELED(c@!)")))
+#+END_SRC
 
 *** Capture templates
 
-    Load org-protocol and org-capture so we can use these librarie to setup catpuring witing emacs and from else where
-     #+BEGIN_SRC emacs-lisp
-       (require 'org-protocol)
-       (require 'org-capture)
-     #+END_SRC
+Load org-protocol and org-capture so we can use these librarie to setup catpuring witing emacs and from else where
+#+BEGIN_SRC emacs-lisp
+  (require 'org-protocol)
+  (require 'org-capture)
+#+END_SRC
 
 **** Browser integration 
 
-     Integration uses [[https://orgmode.org/worg/org-contrib/org-protocol.html][org-protcol]].
+Integration uses [[https://orgmode.org/worg/org-contrib/org-protocol.html][org-protcol]].
 
-     [[https://github.com/sprig/org-capture-extension][Documentation]] on the browser integration.
+[[https://github.com/sprig/org-capture-extension][Documentation]] on the browser integration.
      
-     Configuration file for registering emacsclient as handler for org-protocol
-     #+BEGIN_SRC conf :tangle ~/.local/share/applications/org-protocol.desktop
-       [Desktop Entry]
-       Name=org-protocol
-       Exec=emacsclient %u
-       Type=Application
-       Terminal=false
-       Categories=System;
-       MimeType=x-scheme-handler/org-protocol;
-     #+END_SRC
+Configuration file for registering emacsclient as handler for org-protocol
+#+BEGIN_SRC conf :tangle ~/.local/share/applications/org-protocol.desktop
+  [Desktop Entry]
+  Name=org-protocol
+  Exec=emacsclient %u
+  Type=Application
+  Terminal=false
+  Categories=System;
+  MimeType=x-scheme-handler/org-protocol;
+#+END_SRC
 
-     Ensure the new handler is picked up by the system
-     #+BEGIN_SRC sh
-       update-desktop-database ~/.local/share/applications/
-     #+END_SRC
+Ensure the new handler is picked up by the system
+#+BEGIN_SRC sh
+  update-desktop-database ~/.local/share/applications/
+#+END_SRC
 
-     Templates for capturing from org-capture browser integration
-     When text is selected
-     #+BEGIN_SRC emacs-lisp
-       (add-to-list 'org-capture-templates
-                    `("p" "Protocol" entry (file, org-default-inbox-file)
-                     "* %?
-       :PROPERTIES:
-       :CREATED:%U
-       :SOURCE:%:link
-       :END:
+Templates for capturing from org-capture browser integration
+When text is selected
+#+BEGIN_SRC emacs-lisp
+  (add-to-list 'org-capture-templates
+               `("p" "Protocol" entry (file, org-default-inbox-file)
+                 "* %?
+  :PROPERTIES:
+  :CREATED:%U
+  :SOURCE:%:link
+  :END:
 
-       %i"))
-     #+END_SRC
+  %i"))
+#+END_SRC
 
-     Capture template when no text is selected.
-     #+BEGIN_SRC emacs-lisp
-       (add-to-list 'org-capture-templates
-                    `("L" "Protocol Link" entry (file, org-default-inbox-file)
-                     "* [[%:link][%:description]]
-       :PROPERTIES:
-       :CREATED:%U
-       :SOURCE:%:link
-       :END:
+Capture template when no text is selected.
+#+BEGIN_SRC emacs-lisp
+  (add-to-list 'org-capture-templates
+               `("L" "Protocol Link" entry (file, org-default-inbox-file)
+                 "* [[%:link][%:description]]
+  :PROPERTIES:
+  :CREATED:%U
+  :SOURCE:%:link
+  :END:
 
-       %?"))
-     #+END_SRC
+  %?"))
+#+END_SRC
 
 **** Tasks
 
-    General task entry, something actionable
-    #+BEGIN_SRC emacs-lisp
-      (add-to-list 'org-capture-templates
-                   `("t" "Task Entry" entry (file, org-default-inbox-file)
-                     "* TODO %?
-      :PROPERTIES:
-      :CREATED:%U
-      :END:
+General task entry, something actionable
+#+BEGIN_SRC emacs-lisp
+  (add-to-list 'org-capture-templates
+               `("t" "Task Entry" entry (file, org-default-inbox-file)
+                 "* TODO %?
+  :PROPERTIES:
+  :CREATED:%U
+  :END:
 
-      %i"
-                     :empty-lines 1))
-    #+END_SRC
+  %i"
+                 :empty-lines 1))
+#+END_SRC
  
-    Shopping lists
-    #+BEGIN_SRC emacs-lisp
-      (add-to-list 'org-capture-templates
-                         `("s" "Shopping" checkitem (file+headline, org-default-shopping-file "Shopping")
-                           "[ ] %?"
-                           :empty-lines 1))
-    #+END_SRC
+Shopping lists
+#+BEGIN_SRC emacs-lisp
+  (add-to-list 'org-capture-templates
+               `("s" "Shopping" checkitem (file+headline, org-default-shopping-file "Shopping")
+                 "[ ] %?"
+                 :empty-lines 1))
+#+END_SRC
 
 
 *** Refiling
 
-    Set refiling path to start with the filename
-    #+BEGIN_SRC emacs-lisp
-      (setq org-refile-use-outline-path 'file)
-    #+END_SRC
+Set refiling path to start with the filename
+#+BEGIN_SRC emacs-lisp
+  (setq org-refile-use-outline-path 'file)
+#+END_SRC
 
-    Use full paths not step by step to ensure helm compatibility.
-    #+BEGIN_SRC emacs-lisp
-      (setq org-outline-path-complete-in-steps nil)
-    #+END_SRC
+Use full paths not step by step to ensure helm compatibility.
+#+BEGIN_SRC emacs-lisp
+  (setq org-outline-path-complete-in-steps nil)
+#+END_SRC
 
-    List of targets to refile to
-    #+BEGIN_SRC emacs-lisp
-      (defun pve/org-refile-candidates ()
-        (directory-files org-default-projects-dir t ".*\\.org$"))
+List of targets to refile to
+#+BEGIN_SRC emacs-lisp
+  (defun pve/org-refile-candidates ()
+    (directory-files org-default-projects-dir t ".*\\.org$"))
 
-      (setq org-refile-targets (append '((org-default-tasks-file :maxlevel . 1)
-                                          (org-default-ideas-file :maxlevel . 1)
-                                          (org-default-archive-file :maxlevel . 1)
-                                          (org-default-shopping-file :maxlevel . 1)
-                                          (org-default-tech-notebook :maxlevel . 2)
-                                          (org-default-life-notebook :maxlevel . 1)
-                                          (org-default-makers-notebook :maxlevel . 2)
-                                          (org-default-hockey-notebook :maxlevel . 1)
-                                          (org-default-sticky-dir :maxlevel . 1)
-                                          (org-default-stack-dir :maxlevel . 1))))
-      (add-to-list 'org-refile-targets '(pve/org-refile-candidates :maxlevel . 3))
-    #+END_SRC
+  (setq org-refile-targets (append '((org-default-tasks-file :maxlevel . 1)
+                                     (org-default-ideas-file :maxlevel . 1)
+                                     (org-default-archive-file :maxlevel . 1)
+                                     (org-default-shopping-file :maxlevel . 1)
+                                     (org-default-tech-notebook :maxlevel . 2)
+                                     (org-default-life-notebook :maxlevel . 1)
+                                     (org-default-makers-notebook :maxlevel . 2)
+                                     (org-default-hockey-notebook :maxlevel . 1)
+                                     (org-default-sticky-dir :maxlevel . 1)
+                                     (org-default-stack-dir :maxlevel . 1))))
+  (add-to-list 'org-refile-targets '(pve/org-refile-candidates :maxlevel . 3))
+#+END_SRC
 
-    Create a project file from a header
-    #+BEGIN_SRC emacs-lisp
-      (defun pve/projectfile-from-subtree (projectname)
-        "Create file from org heading. Files will be created n the org-default-projects-dir."
-        (interactive "P")
-        (setq project-name (read-string "Project name: "))
-        (let ((filename (concat
-                          (expand-file-name
-                           project-name
-                           org-default-projects-dir)
-                          ".org")))
-          (org-cut-subtree)
-          (find-file-noselect filename)
-          (with-temp-file filename
-            (org-mode)
-            (insert (format "#+TITLE: %s" project-name))
-            (newline 2)
-            (yank))))
-    #+END_SRC
+Create a project file from a header
+#+BEGIN_SRC emacs-lisp
+  (defun pve/projectfile-from-subtree (projectname)
+    "Create file from org heading. Files will be created n the org-default-projects-dir."
+    (interactive "P")
+    (setq project-name (read-string "Project name: "))
+    (let ((filename (concat
+                     (expand-file-name
+                      project-name
+                      org-default-projects-dir)
+                     ".org")))
+      (org-cut-subtree)
+      (find-file-noselect filename)
+      (with-temp-file filename
+        (org-mode)
+        (insert (format "#+TITLE: %s" project-name))
+        (newline 2)
+        (yank))))
+#+END_SRC
 
 *** Google calendar integration
 
-    Synchronize calenders with google calendar.
+Synchronize calenders with google calendar.
 
-    Manually synchronize with org-gcal-sync
+Manually synchronize with org-gcal-sync
     
-    #+BEGIN_SRC emacs-lisp
-      (use-package org-gcal
-        :ensure t
-        :config (setq org-gcal-client-id google-client-id 
-                     org-gcal-client-secret google-client-secret
-                     org-gcal-file-alist `((,personal-email . ,(concat org-default-dir "calendars/priv_cal.org"))
-                                           (,school-kids-calendar . ,(concat org-default-dir "calendars/school_cal.org"))
-                                           (,hockey-calendar-div2 . ,(concat org-default-dir "calendars/div2_cal.org"))
-                                           (,hockey-calendar-u10 . ,(concat org-default-dir "calendars/u10_cal.org"))
-                                           (,kids-calendar . ,(concat org-default-dir "calendars/kids.org")))))
-    #+END_SRC
+#+BEGIN_SRC emacs-lisp
+  (use-package org-gcal
+    :ensure t
+    :config (setq org-gcal-client-id google-client-id 
+                  org-gcal-client-secret google-client-secret
+                  org-gcal-file-alist `((,personal-email . ,(concat org-default-dir "calendars/priv_cal.org"))
+                                        (,school-kids-calendar . ,(concat org-default-dir "calendars/school_cal.org"))
+                                        (,hockey-calendar-div2 . ,(concat org-default-dir "calendars/div2_cal.org"))
+                                        (,hockey-calendar-u10 . ,(concat org-default-dir "calendars/u10_cal.org"))
+                                        (,kids-calendar . ,(concat org-default-dir "calendars/kids.org")))))
+#+END_SRC
 
-    #+RESULTS:
-    : #s(hash-table size 65 test eql rehash-size 1.5 rehash-threshold 0.8125 data (:use-package (24397 4495 660113 189000) :init (24397 4495 660110 636000) :config (24397 4495 660105 555000) :config-secs (0 0 21 347000) :init-secs (0 0 31 859000) :use-package-secs (0 0 72 473000)))
+#+RESULTS:
+: #s(hash-table size 65 test eql rehash-size 1.5 rehash-threshold 0.8125 data (:use-package (24397 4495 660113 189000) :init (24397 4495 660110 636000) :config (24397 4495 660105 555000) :config-secs (0 0 21 347000) :init-secs (0 0 31 859000) :use-package-secs (0 0 72 473000)))
 
 *** Lists
 
-    Converting lists to tables etc. [[https://github.com/dfeich/org-listcruncher#orgf4285ac][listcruncher]]
-    #+begin_src emacs-lisp
-      (use-package org-listcruncher
-        :ensure t)
-    #+end_src
+Converting lists to tables etc. [[https://github.com/dfeich/org-listcruncher#orgf4285ac][listcruncher]]
+#+begin_src emacs-lisp
+  (use-package org-listcruncher
+    :ensure t)
+#+end_src
 
-    Examxple:
-    #+NAME: lstTest
-    - item: item X modified by replacing values (amount: 15, recurrence: 1, end-year: 2020)
-      - modification of item X (amount: 20)
-      - another modification of item X (other: 500)
-        - modification of the modification (other: 299)
+Examxple:
+#+NAME: lstTest
+- item: item X modified by replacing values (amount: 15, recurrence: 1, end-year: 2020)
+  - modification of item X (amount: 20)
+  - another modification of item X (other: 500)
+    - modification of the modification (other: 299)
 
     #+NAME: src-example1
     #+BEGIN_SRC elisp :results value :var listname="lstTest" :exports both
@@ -2372,86 +2373,86 @@ Global shortcuts
     
 *** Searching
 
-    Org Query Language
-    #+begin_src emacs-lisp
-      (use-package org-ql
-        :ensure t)
-    #+end_src
+Org Query Language
+#+begin_src emacs-lisp
+  (use-package org-ql
+    :ensure t)
+#+end_src
 
-    With Helm support for Org Query Language
-    #+begin_src emacs-lisp
-      (use-package helm-org-ql
-        :ensure t
-        :requires org-ql)
-    #+end_src
+With Helm support for Org Query Language
+#+begin_src emacs-lisp
+  (use-package helm-org-ql
+    :ensure t
+    :requires org-ql)
+#+end_src
 
 ** Plugins / Intgration
 *** magit integration
     
-    #+BEGIN_SRC emacs-lisp
-      (use-package orgit
-        :ensure t
-        :after (org git))
-    #+END_SRC
+#+BEGIN_SRC emacs-lisp
+  (use-package orgit
+    :ensure t
+    :after (org git))
+#+END_SRC
 ** Links
 *** Org links
 
-    Create links and move file to the attachment folder
-    #+begin_src emacs-lisp
-      (defun pve/create-org-link (source-file)
-        "Create a link to SOURCE-FILE but first copy it to the attachments folder.
-      Storage system is shared with org-download."
-        (interactive "fSource file: ")
-        (let ((full-file-path (concat (org-download--dir) "/" (car (last (split-string source-file "/")))))
-              (description (read-string "Link description: ")))
-          (copy-file source-file full-file-path)
-          (insert (org-link-make-string full-file-path description))))
-    #+end_src
+Create links and move file to the attachment folder
+#+begin_src emacs-lisp
+  (defun pve/create-org-link (source-file)
+    "Create a link to SOURCE-FILE but first copy it to the attachments folder.
+  Storage system is shared with org-download."
+    (interactive "fSource file: ")
+    (let ((full-file-path (concat (org-download--dir) "/" (car (last (split-string source-file "/")))))
+          (description (read-string "Link description: ")))
+      (copy-file source-file full-file-path)
+      (insert (org-link-make-string full-file-path description))))
+#+end_src
 
-    Opening org links
-    #+begin_src emacs-lisp
-      (setq org-file-apps
-            '((auto-mode . emacs)
-              ("\\.mm\\'" . default)
-              ("\\.x?html?\\'" . default)
-              ("\\.pdf\\'" . emacs)))
-    #+end_src
+Opening org links
+#+begin_src emacs-lisp
+  (setq org-file-apps
+        '((auto-mode . emacs)
+          ("\\.mm\\'" . default)
+          ("\\.x?html?\\'" . default)
+          ("\\.pdf\\'" . emacs)))
+#+end_src
 
 *** Attachments & files
 
-    This enables adding image attachments from external sources (urls, drag&drop, screenshots)
-    This sets default directory but can be overwitten by:
-    -\*- mode: Org; org-download-image-dir: "~/Pictures/foo"; -\*-
-    #+BEGIN_SRC emacs-lisp
-      (use-package org-download
-        :ensure t
-        :after org
-        :config
-        (setq-default org-download-image-dir (concat org-attachments-dir "/default")
-                      org-download-screenshot-method "gnome-screenshot -a -f %s")
-        ;; Dired support
-        (add-hook 'dired-mode-hook 'org-download-enable))
-    #+END_SRC
+This enables adding image attachments from external sources (urls, drag&drop, screenshots)
+This sets default directory but can be overwitten by:
+-\*- mode: Org; org-download-image-dir: "~/Pictures/foo"; -\*-
+#+BEGIN_SRC emacs-lisp
+  (use-package org-download
+    :ensure t
+    :after org
+    :config
+    (setq-default org-download-image-dir (concat org-attachments-dir "/default")
+                  org-download-screenshot-method "gnome-screenshot -a -f %s")
+    ;; Dired support
+    (add-hook 'dired-mode-hook 'org-download-enable))
+#+END_SRC
     
 * Application Integration
 ** Pocket
 
-   Simple client to show list of pocket items
-   #+BEGIN_SRC emacs-lisp
-     (use-package pocket-mode
-       :ensure t
-       :after (pocket-api))
-   #+END_SRC
+Simple client to show list of pocket items
+#+BEGIN_SRC emacs-lisp
+  (use-package pocket-mode
+    :ensure t
+    :after (pocket-api))
+#+END_SRC
 
-   Backend API to login into pocket and retrieive the (getpocket.com)
-  #+BEGIN_SRC emacs-lisp
-    (use-package pocket-api
-      :ensure t)
-  #+END_SRC
+Backend API to login into pocket and retrieive the (getpocket.com)
+#+BEGIN_SRC emacs-lisp
+  (use-package pocket-api
+    :ensure t)
+#+END_SRC
 ** Exchange Web Services
 
-   This doesn't seem to work at this moment <2020-09-01 Tue>
-   #+begin_src 
+This doesn't seem to work at this moment <2020-09-01 Tue>
+#+begin_src 
      (use-package excorporate
        :ensure t
        :config
@@ -2474,73 +2475,73 @@ Global shortcuts
        "call excorporate to update the diary for today"
        (exco-diary-diary-advice (calendar-current-date) (calendar-current-date) #'message "diary updated"))
 
-   #+end_src
+#+end_src
 
-   #+RESULTS:
-   : pve/excorporate-sync
+#+RESULTS:
+: pve/excorporate-sync
 
 * Libraries
 ** LSP
 
-  Language Server Protocol (LSP) integration into emacs.
-  This enables connections to LSP servers from emacs.
-  It also creates a new prefix "C-l" to house all LSP key bindings
-  #+BEGIN_SRC emacs-lisp
-    (use-package lsp-mode
-      :ensure t
-      :demand t
-      :init (progn
-              (define-prefix-command 'ctl-l-map)
-              (global-set-key (kbd "C-l") 'ctl-l-map))
-      :bind (("C-l r" . lsp-rename))
-      :diminish lsp-mode)
-  #+END_SRC
+Language Server Protocol (LSP) integration into emacs.
+This enables connections to LSP servers from emacs.
+It also creates a new prefix "C-l" to house all LSP key bindings
+#+BEGIN_SRC emacs-lisp
+  (use-package lsp-mode
+    :ensure t
+    :demand t
+    :init (progn
+            (define-prefix-command 'ctl-l-map)
+            (global-set-key (kbd "C-l") 'ctl-l-map))
+    :bind (("C-l r" . lsp-rename))
+    :diminish lsp-mode)
+#+END_SRC
 
-  LSP-UI higher level UI modules for LSP integration into emacs.
-  #+BEGIN_SRC emacs-lisp
-    (use-package lsp-ui
-      :ensure t
-      :demand t
-      :after (lsp-mode)
-      :config
-      (setq
-       lsp-ui-sideline-ignore-duplicate t
-       lsp-ui-doc-enable nil
-       lsp-ui-doc-include-signature t
-       lsp-ui-sideline-enable t
-       lsp-ui-sideline-show-symbol nil)
-      ;; aut enable lsp-ui on lsp-mode
-      :hook (lsp-mode . lsp-ui-mode)
-      :bind (("C-l f" . lsp-ui-peek-find-references)
-             ("C-l j" . lsp-ui-peek-find-definitions)
-             ("C-l i" . helm-imenu)
-             ("C-l a" . lsp-ui-sideline-apply-code-actions)
-             ("C-l h" . lsp-ui-doc-show)))
-  #+END_SRC  
+LSP-UI higher level UI modules for LSP integration into emacs.
+#+BEGIN_SRC emacs-lisp
+  (use-package lsp-ui
+    :ensure t
+    :demand t
+    :after (lsp-mode)
+    :config
+    (setq
+     lsp-ui-sideline-ignore-duplicate t
+     lsp-ui-doc-enable nil
+     lsp-ui-doc-include-signature t
+     lsp-ui-sideline-enable t
+     lsp-ui-sideline-show-symbol nil)
+    ;; aut enable lsp-ui on lsp-mode
+    :hook (lsp-mode . lsp-ui-mode)
+    :bind (("C-l f" . lsp-ui-peek-find-references)
+           ("C-l j" . lsp-ui-peek-find-definitions)
+           ("C-l i" . helm-imenu)
+           ("C-l a" . lsp-ui-sideline-apply-code-actions)
+           ("C-l h" . lsp-ui-doc-show)))
+#+END_SRC  
 
-  Dependency for all-the-icons. If not installed it will not show in windows and some wrong icons on linux
-  #+BEGIN_SRC emacs-lisp
-    (progn 
-      (let ((destination "~/.emacs.d/custom/font-lock+.el"))
-        (if (not (file-exists-p destination))
-            (url-copy-file "https://raw.githubusercontent.com/emacsmirror/emacswiki.org/master/font-lock%2B.el" destination t)))
-      (use-package font-lock+))
-  #+END_SRC
+Dependency for all-the-icons. If not installed it will not show in windows and some wrong icons on linux
+#+BEGIN_SRC emacs-lisp
+  (progn 
+    (let ((destination "~/.emacs.d/custom/font-lock+.el"))
+      (if (not (file-exists-p destination))
+          (url-copy-file "https://raw.githubusercontent.com/emacsmirror/emacswiki.org/master/font-lock%2B.el" destination t)))
+    (use-package font-lock+))
+#+END_SRC
 
-  Icon library with many unicode characters, icons, ...
-  #+BEGIN_SRC emacs-lisp
-    (use-package all-the-icons
-      :ensure t
-      :after (font-lock+)
-      :init (require 'font-lock+))
-  #+END_SRC
-  If the icons are not installed run 'all-the-icons-install-fonts'.
+Icon library with many unicode characters, icons, ...
+#+BEGIN_SRC emacs-lisp
+  (use-package all-the-icons
+    :ensure t
+    :after (font-lock+)
+    :init (require 'font-lock+))
+#+END_SRC
+If the icons are not installed run 'all-the-icons-install-fonts'.
 
 ** Coding
 
-  Parsing CSV strings
-  #+BEGIN_SRC emacs-lisp
-    (use-package parse-csv
-      :ensure t)
-  #+END_SRC
+Parsing CSV strings
+#+BEGIN_SRC emacs-lisp
+  (use-package parse-csv
+    :ensure t)
+#+END_SRC
   
