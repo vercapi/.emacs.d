@@ -1502,6 +1502,8 @@ An elegant editor... for a more civilized age.
    #+end_src
 ** openscad
 
+   Currently not using LSP because this requires a rust toolchain.
+
    Editing open scad files
    #+begin_src emacs-lisp
      (use-package scad-mode
