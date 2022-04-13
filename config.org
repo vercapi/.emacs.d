@@ -1939,45 +1939,46 @@ An elegant editor... for a more civilized age.
 * Org Mode
 ** Custom key bindings
 
-   Insert a checkbox
-  #+BEGIN_SRC emacs-lisp
-    (defun pve-org-insert-checkbox ()
-      "Insert an org mode checkbox"
-      (interactive)
-      (insert "- [ ]")
-      (indent-for-tab-command)
-      )
-  #+END_SRC
+Insert a checkbox
+#+BEGIN_SRC emacs-lisp
+  (defun pve-org-insert-checkbox ()
+    "Insert an org mode checkbox"
+    (interactive)
+    (insert "- [ ]")
+    (indent-for-tab-command)
+    )
+#+END_SRC
 
-  Providing org actions via helm interface
-  #+BEGIN_SRC emacs-lisp
-    (use-package helm-org
-      :ensure t)
-  #+END_SRC
+Providing org actions via helm interface
+#+BEGIN_SRC emacs-lisp
+  (use-package helm-org
+    :ensure t)
+#+END_SRC
 
-  Hydra for setting up navigation between headers
-  and for setting up bookmarkds
-  #+BEGIN_SRC emacs-lisp
-    (defun pve-org-keys ()
-      (require 'hydra)
-      (defhydra hydra-org-navigation (org-mode-map "<f12>")
-        "Org navigation"
-        ("n" outline-next-visible-heading)
-        ("p" outline-previous-visible-heading)
-        ("f" org-forward-heading-same-level)
-        ("b" org-backward-heading-same-level)
-        ("a" helm-org-in-buffer-headings)
-        ("u" outline-up-heading)
-        ("t" outline-toggle-children)
-        ("l" org-kill-note-or-show-branches)
-        ("s" avy-org-goto-heading-timer)
-        ("c" org-previous-visible-heading)))
-      (local-set-key (kbd "<f7>") 'org-mark-ring-push)
-      (local-set-key (kbd "C-<f7>") 'org-mark-ring-goto)
-      (local-set-key (kbd "C-c c") 'org-capture)
-      (local-set-key (kbd "C-c x") 'pve-org-insert-checkbox)
-  #+END_SRC
-  
+Hydra for setting up navigation between headers
+and for setting up bookmarkds
+#+BEGIN_SRC emacs-lisp
+  (defun pve-org-keys ()
+    (require 'hydra)
+    (defhydra hydra-org-navigation (org-mode-map "<f12>")
+      "Org navigation"
+      ("n" outline-next-visible-heading)
+      ("p" outline-previous-visible-heading)
+      ("f" org-forward-heading-same-level)
+      ("b" org-backward-heading-same-level)
+      ("a" helm-org-in-buffer-headings)
+      ("u" outline-up-heading)
+      ("t" outline-toggle-children)
+      ("l" org-kill-note-or-show-branches)
+      ("s" avy-org-goto-heading-timer)
+      ("c" org-previous-visible-heading)))
+#+END_SRC
+
+Global shortcuts
+#+begin_src emacs-lisp
+  (global-set-key (kbd "C-c c") 'org-capture)
+#+end_src
+
 ** Babel configuration
 
   #+BEGIN_SRC emacs-lisp
@@ -2037,11 +2038,15 @@ An elegant editor... for a more civilized age.
       (setq org-catch-invisible-edits 'error) ;; Don't edit what is hidden in org mode (e.g. after closed headers)
       (setq org-cycle-separator-lines 0) ;; No spaces in between headings
       (require 'org-tempo) ;; Get easy template completion with TAB
-      (setq org-hide-block-startup 1)
+      (setq org-startup-folded t)
       :hook
       ((org-mode . pve-org-keys)
        (org-mode . pve-enable-org-bullets)
-       (org-mode . helm-mode))
+       (org-mode . helm-mode)
+       (org-mode . (lambda ()
+                     (setq-local electric-pair-inhibit-predicate
+                                 `(lambda (c)
+                                    (if (char-equal c ?<) t (,electric-pair-inhibit-predicate c)))))))
       :after (hydra org-bullets ob-async))
   #+END_SRC
 
