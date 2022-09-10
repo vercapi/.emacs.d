@@ -2066,8 +2066,8 @@ We want all the results to be wrapped in a block once they are longer then one l
 #+BEGIN_SRC emacs-lisp
   (require 'ob-clojure)
   (add-to-list 'org-babel-load-languages '(clojure . t))
+  (setq org-babel-clojure-backend 'cider)
 #+END_SRC
-
 
 ** Main configuration
 
