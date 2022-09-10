@@ -1928,7 +1928,8 @@ Complete terminal emulator inside of emacs
 #+begin_src emacs-lisp
   (use-package vterm
     :ensure t
-    :hook (vterm-mode . (lambda () (setq-local global-hl-line-mode nil))))
+    :hook (vterm-mode . (lambda () (setq-local global-hl-line-mode nil)))
+    :config (setq vterm-shell "fish"))
 #+end_src
 
 Named vterm [[https://pmiddend.github.io/posts/named-terminals/][source]]
@@ -1936,7 +1937,22 @@ Named vterm [[https://pmiddend.github.io/posts/named-terminals/][source]]
   (defun pve/named-term (term-name)
     "Generate a terminal with buffer name TERM-NAME."
     (interactive "sTerminal purpose: ")
-    (vterm (concat "term-" term-name)))
+    (vterm (concat "vterm-" term-name)))
+#+end_src
+
+Install fish mode to edit scripts
+#+begin_src emacs-lisp
+  (use-package fish-mode
+    :ensure t)
+#+end_src
+
+fish shell in vterm
+#+begin_src emacs-lisp
+  (setq vterm-eval-cmds '(("find-file" find-file)
+                          ("message" message)
+                          ("vterm-clear-scrollback" vterm-clear-scrollback)
+                          ("dired" dired)
+                          ("ediff-files" ediff-files)))
 #+end_src
 
 * Org Mode
