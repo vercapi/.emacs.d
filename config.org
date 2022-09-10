@@ -700,14 +700,37 @@ Visual aid to see all undo history in a tree
                   undo-tree-enable-undo-in-region t)
     (global-undo-tree-mode))
 #+END_SRC
-** Text format
+** Text formatting
 
 Indent with 2 spaces, no tabs
 #+BEGIN_SRC emacs-lisp
   (setq-default indent-tabs-mode nil) ;; don't use tabs
   (setq-default tab-width 2) ;; use 2 space tabs
 #+END_SRC
-   
+
+Comments always on start of the line not where the region starts.
+So we ensure the regions starts at the beginning of the line before commenting.
+#+begin_src emacs-lisp
+  (defun pve/expand-region (original-func &rest args)
+    "Expand the region to the beginning of the line or the current line when no region is active"
+    (apply original-func
+           (append (if (use-region-p)
+                     (list (save-excursion
+                             (goto-char (region-beginning))
+                             (line-beginning-position 1))
+                           (region-end))
+                   (list (line-beginning-position 1)
+                         (line-beginning-position 2)))
+                 (cdr (cdr args)))))
+
+  (advice-add 'comment-region :around #'pve/expand-region)
+#+end_src
+
+Comment short cuts
+#+begin_src emacs-lisp
+  (global-set-key (kbd "C-c /") 'comment-region)
+#+end_src
+
 ** Folding
 
 Set Folding characters for every programming mode
