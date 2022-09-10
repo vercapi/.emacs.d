@@ -2554,7 +2554,7 @@ LSP-UI higher level UI modules for LSP integration into emacs.
     :bind (("C-l f" . lsp-ui-peek-find-references)
            ("C-l j" . lsp-ui-peek-find-definitions)
            ("C-l i" . helm-imenu)
-           ("C-l a" . lsp-ui-sideline-apply-code-actions)
+           ("C-l a" . lsp-execute-code-action)
            ("C-l h" . lsp-ui-doc-show)))
 #+END_SRC  
 
