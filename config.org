@@ -1297,6 +1297,12 @@ Mode for editing docker files
            (dockerfile-mode . yas/minor-mode)))
 #+END_SRC
 
+Mange files in docker
+#+begin_src emacs-lisp
+  (use-package docker-tramp
+    :ensure t)
+#+end_src
+
 ** LUA
 
 LUA mode
