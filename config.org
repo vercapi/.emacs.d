@@ -1268,13 +1268,24 @@ Disabled the standard completion method for python shell. It opens a new window 
    
 Configure lsp mode for python
 #+BEGIN_SRC emacs-lisp
-  (use-package lsp-pyright
+  (use-package lsp-jedi
     :ensure t
     :config (with-eval-after-load "lsp-mode"
-              (add-to-list 'lsp-enabled-clients 'pyright))
+              (add-to-list 'lsp-disabled-clients 'pyls)
+              (add-to-list 'lsp-enabled-clients 'jedi))
     :hook (python-mode . (lambda ()
-                           (require 'lsp-pyright)
-                           (lsp))))
+                           (require 'lsp-jedi)
+                           (lsp)
+                           (flycheck-disable-checker 'lsp)
+                           (flycheck-select-checker 'python-pycompile)
+                           (flycheck-add-next-checker 'python-pylint))))
+#+end_src
+
+Python snippets
+#+begin_src emacs-lisp
+  (use-package py-snippets
+    :ensure t
+    :config (py-snippets-initialize))
 #+end_src
 
 Tool to switch to a virtualenv. To use lspl, install the server in the virtualenv too.
