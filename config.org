@@ -1569,7 +1569,24 @@ Preview mode
     :config (with-eval-after-load "lsp-mode"
               (add-to-list 'lsp-enabled-clients 'css-ls))
     :hook ((css-mode . (lambda () (lsp)))
-           (css-mode . yas/minor-mode)))
+           (css-mode . yas-minor-mode)))
+#+end_src
+** Jenkins
+
+#+begin_src emacs-lisp
+  (use-package jenkinsfile-mode
+    :ensure t)
+#+end_src
+
+* Language models
+
+#+begin_src emacs-lisp
+  (use-package gptai
+    :ensure t
+    :config
+    (setq gptai-username "pieterv.sorano@gmail.com")
+    (setq gptai-api-key "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")
+    (setq gptai-model "gpt-3.5-turbo"))
 #+end_src
 
 * Drawing
