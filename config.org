@@ -193,9 +193,10 @@ Simple shortcuts to switch between to common used font sizes
     )
 
   (defun pve-font-size (size)
-    "Set font to size"
-    (interactive "nfont-size")
-    (pve-set-fonts size))
+    "Set font to size."
+    (interactive "P")
+    (pve-set-fonts (read-number
+                    (format "font size (current = %s): " (face-attribute 'default :height)))))
 
   (defun pve-set-fonts (font-height)
     "Set size of fonts to FONT-HEIGHT, and only the size of the fonts."
