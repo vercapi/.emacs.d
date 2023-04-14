@@ -1300,7 +1300,7 @@ Mode for editing docker files
     :config (with-eval-after-load "lsp-mode"
               (add-to-list 'lsp-enabled-clients 'dockerfile-ls))
     :hook ((dockerfile-mode . (lambda () (lsp)))
-           (dockerfile-mode . yas/minor-mode)))
+           (dockerfile-mode . yas-minor-mode)))
 #+END_SRC
 
 Mange files in docker
@@ -2392,9 +2392,6 @@ Manually synchronize with org-gcal-sync
                                         (,hockey-calendar-u10 . ,(concat org-default-dir "calendars/u10_cal.org"))
                                         (,kids-calendar . ,(concat org-default-dir "calendars/kids.org")))))
 #+END_SRC
-
-#+RESULTS:
-: #s(hash-table size 65 test eql rehash-size 1.5 rehash-threshold 0.8125 data (:use-package (24397 4495 660113 189000) :init (24397 4495 660110 636000) :config (24397 4495 660105 555000) :config-secs (0 0 21 347000) :init-secs (0 0 31 859000) :use-package-secs (0 0 72 473000)))
 
 *** Lists
 
