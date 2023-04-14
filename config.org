@@ -616,7 +616,7 @@ Company (complete anything) is the front end system to autocomplete. Has mutlipl
     :diminish company-mode
     :hook (after-init . global-company-mode)
     :bind ("C-<tab>" . company-complete)
-    :config (push 'company-capf company-backends)
+    :config (add-to-list 'company-backends 'company-yasnippet 'company-capf)
     :init (setq company-minimum-prefix-length 1
                 company-dabbrev-downcase nil
                 company-idle-delay 0
