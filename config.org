@@ -1578,15 +1578,40 @@ Preview mode
     :ensure t)
 #+end_src
 
-* Language models
+* Machine Learning
 
 #+begin_src emacs-lisp
-  (use-package gptai
-    :ensure t
-    :config
-    (setq gptai-username "pieterv.sorano@gmail.com")
-    (setq gptai-api-key "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")
-    (setq gptai-model "gpt-3.5-turbo"))
+  (use-package org-ai
+    :ensure
+    :commands (org-ai-mode org-ai-global-mode)
+    :init
+    (add-hook 'org-mode-hook #'org-ai-mode)
+    (setq org-ai-openai-api-token openai-token)
+    (setq org-ai-default-chat-model "GPT-4")
+    (org-ai-global-mode))
+#+end_src
+
+#+RESULTS:
+: #s(hash-table size 65 test eql rehash-size 1.5 rehash-threshold 0.8125 data (:use-package (25667 464 61398 835000) :init (25667 464 61394 785000) :config (25667 464 61382 878000) :config-secs (0 0 4 183000) :init-secs (0 0 55 478000) :use-package-secs (0 0 107 99000)))
+
+* voice interaction
+
+Listen
+#+begin_src emacs-lisp 
+  (use-package whisper
+    :load-path "custom/whisper.el"
+    :bind ("M-s-r" . whisper-run))
+#+end_src
+
+Speak
+#+begin_src emacs-lisp
+  (use-package greader :ensure)
+  (require 'whisper)
+  (require 'org-ai-talk)
+
+  ;; macOS speech settings, optional
+  (setq org-ai-talk-say-words-per-minute 210)
+  (setq org-ai-talk-say-voice "Karen")
 #+end_src
 
 * Drawing
