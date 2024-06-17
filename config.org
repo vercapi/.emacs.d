@@ -1294,7 +1294,7 @@ Python snippets
     :config (py-snippets-initialize))
 #+end_src
 
-Tool to switch to a virtualenv. To use lspl, install the server in the virtualenv too.
+Tool to switch to a virtualenv. To use lsp, install the server in the virtualenv too.
 #+BEGIN_SRC emacs-lisp
   (use-package pyvenv
     :ensure t)
