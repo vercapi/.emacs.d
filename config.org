@@ -239,6 +239,12 @@ Highlight the other parentheses
   (add-hook 'prog-mode-hook (lambda () (show-paren-mode 1)))
 #+END_SRC
 
+Colorize color codes
+#+begin_src emacs-lisp
+  (use-package rainbow-mode
+    :ensure t)
+#+end_src
+
 *** Pretiify Symbols
 
 Change some code in more elegant symbols, per programming language
