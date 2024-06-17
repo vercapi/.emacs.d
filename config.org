@@ -224,7 +224,7 @@ Define theme
 #+BEGIN_SRC emacs-lisp
   (use-package flucui-themes
     :ensure t
-    :config (flucui-themes-load-style 'dark))
+    :config (flucui-themes-load-style 'light))
 #+END_SRC
 
 Colorize delimters (,[,... different colors for every level
