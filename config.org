@@ -1584,6 +1584,12 @@ Preview mode
     :ensure t)
 #+end_src
 
+** JSON
+
+#+begin_src emacs-lisp
+  (use-package json-snatcher
+    :ensure t)
+#+end_src
 ** Markdown 
 
 Format HTML in markdown
