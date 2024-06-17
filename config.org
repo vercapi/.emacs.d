@@ -1219,7 +1219,7 @@ org bable mode
 #+BEGIN_SRC emacs-lisp
   (use-package impatient-mode
     :ensure t
-    :hook ((html-mode . impatient-mode)))
+    :hook (((html-mode markdown-mode) . impatient-mode)))
 #+END_SRC
 
 *** Angular specifics
@@ -1582,6 +1582,16 @@ Preview mode
 #+begin_src emacs-lisp
   (use-package jenkinsfile-mode
     :ensure t)
+#+end_src
+
+** Markdown 
+
+Format HTML in markdown
+#+begin_src emacs-lisp
+  (use-package impatient-showdown
+    :ensure t
+    :hook (markdown-mode . impatient-showdown-mode)
+    :init (setq impatient-showdown-flavor 'github))
 #+end_src
 
 * Machine Learning
