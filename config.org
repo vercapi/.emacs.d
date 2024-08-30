@@ -657,6 +657,71 @@ Using flycheck as the syntax checker
     :init (global-flycheck-mode))
 #+END_SRC
 
+** Spell Checking
+
+*** Main setup
+
+Set flyspell on all buffers automatically detect prog mode
+#+begin_src emacs-lisp
+  (defun flyspell-on-for-buffer-type ()
+    "Enable Flyspell appropriately for the major mode of the current buffer.  Uses `flyspell-prog-mode' for modes derived from `prog-mode', so only strings and comments get checked.  All other buffers get `flyspell-mode' to check all text.  If flyspell is already enabled, does nothing."
+    (interactive)
+    (if (not (symbol-value flyspell-mode)) ; if not already on
+        (progn
+          (if (or (string-match-p "helm" mode-name) (memq major-mode '(org-agenda-mode)))
+              (message (format "No flyspell on %s" major-mode))
+            ;; else
+            (if (or (eq major-mode 'magit-status-mode) (derived-mode-p 'prog-mode))
+                (progn
+                  (message "Flyspell on (code)")
+                  (flyspell-prog-mode))
+              ;; else
+              (progn
+                (message "Flyspell on (text)")
+                (flyspell-mode 1))))
+          )))
+
+  (defun flyspell-toggle ()
+    "Turn Flyspell on if it is off, or off if it is on.  When turning on, it uses `flyspell-on-for-buffer-type' so code-vs-text is handled appropriately."
+    (interactive)
+    (if (symbol-value flyspell-mode)
+        (progn ; flyspell is on, turn it off
+          (message "Flyspell off")
+          (flyspell-mode -1))
+      ;; else - flyspell is off, turn it on
+      (flyspell-on-for-buffer-type)))
+#+end_src
+
+Set Flyspell on by default for any file buffer, no special buffers
+#+begin_src emacs-lisp
+  (add-hook 'find-file-hook 'flyspell-on-for-buffer-type)
+  (add-hook 'text-mode-hook 'flyspell-on-for-buffer-type)
+#+end_src
+
+Keybinding to toggle flycheck mode
+#+begin_src emacs-lisp
+  (global-set-key (kbd "C-c f") 'flyspell-toggle )
+#+end_src
+
+*** Additional languages
+
+#+begin_src sh
+  sudo pacman -S hunspell-nl hunspell-en_us
+#+end_src
+
+#+begin_src emacs-lisp
+  (with-eval-after-load "ispell"
+    ;; Configure Hunspell as the spell checker
+    (setq ispell-program-name "hunspell")
+  
+    ;; Set up dictionaries for both languages
+    (setq ispell-dictionary "nl_NL,en_US")
+  
+    ;; Add multiple dictionaries
+    (ispell-set-spellchecker-params)
+    (ispell-hunspell-add-multi-dic "nl_NL,en_US"))
+#+end_src
+
 ** Selection
 
 Enable multiple cursors.
