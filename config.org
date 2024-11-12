@@ -1651,10 +1651,20 @@ Preview mode
 
 ** JSON
 
+Get the jsonPath to a value you see in a json file
 #+begin_src emacs-lisp
   (use-package json-snatcher
     :ensure t)
 #+end_src
+
+Query a json file
+#+begin_src emacs-lisp
+  (use-package jq-mode
+    :ensure t
+    :mode "\\.json?\\.'"
+    :bind (:map jq-mode-map ("C-c C-j" . jq-interactively)))
+#+end_src
+
 ** Markdown 
 
 Format HTML in markdown
