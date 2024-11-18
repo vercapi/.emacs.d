@@ -668,7 +668,9 @@ Set flyspell on all buffers automatically detect prog mode
     (interactive)
     (if (not (symbol-value flyspell-mode)) ; if not already on
         (progn
-          (if (or (string-match-p "helm" mode-name) (memq major-mode '(org-agenda-mode)))
+          (if (or (string-match-p "helm" (if (listp mode-name)
+                                             (car mode-name)
+                                           mode-name)) (memq major-mode '(org-agenda-mode)))
               (message (format "No flyspell on %s" major-mode))
             ;; else
             (if (or (eq major-mode 'magit-status-mode) (derived-mode-p 'prog-mode))
