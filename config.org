@@ -67,8 +67,7 @@ Configure all sources for packages to be used throughtout this config file.
 
 ** use-package & quelpa bootstrap
 
-These are the packages needed to manage the packages from the package repostiories or directly from git.
-
+These are the packages needed to manage the packages from the package repostiories or directly from git
 Ensure that 'use-package' is installed.
 #+BEGIN_SRC emacs-lisp
   (if (not (package-installed-p 'use-package))
@@ -126,16 +125,11 @@ Set the file size on the mode line
   (setq size-indication-mode t)
 #+END_SRC
 
-#+RESULTS:
-: t
 
 Add columns to the mode line
 #+BEGIN_SRC emacs-lisp
   (setq column-number-mode t)
 #+END_SRC
-
-#+RESULTS:
-: t
 
 Don't show everything in the mode line. Only what we deem important.
 Or change the way it is shown. 
@@ -146,8 +140,6 @@ Actual configuration is done by use-packages it's :diminish keyword.
     :config (progn
               (diminish 'eldoc-mode)))
 #+END_SRC
-
-#+RESULTS:
 
 *** Powerline
 
@@ -176,7 +168,6 @@ This is based on std configuration. So if emacs adds this again in init.el or .e
    '(mode-line ((t (:family "ProggyVector" :foundry "PfEd" :slant normal :weight normal :height 120 :width normal)))))
 #+END_SRC
 
-#+RESULTS:
 
 Simple shortcuts to switch between to common used font sizes
 #+BEGIN_SRC emacs-lisp
@@ -213,9 +204,6 @@ Simple shortcuts to switch between to common used font sizes
     )
 #+END_SRC
 
-#+RESULTS:
-: pve-set-fonts
-    
 ** Theme/Syntax sugar
 
 [[https://pawelbx.github.io/emacs-theme-gallery/][Theme gallery]]
@@ -399,8 +387,6 @@ Winner mode to undo and redo window configuration
   (winner-mode 1)
 #+END_SRC
 
-#+RESULTS:
-: t
 
 Set S-<arrows> to move around the windows (S- <arrow> to move along windows)
 And also ensure this works in org mode. See org-mode [[https://orgmode.org/manual/Conflicts.html][manual]] on 'Conflicts'
@@ -415,8 +401,6 @@ And also ensure this works in org mode. See org-mode [[https://orgmode.org/manua
   (setq org-support-shift-select 'always)
 #+END_SRC
 
-#+RESULTS:
-: always
    
 Eybrowse allows a virutal desktop like solution to be used within emacs.
 #+BEGIN_SRC emacs-lisp
@@ -921,8 +905,6 @@ Core of the multi-git.
                   (multi-git-dirs rootdir))))))
   #+END_SRC
 
-  #+RESULTS:
-  : multi-git-exec
 
   This actually finds all the directories
   #+BEGIN_SRC emacs-lisp
@@ -947,8 +929,6 @@ In essence these are the actions that will be applied to all git repo's
      (multi-git-ahead-behind (magit-get-current-branch) (concat (magit-get-remote) "/" (magit-get-current-branch)))))
 #+end_src
 
-#+RESULTS:
-: multi-git-info
 
 #+BEGIN_SRC emacs-lisp
   (defun multi-git-switch-to-branch (branch-name)
@@ -985,8 +965,6 @@ Header info
       (list (format "Changes: %s" num-of-changes))))
 #+END_SRC
 
-#+RESULTS:
-: multi-git-show-current-branch-name
 
 #+BEGIN_SRC emacs-lisp
   (defun multi-git-fetch ()
@@ -1121,8 +1099,6 @@ How we need to do the pus in magit
       (magit-run-git-async "push" "-v" "-u" "origin" (magit-get-current-branch))))
 #+end_src
 
-#+RESULTS:
-: multi-git-push-single
 
 Hooks for multi-git-mode
 #+BEGIN_SRC emacs-lisp
@@ -1152,8 +1128,6 @@ Syntax highlighting
           ("Changes: [^0][0-9]*" . font-lock-warning-face)))
 #+end_src
 
-#+RESULTS:
-: ((\*.*\* . font-lock-function-name-face) (Changes: [^0][0-9]* . font-lock-warning-face))
 
 Entry function for the multi-git-mode
 #+BEGIN_SRC emacs-lisp
@@ -1621,12 +1595,12 @@ Currently not using LSP because this requires a rust toolchain.
 
 Editing open scad files
 #+begin_src emacs-lisp
-  (use-package scad-mode
-    :ensure t)
+;;  (use-package scad-mode
+;;    :ensure t)
 #+end_src
 
 Preview mode
-#+begin_src emacs-lisp
+#+begin_src 
   (use-package scad-preview
     :ensure t)
 #+end_src
@@ -1938,8 +1912,6 @@ Navigation with keys
     :ensure t)
 #+END_SRC
 
-#+RESULTS:
-	 
 ** Artist mode
 	      
 Artist mode doesn't work within org mode. This narrows the buffer to a place you want to work.
@@ -2187,8 +2159,6 @@ We want all the results to be wrapped in a block once they are longer then one l
   (add-to-list 'org-babel-tangle-lang-exts '("js" . "js"))
 #+END_SRC
 
-#+RESULTS:
-: ((python . py) (java . java) (js . js) (emacs-lisp . el) (elisp . el))
 
 *** Add java support to babel
 
@@ -2649,8 +2619,6 @@ This doesn't seem to work at this moment <2020-09-01 Tue>
 
 #+end_src
 
-#+RESULTS:
-: pve/excorporate-sync
 
 * Libraries
 ** LSP
