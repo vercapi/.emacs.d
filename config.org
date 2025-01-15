@@ -1578,17 +1578,6 @@ Yaml mode
    
 By default yaml mode doesn't use newline-and-indent (as python mode does). So this was added as a hook on he yaml-mode.
 
-*** Swagger/OpenAPI YAML
-
-Swagger/OpenAPI mode
-#+BEGIN_SRC emacs-lisp
-  (use-package openapi-yaml-mode
-    :quelpa (openapi-yaml-mode :fetcher github :repo "magoyette/openapi-yaml-mode")
-    :ensure t
-    :hook ((openapi-yaml-mode . hs-minor-mode)
-           (openapi-yaml-mode . yas-minor-mode)))
-#+END_SRC
-
 ** Database
 
 *** SQLite
