@@ -647,6 +647,12 @@ And the config for elements that are not supported by default
   (electric-pair-mode 1)
 #+END_SRC
 
+Yasnippets
+#+BEGIN_SRC emacs-lisp
+  (use-package yasnippet
+     :ensure t)
+#+END_SRC
+
 ** Syntax checking
    
 Using flycheck as the syntax checker
