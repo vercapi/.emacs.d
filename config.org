@@ -2661,6 +2661,14 @@ With Helm support for Org Query Language
     :ensure t
     :after (org git))
 #+END_SRC
+*** Literate calc mode
+
+#+begin_src emacs-lisp
+  (use-package literate-calc-mode
+    :ensure t
+    :config)
+#+end_src
+
 ** Links
 *** Org links
 
