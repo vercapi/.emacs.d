@@ -1476,7 +1476,10 @@ Download [[http://download.eclipse.org/jdtls/snapshots/jdt-language-server-lates
             ".git" ".hg" ".fslckout" "_FOSSIL_"
             ".bzr" "_darcs" ".tox" ".svn" ".stack-work"
             "build")
-
+          lsp-java-configuration-runtimes
+          '(:name "JavaSE-21"
+                  :path "/usr/lib/jvm/java-21-openjdk"
+                  :default t)
           lsp-java-import-order '["" "java" "javax" "#"]
           ;; Don't organize imports on save
           lsp-java-save-action-organize-imports nil)
