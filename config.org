@@ -1983,6 +1983,11 @@ This is used to not keep open all these bufer when browsing files
 #+begin_src emacs-lisp
   (put 'dired-find-alternate-file 'disabled nil)
 #+end_src
+
+Set the listing switches to see readable output
+#+begin_src emacs-lisp
+  (setq dired-listing-switches "-alh")
+#+end_src
    
 Sorting for dired
 #+begin_src emacs-lisp
