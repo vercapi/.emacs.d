@@ -1328,10 +1328,12 @@ Configure lsp mode for python
               (add-to-list 'lsp-enabled-clients 'jedi))
     :hook (python-mode . (lambda ()
                            (require 'lsp-jedi)
-                           (lsp)
-                           (flycheck-disable-checker 'lsp)
-                           (flycheck-select-checker 'python-pycompile)
-                           (flycheck-add-next-checker 'python-pylint))))
+                           (lsp))))
+#+end_src
+
+Manual install for the jedi language server
+#+begin_src sh
+  pip install -U jedi-language-server
 #+end_src
 
 Python snippets
@@ -1339,6 +1341,12 @@ Python snippets
   (use-package py-snippets
     :ensure t
     :config (py-snippets-initialize))
+#+end_src
+
+Pipenv porcelain
+#+begin_src emacs-lisp
+  (use-package pipenv
+    :ensure t)
 #+end_src
 
 Tool to switch to a virtualenv. To use lsp, install the server in the virtualenv too.
