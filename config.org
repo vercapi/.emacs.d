@@ -1658,6 +1658,15 @@ Format HTML in markdown
 #+end_src
 
 * Machine Learning
+** PHP
+
+#+begin_src emacs-lisp
+  (use-package php-mode
+    :ensure t
+    :config 
+    (lsp-mode t))
+#+end_src
+
 
 #+begin_src emacs-lisp
   (use-package org-ai
