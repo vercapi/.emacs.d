@@ -1657,7 +1657,6 @@ Format HTML in markdown
     :init (setq impatient-showdown-flavor 'github))
 #+end_src
 
-* Machine Learning
 ** PHP
 
 #+begin_src emacs-lisp
@@ -1667,6 +1666,9 @@ Format HTML in markdown
     (lsp-mode t))
 #+end_src
 
+* Generative AI LLMs
+
+** Org AI
 
 #+begin_src emacs-lisp
   (use-package org-ai
@@ -1675,8 +1677,111 @@ Format HTML in markdown
     :init
     (add-hook 'org-mode-hook #'org-ai-mode)
     (setq org-ai-openai-api-token openai-token)
-    (setq org-ai-default-chat-model "GPT-4")
-    (org-ai-global-mode))
+    (setq org-ai-default-chat-model "gpt-4")
+    (setq org-ai-auto-fill nil)
+    (setq markdown-fontify-code-blocks-natively t)
+    (add-to-list 'org-babel-load-languages '(org-ai . t))
+    (org-ai-global-mode)
+    :hook
+    (org-ai-mode . (lambda () (visual-line-mode 1))))
+#+end_src
+
+** Copilot
+
+#+begin_src emacs-lisp
+  (use-package copilot
+    :quelpa (copilot :fetcher github
+                      :repo "copilot-emacs/copilot.el"
+                      :branch "main"
+                      :files ("*.el"))
+    :hook (prog-mode . copilot-mode)
+    :bind (:map copilot-mode-map
+                ("<tab>" . copilot-accept-completion)
+                ("<backtab>" . copilot-accept-completion-by-word))
+    :config
+    (add-to-list 'copilot-indentation-alist '(prog-mode . 2))
+    (add-to-list 'copilot-indentation-alist '(org-mode . 2))
+    (add-to-list 'copilot-indentation-alist '(text-mode . 2))
+    (add-to-list 'copilot-indentation-alist '(closure-mode . 2))
+    (add-to-list 'copilot-indentation-alist '(emacs-lisp-mode . 2)))
+#+end_src
+
+** Assists
+*** Diff on buffer
+
+#+begin_src emacs-lisp
+  (defun pve-apply-patch-to-selected-buffer (target-buffer-name)
+    "Apply the patch in the current buffer to a specified buffer."
+    (interactive "bBuffer to apply patch to: ")
+    (let* ((target-buffer (get-buffer target-buffer-name))
+           (patch-buffer (current-buffer))
+           (target-file-path (buffer-file-name target-buffer))
+           (temporary-file (make-temp-file "patched-file-" nil nil (with-current-buffer target-buffer (buffer-string))))
+           (patch-file (make-temp-file "patch-file-")))
+      (write-region nil nil patch-file)
+      (shell-command (concat "patch -f " temporary-file " < " patch-file))
+      (with-current-buffer target-buffer
+        (erase-buffer)
+        (insert-file-contents temporary-file))
+      (delete-file temporary-file)
+      (delete-file patch-file)
+      (kill-buffer)
+      (switch-to-buffer target-buffer)))
+
+  (defun pve-select-code-region-org-ai ()
+    "Select the code region in the current buffer."
+    (interactive)
+    (while (not (looking-at-p "```"))
+      (forward-line -1))
+    (forward-line)
+    (set-mark (point))
+    (forward-line)
+    (while (not (looking-at-p "```"))
+      (forward-line))
+    (forward-line -1)
+    (end-of-line)
+    (goto-char (point)))
+
+  (define-minor-mode pve-patch-mode
+    "A custom minor mode for applying patches from ai generated content."
+    :lighter "Patch"
+    :keymap (list (cons (kbd "C-c a") 'pve-apply-patch-to-selected-buffer)))
+
+  (add-hook 'diff-mode-hook 'pve-patch-mode)
+
+  (defun pve-show-diff-with-selected-region (buffer-name)
+    "Show the diff of the currently selected region against a specific named buffer,
+     specified by BUFFER-NAME."
+    (interactive "bEnter the buffer name to show diff with current region: ")
+    (if (not (use-region-p))
+        (message "No active region")
+      (let* ((start-point (region-beginning))
+             (end-point (region-end))
+             (temp-buffer (generate-new-buffer "*Temporary Buffer*"))
+             (current (current-buffer))
+             (target-buffer (get-buffer buffer-name)))
+        (with-current-buffer temp-buffer
+          (insert-buffer-substring current start-point end-point)
+          (newline))
+        (diff-buffers target-buffer temp-buffer)))
+    (setq debug-on-error nil))
+
+  (defun pve-org-ai-elisp-assitant ()
+    "A minor mode for assisting with the generation of elisp code for org-ai."
+    (interactive)
+    (let* ((buffer-name "*org-ai-elisp-assistant*")
+          (buffer (get-buffer-create buffer-name)))
+      (switch-to-buffer buffer-name)
+      (org-mode)
+      (insert "** org-ai")
+      (org-ai--insert-created-timestamp)
+      (insert "\n")
+      (insert ":PROPERTIES:\n")
+      (insert ":SYS: You are an expert emacs lisp developer answering questions for a developer who is new to emacs lisp.\n")
+      (insert ":sys-everywhere: t\n")
+      (insert "#+begin_ai emacs-lisp\n" "[ME]: " "\n" "#+end_ai\n")
+      (search-backward "[ME]: ")
+      (end-of-line)))
 #+end_src
 
 * Drawing
