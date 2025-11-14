@@ -1706,6 +1706,13 @@ Format HTML in markdown
     (add-to-list 'copilot-indentation-alist '(emacs-lisp-mode . 2)))
 #+end_src
 
+** Copilot chat
+
+#+begin_src emacs-lisp
+  (use-package copilot-chat 
+    :ensure t)
+#+end_src
+
 ** Assists
 *** Diff on buffer
 
