@@ -1226,6 +1226,15 @@ In Org mode we want to tangle URI's with parameters, following fucntions allow f
 
 ** javascript
 
+*** eslint
+
+#+begin_src emacs-lisp
+  (use-package lsp-eslint
+    :ensure t
+    :demand t
+    :after lsp-mode)
+#+end_src
+
 *** An enhanced Javascript mode
 
 #+BEGIN_SRC emacs-lisp
