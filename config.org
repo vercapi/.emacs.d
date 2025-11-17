@@ -2730,14 +2730,10 @@ It also creates a new prefix "C-l" to house all LSP key bindings
     :hook (lsp-mode . (lambda ()
                         (let ((lsp-keymap-prefix "C-c l"))
                           (lsp-enable-which-key-integration))))
-    :bind (("C-l r" . lsp-rename))
     :diminish lsp-mode
     :config (define-key lsp-mode-map (kbd "C-c l") lsp-command-map)
     )
 #+END_SRC
-
-#+RESULTS:
-: #s(hash-table data (:use-package (26907 2762 592162 373000) :init (26907 2762 579091 344000) :config (26907 2762 579083 346000) :config-secs (0 0 45 144000) :init-secs (0 0 71 349000) :use-package-secs (0 0 13341 14000)))
 
 LSP-UI higher level UI modules for LSP integration into emacs.
 #+BEGIN_SRC emacs-lisp
