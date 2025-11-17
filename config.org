@@ -1825,12 +1825,6 @@ Install and config the treemacs package.
     :ensure t
     :defer t
     :after (all-the-icons)
-    :init
-    (progn
-      ;; Create theme
-      (require 'treemacs)
-      (require 'treemacs)
-      (require 'f))
     :config
     ;; Set the differnt config options
     (setq treemacs-collapse-dirs              (if (executable-find "python") 3 0)
@@ -1883,7 +1877,7 @@ Integration with projectile
     :ensure t
     :after (treemacs all-the-icons)
     :config
-    (treemacs-all-the-icons-theme))
+    (treemacs-load-theme "all-the-icons"))
 #+end_src
 
 Customization of faces for treemacs
