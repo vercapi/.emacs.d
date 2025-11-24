@@ -1463,7 +1463,7 @@ Functions to control the awesome wm testing util awmtt (xephyr).
 
 Java settings
 #+begin_src emacs-lisp
-  (defvar lombok-path "/home/vercapi/.m2/repository/org/projectlombok/lombok/1.18.16/lombok-1.18.16.jar" "Path to lombok jar for the project")
+  (defvar lombok-path "/home/vercapi/.m2/repository/org/projectlombok/lombok/1.18.38/lombok-1.18.38.jar" "Path to lombok jar for the project")
 #+end_src
 
 *** Language server
@@ -1484,13 +1484,14 @@ Download [[http://download.eclipse.org/jdtls/snapshots/jdt-language-server-lates
                 (concat "-javaagent:" lombok-path)
                 (concat "-Xbootclasspath/a:" lombok-path))
           lsp-file-watch-ignored
+
           '(".idea" ".ensime_cache" ".eunit" "node_modules"
             ".git" ".hg" ".fslckout" "_FOSSIL_"
             ".bzr" "_darcs" ".tox" ".svn" ".stack-work"
             "build")
           lsp-java-configuration-runtimes
           '(:name "JavaSE-21"
-                  :path "/usr/lib/jvm/java-21-openjdk"
+                  :path "/usr/lib/jvm/java-17-openjdk"
                   :default t)
           lsp-java-import-order '["" "java" "javax" "#"]
           ;; Don't organize imports on save
