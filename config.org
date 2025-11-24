@@ -1259,7 +1259,9 @@ In Org mode we want to tangle URI's with parameters, following fucntions allow f
   (use-package typescript-mode
     :ensure t
     :mode "\\.ts\\'"
-    :hook (typescript-mode . lsp)
+    :hook ((typescript-mode . lsp)
+           (typescript-mode . (lambda ()
+                                (setq typescript-indent-level 2))))
     :init
     (with-eval-after-load "lsp-mode"
       (add-to-list 'lsp-enabled-clients 'ts-ls)))
