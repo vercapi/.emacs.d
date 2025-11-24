@@ -2754,9 +2754,10 @@ Dependency for all-the-icons. If not installed it will not show in windows and s
   (progn 
     (let ((destination "~/.emacs.d/custom/font-lock+.el"))
       (if (not (file-exists-p destination))
-          (url-copy-file "https://raw.githubusercontent.com/emacsmirror/emacswiki.org/master/font-lock%2B.el" destination t)))
+          (url-copy-file "https://github.com/emacsmirror/font-lock-plus/blob/master/font-lock%2B.el" destination t)))
     (use-package font-lock+))
 #+END_SRC
+
 
 Icon library with many unicode characters, icons, ...
 #+BEGIN_SRC emacs-lisp
