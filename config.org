@@ -161,7 +161,18 @@ Set the standard fonts for emacs and other componets
 This is based on std configuration. So if emacs adds this again in init.el or .emacs things might break and this needs to be  manually
 
 [[https://github.com/bluescan/proggyfonts/][Proggy Vector]] font was downloaded from [[https://app.programmingfonts.org/][programming fonts]].
-   
+
+#+BEGIN_SRC emacs-lisp
+  (let* ((font-url "https://github.com/bluescan/proggyfonts/raw/master/ProggyVector/ProggyVector-Regular.ttf")
+         (fonts-dir (expand-file-name "~/.fonts/"))
+         (font-path (expand-file-name "ProggyVector.ttf" fonts-dir)))
+    (unless (file-exists-p font-path)
+      (unless (file-directory-p fonts-dir)
+        (make-directory fonts-dir t))
+      (url-copy-file font-url font-path t)
+      (shell-command "fc-cache -f")))
+#+END_SRC
+
 #+BEGIN_SRC emacs-lisp
   (custom-set-faces
    '(default ((t (:family "ProggyVector" :foundry "PfEd" :slant normal :weight normal :height 120 :width normal))))
