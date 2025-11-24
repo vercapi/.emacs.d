@@ -2317,26 +2317,6 @@ Show bullets as images not just '*'s
     :ensure t)
 #+END_SRC
 
-#+BEGIN_SRC emacs-lisp
-  (unless (pve-env/on-windows)
-    (add-hook 'org-mode-hook
-              (lambda ()
-                (push '("[ ]" . ?) prettify-symbols-alist)
-                (push '("[X]" . ?) prettify-symbols-alist)
-                (push '("NEEDSWORK" . ?) prettify-symbols-alist)
-                (push '("#+TITLE:" . ?) prettify-symbols-alist)
-                (push '("#+BEGIN_SRC" . ?) prettify-symbols-alist)
-                (push '("#+begin_src" . ?) prettify-symbols-alist)
-                (push '("#+END_SRC" . ?) prettify-symbols-alist)
-                (push '("#+end_src" . ?) prettify-symbols-alist)
-                (prettify-symbols-mode))))
-#+END_SRC
-   
-Change font of checkboxes. Checkbox is already replaced with an icon so we don't want emacs to draw an additional box
-#+BEGIN_SRC emacs-lisp
-  (face-spec-set 'org-checkbox '((t (:box nil))))
-#+END_SRC
-
 ** Presenting
 
 #+BEGIN_SRC emacs-lisp
