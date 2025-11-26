@@ -628,7 +628,12 @@ Company (complete anything) is the front end system to autocomplete. Has mutlipl
     :diminish company-mode
     :hook (after-init . global-company-mode)
     :bind ("C-<tab>" . company-complete)
-    :config (add-to-list 'company-backends 'company-yasnippet 'company-capf)
+    :config
+    (add-to-list 'company-backends 'company-yasnippet 'company-capf)
+    (define-key company-active-map (kbd "TAB") nil)
+    (define-key company-active-map (kbd "<tab>") nil)
+    (define-key company-active-map (kbd "S-TAB") nil)
+    (define-key company-active-map (kbd "<backtab>") nil)
     :init (setq company-minimum-prefix-length 1
                 company-dabbrev-downcase nil
                 company-idle-delay 0
