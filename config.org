@@ -660,7 +660,9 @@ And the config for elements that are not supported by default
 Yasnippets
 #+BEGIN_SRC emacs-lisp
   (use-package yasnippet
-     :ensure t)
+     :ensure t
+     :init (yas-global-mode 1)
+     :config (add-to-list 'yas-snippet-dirs "~/.emacs.d/snippets"))
 #+END_SRC
 
 ** Syntax checking
