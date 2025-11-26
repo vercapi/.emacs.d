@@ -283,6 +283,15 @@ This function wil setup the emacs with a standard layout of windows and buffers
              (treemacs)))
   #+END_SRC
 
+** Emojis
+
+#+BEGIN_SRC emacs-lisp
+(use-package emojify
+  :ensure t
+  :hook ((org-mode markdown-mode) . emojify-mode)
+  :bind (("C-c i e" . emojify-insert-emoji)))
+#+END_SRC
+
 * Emacs Behavior
 ** General Emacs behavior 
 
