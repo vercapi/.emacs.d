@@ -862,6 +862,18 @@ e.g. call on helm-lastpass when inserting password in the minibuffer
 #+begin_src emacs-lisp
   (setq enable-recursive-minibuffers t)
 #+end_src
+** Tramp
+
+Using special shells or prompts might interfere with sudo in tramp.
+This makes tramp use a basic shell that has no issues.
+#+begin_src emacs-lisp
+  (add-to-list 'tramp-methods
+               '("sudo"
+                 (tramp-login-program        "sudo")
+                 (tramp-login-args           (("-u" "root") ("-s")))
+                 (tramp-remote-shell         "/bin/bash")
+                 (tramp-remote-shell-args    ("-c"))))
+#+end_src
 
 * Source control
 ** Magit config
