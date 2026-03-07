@@ -55,9 +55,14 @@ The settings bellow stp the GC pauses from being anoying.
 
 * Packages setup
   
-Loading all the resources so the rest of the config has access to all these resoruces.
+Configure everything related to installing and loading packages 
 
-** Packages sources
+** Packages
+
+Packages are managed in this file so I don't want the packages being handled by any other systems
+#+begin_src emacs-lisp
+    (setq package-enable-at-startup nil)
+#+end_src
 
 Configure all sources for packages to be used throughtout this config file.
 #+BEGIN_SRC emacs-lisp
