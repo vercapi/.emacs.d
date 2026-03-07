@@ -2,57 +2,6 @@
 
 An elegant editor... for a more civilized age.
 
-* Environment
-  
-Check where we are running
-#+BEGIN_SRC emacs-lisp
-  (defun pve-env/on-cygwin ()
-    "Return true if we are on cygwin"
-    (string-equal system-type "cygwin"))
-
-  (defun pve-env/on-windows ()
-    "Return true if we are on the windows machine"
-    (string-equal system-type "windows-nt"))
-
-  (defun pve-env/on-linux ()
-    "Return true if we are on a linux system"
-    (string-equal system-type "gnu/linux"))
-#+END_SRC
-
-Setup environment variables
-Oracle's instaclient so it is accessible for the python runtime
-#+BEGIN_SRC emacs-lisp
-  (when (pve-env/on-linux)
-    (let ((oracle-instaclient "/opt/apps/oracle/client/instantclient_19_8")
-          (ld_library_path "LD_LIBRARY_PATH")
-          (seperator ":"))
-      (setenv ld_library_path
-              (concat oracle-instaclient seperator (getenv ld_library_path)))))
-#+END_SRC
-
-Use the gnu core utils from git
-#+BEGIN_SRC emacs-lisp
-  (when (pve-env/on-windows)
-    (let ((gnu-bin "C:\\Program Files\\Git\\usr\\bin")
-          (path (getenv "PATH"))
-          (seperator ";"))
-      (setenv "PATH" (concat gnu-bin seperator path))))
-#+END_SRC
-
-* Core emacs setup
-  
-Various things go slower on windows (org mode, helm, ...). They all seem to pause from time to time.
-The settings bellow stp the GC pauses from being anoying.
-#+BEGIN_SRC emacs-lisp
-  (if (pve-env/on-windows)
-      (progn
-        (setq inhibit-compacting-font-caches t)
-        (setq gc-cons-threshold (* 511 2048 2048)
-              gc-cons-percentage 0.5
-              garbage-collection-messages t)
-        (run-with-idle-timer 5 t #'garbage-collect)))
-#+END_SRC
-
 * Packages setup
   
 Configure everything related to installing and loading packages 
@@ -1977,12 +1926,11 @@ Custom fucntion to add projects in a dir in buld to the current treemacs workspa
 
 Disabled doesn't work on windows, only windows?
 #+BEGIN_SRC emacs-lisp
-  (if (pve-env/on-linux)
-      (use-package sunrise-commander
-        :quelpa (sunrise-commander
-                 :fetcher github
-                 :repo "escherdragon/sunrise-commander"
-                 :defer 2)))
+  (use-package sunrise-commander
+    :quelpa (sunrise-commander
+             :fetcher github
+             :repo "escherdragon/sunrise-commander"
+             :defer 2))
 #+END_SRC
 
 ** Dired config
@@ -2163,17 +2111,6 @@ Set the killall function key binding
    
 * Shells
 ** Eshell
-
-Set paths depending on the environment we are running
-#+BEGIN_SRC emacs-lisp
-  (defun pve-set-eshell-path-env ()
-    "Settig the eshell-path-env"
-    (if (pve-env/on-cygwin)
-        (progn
-          (setq cygwin-paths "/cygdrive/c/Program Files/nodejs/:")
-          (setq eshell-path-env (concat cygwin-paths eshell-path-env))
-          (setenv "PATH" (concat cygwin-paths (getenv "PATH"))))))
-#+END_SRC
 
 Add hook to eshell to set paths when eshell starts
 #+BEGIN_SRC emacs-lisp
