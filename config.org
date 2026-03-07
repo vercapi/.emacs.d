@@ -164,7 +164,7 @@ This is based on std configuration. So if emacs adds this again in init.el or .e
 
 #+BEGIN_SRC emacs-lisp
   (let* ((font-url "https://github.com/bluescan/proggyfonts/raw/master/ProggyVector/ProggyVector-Regular.ttf")
-         (fonts-dir (expand-file-name "~/.fonts/"))
+         (fonts-dir (expand-file-name "~/.local/share/fonts/"))
          (font-path (expand-file-name "ProggyVector.ttf" fonts-dir)))
     (unless (file-exists-p font-path)
       (unless (file-directory-p fonts-dir)
