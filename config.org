@@ -543,17 +543,6 @@ text|
     
 ** Search & Replace 
    
-Helm swoop, a more dynamic version of hem-occur
-Find all occurences in a/multiple file(s) follow along in the files while browsing the results.
-#+BEGIN_SRC emacs-lisp
-  (use-package helm-swoop
-    :ensure t
-    :bind (("M-i" . helm-swoop)
-           ("M-I" . helm-swoop-back-to-last-point)
-           ("C-c M-i" . helm-multi-swoop)
-           ("C-x M-i" . helm-multi-swoop-all)))
-#+END_SRC
-
 Visual-regexp gives visual feedback on the regexp
 Key combination replace the regular query-regepx-replace
 #+BEGIN_SRC emacs-lisp
@@ -1219,15 +1208,6 @@ In Org mode we want to tangle URI's with parameters, following fucntions allow f
 #+END_SRC
 
 ** javascript
-
-*** eslint
-
-#+begin_src emacs-lisp
-  (use-package lsp-eslint
-    :ensure t
-    :demand t
-    :after lsp-mode)
-#+end_src
 
 *** An enhanced Javascript mode
 
