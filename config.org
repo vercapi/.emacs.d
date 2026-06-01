@@ -1679,6 +1679,13 @@ Format HTML in markdown
     (lsp-mode t))
 #+end_src
 
+** OpenAPI / swagger
+
+#+begin_src emacs-lisp
+  (use-package swagg
+    :ensure t)
+#+end_src
+
 * Generative AI LLMs
 
 ** Org AI
