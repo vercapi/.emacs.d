@@ -610,12 +610,22 @@ Yasnippets
 
 ** Syntax checking
    
-Using flycheck as the syntax checker
+Using flycheck as the syntax checker.
+
+We disable the built-in ~org-lint~ checker.  Since Org 9.7 it returns
+each report's line as a propertized string (carrying an ~org-lint-marker~
+text property) rather than a number, which flycheck's adapter feeds
+straight into ~flycheck-error-new-at~, producing
+=Wrong type argument: number-or-marker-p=.  org-lint is meant as an
+on-demand report anyway — run =M-x org-lint= when a lint pass is wanted.
+
 #+BEGIN_SRC emacs-lisp
   (use-package flycheck
     :ensure t
     :diminish flycheck-mode
-    :init (global-flycheck-mode))
+    :init (global-flycheck-mode)
+    :config
+    (add-to-list 'flycheck-disabled-checkers 'org-lint))
 #+END_SRC
 
 ** Spell Checking
