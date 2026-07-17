@@ -2381,7 +2381,44 @@ Will look create :LOGBOOK: under the heading
 
 #+BEGIN_SRC emacs-lisp
   (setq org-todo-keywords
-        '((sequence "NEEDSWORK(w@!)" "TODO(t!)" "DOING(o!)" "BLOCKED(b@/!)" "WAITING(e@!)" "|" "DONE(d@!)" "CANCELED(c@!)")))
+        '((sequence "NEEDSWORK(w@!)" "TODO(t!)" "DOING(o!)" "BLOCKED(b@/!)" "WAITING(e@!)" "ANSWERED(a!)" "REVIEW(r!)" "REVIEWED(v!)" "|" "DONE(d@!)" "CANCELED(c@!)")))
+#+END_SRC
+
+Give the newer states distinct colors so they stand out
+#+BEGIN_SRC emacs-lisp
+  (setq org-todo-keyword-faces
+        '(("ANSWERED" . (:foreground "#2aa198" :weight bold))
+          ("REVIEW"   . (:foreground "#6c71c4" :weight bold))
+          ("REVIEWED" . (:foreground "#268bd2" :weight bold))))
+#+END_SRC
+
+A programmatic ~org-todo~ call (and the MCP node-update tool) skips the
+deferred state-change log note, because Org defers the log-note
+insertion to the command loop, which never runs in a headless call.
+This helper sets the state and then flushes the pending note
+explicitly so every status change lands in the =:LOGBOOK:= drawer.
+The =save-buffer= persists the change, since these files are also
+edited outside Emacs.
+#+BEGIN_SRC emacs-lisp
+  (defun pve/org-set-state (id state)
+    "Set the TODO keyword of the Org node with ID to STATE, logging the
+  transition into its :LOGBOOK: drawer.  STATE is a keyword string such
+  as \"REVIEW\"; pass an empty string to clear the state.  Returns STATE.
+
+  Needed because a programmatic `org-todo' (and the MCP node-update tool)
+  skip the deferred state-change log note; this flushes it explicitly.
+
+  REVIEWED is reserved for the user and must never be set through this
+  helper; it is only ever set interactively via `C-c C-t'."
+    (when (member state '("REVIEWED"))
+      (user-error "REVIEWED is reserved for the user; it must not be set programmatically"))
+    (save-window-excursion
+      (org-id-goto id)
+      (org-todo state)
+      (when (and (markerp org-log-note-marker) (marker-buffer org-log-note-marker))
+        (org-add-log-note))
+      (save-buffer))
+    state)
 #+END_SRC
 
 *** Capture templates
