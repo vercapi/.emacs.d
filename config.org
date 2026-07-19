@@ -2788,6 +2788,22 @@ edited outside Emacs.
     state)
 #+END_SRC
 
+** pve/org-snapshot
+
+Convenience command to snapshot the Org workspace from inside Emacs.
+Delegates entirely to the shell script =/home/nixos/.local/bin/org-snapshot=,
+which stages all changes and commits the private notes git repo if anything
+changed.  The result is shown in the echo area via =message=.
+#+BEGIN_SRC emacs-lisp
+  (defun pve/org-snapshot ()
+    "Snapshot the Org workspace into the private notes git repo.
+  Calls the shell script /home/nixos/.local/bin/org-snapshot and displays
+  its output in the echo area."
+    (interactive)
+    (let ((output (shell-command-to-string "/home/nixos/.local/bin/org-snapshot")))
+      (message "%s" (string-trim output))))
+#+END_SRC
+
 * Application Integration
 ** Pocket
 
