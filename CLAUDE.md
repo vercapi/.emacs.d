@@ -24,6 +24,15 @@ This is a **literate Emacs configuration** built around a single Org file:
 - Absolute paths (`~/.emacs.d/...`) are intentional — preserve them.
 - Package management is entirely within this repo (MELPA + ELPA via `package.el` + `quelpa`); do not use Nix for Emacs packages.
 
+## AI Helpers subtree
+
+The top-level `* AI Helpers` heading in `config.org` (between `* Org Mode` and `* Application Integration`) collects all elisp helper functions created specifically for Claude AI-assistant workflows that operate on the org workspace via the Emacs MCP server (e.g. `pve/org-set-state`).
+
+- **All AI-created helper functions go in this subtree** — never scatter them through the topical config sections. General-purpose helpers the user wrote for their own use stay in their topical sections.
+- When adding or modifying a helper, **preserve its side-effect guarantees** (e.g. flushing the pending state-change note into `:LOGBOOK:`, `save-buffer` to persist changes, refusing reserved states like `REVIEWED`) — Claude sessions in the org workspace depend on them.
+- Each helper must **also be documented in the org workspace's `CLAUDE.md`** (the "Custom commands" table in the Emacs MCP section) so Claude sessions there know to use it.
+- Naming follows the existing repo convention (`pve-`/`pve/` prefix); no special AI-specific prefix is required.
+
 ## OS-level dependencies
 
 If a package or feature requires OS-level tooling (system binaries, native libraries, fonts, dictionaries, etc.), **do not install them manually or via Nix imperatively**. Instead, spawn a new agent pointed at `~/nixos/` and instruct it to add the dependency following the conventions in `~/nixos/CLAUDE.md` (edit `config.org` there, tangle, and rebuild).
