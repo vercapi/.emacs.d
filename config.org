@@ -2582,6 +2582,40 @@ With Helm support for Org Query Language
     :requires org-ql)
 #+end_src
 
+** LaTeX export
+
+Register the CraftCode brand document class (=craftcode.cls=, found via kpathsea
+through a =~/texmf= symlink) with the LaTeX exporter. =[NO-DEFAULT-PACKAGES]= is
+deliberate: the class loads everything itself (fontspec-based, incompatible with
+the inputenc/fontenc defaults). =[PACKAGES]= and =[EXTRA]= stay so
+=#+LATEX_HEADER= lines still work. The class styles source code via listings,
+defines =\subtitle=, and its Lexend brand font requires LuaLaTeX.
+
+Note the subtitle format: with =org-latex-subtitle-separate= set, ox-latex emits
+the *formatted* subtitle string raw into the preamble right after =\title{}= —
+so the format itself must wrap the text in the class's =\subtitle= macro. With
+the default format the subtitle text lands unwrapped in the preamble and breaks
+the title block.
+
+#+BEGIN_SRC emacs-lisp
+  (with-eval-after-load 'ox-latex
+    (add-to-list 'org-latex-classes
+                 '("craftcode"
+                   "\\documentclass{craftcode}\n[NO-DEFAULT-PACKAGES]\n[PACKAGES]\n[EXTRA]"
+                   ("\\section{%s}" . "\\section*{%s}")
+                   ("\\subsection{%s}" . "\\subsection*{%s}")
+                   ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+                   ("\\paragraph{%s}" . "\\paragraph*{%s}")
+                   ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
+    (setq org-latex-src-block-backend 'listings)   ; class styles code via listings
+    (setq org-latex-subtitle-separate t)           ; class defines \subtitle
+    (setq org-latex-subtitle-format "\\subtitle{%s}") ; see prose note above
+    (setq org-latex-tables-booktabs t)             ; class loads booktabs
+    (setq org-latex-compiler "lualatex")           ; Lexend brand font needs LuaLaTeX
+    (setq org-latex-pdf-process
+          '("latexmk -f -pdf -pdflatex=lualatex -interaction=nonstopmode -output-directory=%o %f")))
+#+END_SRC
+
 ** Plugins / Intgration
 *** magit integration
     
