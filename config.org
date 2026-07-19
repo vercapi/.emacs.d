@@ -2392,35 +2392,6 @@ Give the newer states distinct colors so they stand out
           ("REVIEWED" . (:foreground "#268bd2" :weight bold))))
 #+END_SRC
 
-A programmatic ~org-todo~ call (and the MCP node-update tool) skips the
-deferred state-change log note, because Org defers the log-note
-insertion to the command loop, which never runs in a headless call.
-This helper sets the state and then flushes the pending note
-explicitly so every status change lands in the =:LOGBOOK:= drawer.
-The =save-buffer= persists the change, since these files are also
-edited outside Emacs.
-#+BEGIN_SRC emacs-lisp
-  (defun pve/org-set-state (id state)
-    "Set the TODO keyword of the Org node with ID to STATE, logging the
-  transition into its :LOGBOOK: drawer.  STATE is a keyword string such
-  as \"REVIEW\"; pass an empty string to clear the state.  Returns STATE.
-
-  Needed because a programmatic `org-todo' (and the MCP node-update tool)
-  skip the deferred state-change log note; this flushes it explicitly.
-
-  REVIEWED is reserved for the user and must never be set through this
-  helper; it is only ever set interactively via `C-c C-t'."
-    (when (member state '("REVIEWED"))
-      (user-error "REVIEWED is reserved for the user; it must not be set programmatically"))
-    (save-window-excursion
-      (org-id-goto id)
-      (org-todo state)
-      (when (and (markerp org-log-note-marker) (marker-buffer org-log-note-marker))
-        (org-add-log-note))
-      (save-buffer))
-    state)
-#+END_SRC
-
 *** Capture templates
 
 Load org-protocol and org-capture so we can use these librarie to setup catpuring witing emacs and from else where
@@ -2667,6 +2638,49 @@ This sets default directory but can be overwitten by:
     (add-hook 'dired-mode-hook 'org-download-enable))
 #+END_SRC
     
+* AI Helpers
+
+Elisp helper functions created for (and by) Claude AI-assistant workflows
+that operate on the org workspace through the Emacs MCP server. Claude calls
+these via the MCP =eval-elisp= tool. They are added and modified via agents
+spawned from that workspace — not scattered through the topical config
+sections above, so it stays clear which code exists purely for the AI
+workflows. Each helper here must also be documented in the org workspace's
+=CLAUDE.md= (the "Custom commands" table in the Emacs MCP section) so Claude
+sessions know to use it. New helpers follow the surrounding naming style
+(=pve/= / =pve-= prefix); no special AI-specific prefix is required.
+
+** pve/org-set-state
+
+A programmatic ~org-todo~ call (and the MCP node-update tool) skips the
+deferred state-change log note, because Org defers the log-note
+insertion to the command loop, which never runs in a headless call.
+This helper sets the state and then flushes the pending note
+explicitly so every status change lands in the =:LOGBOOK:= drawer.
+The =save-buffer= persists the change, since these files are also
+edited outside Emacs.
+#+BEGIN_SRC emacs-lisp
+  (defun pve/org-set-state (id state)
+    "Set the TODO keyword of the Org node with ID to STATE, logging the
+  transition into its :LOGBOOK: drawer.  STATE is a keyword string such
+  as \"REVIEW\"; pass an empty string to clear the state.  Returns STATE.
+
+  Needed because a programmatic `org-todo' (and the MCP node-update tool)
+  skip the deferred state-change log note; this flushes it explicitly.
+
+  REVIEWED is reserved for the user and must never be set through this
+  helper; it is only ever set interactively via `C-c C-t'."
+    (when (member state '("REVIEWED"))
+      (user-error "REVIEWED is reserved for the user; it must not be set programmatically"))
+    (save-window-excursion
+      (org-id-goto id)
+      (org-todo state)
+      (when (and (markerp org-log-note-marker) (marker-buffer org-log-note-marker))
+        (org-add-log-note))
+      (save-buffer))
+    state)
+#+END_SRC
+
 * Application Integration
 ** Pocket
 
