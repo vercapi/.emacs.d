@@ -1672,7 +1672,12 @@ Format HTML in markdown
 
 * Generative AI LLMs
 
-** Org AI
+** Emacs integration
+
+**** Use AI within emacs
+**** Org AI
+
+Use LLMs in org mode
 
 #+begin_src emacs-lisp
   (use-package org-ai
@@ -1690,14 +1695,19 @@ Format HTML in markdown
     (org-ai-mode . (lambda () (visual-line-mode 1))))
 #+end_src
 
-** Copilot
+**** Copilot
+
+Us copilot autocomplete functionality within emacs.
 
 #+begin_src emacs-lisp
   (use-package copilot
     :quelpa (copilot :fetcher github
                       :repo "copilot-emacs/copilot.el"
                       :branch "main"
-                      :files ("*.el"))
+                      ;; Avoid installing the chat module from copilot.el because
+                      ;; it collides with the separate `copilot-chat` package file
+                      ;; name (`copilot-chat.el`) on `load-path`.
+                      :files ("copilot.el" "copilot-balancer.el" "copilot-nes.el"))
     :hook (prog-mode . copilot-mode)
     :bind (:map copilot-mode-map
                 ("<tab>" . copilot-accept-completion)
@@ -1710,12 +1720,60 @@ Format HTML in markdown
     (add-to-list 'copilot-indentation-alist '(emacs-lisp-mode . 2)))
 #+end_src
 
-** Copilot chat
+**** Copilot chat
+
+Chat with copilot from within emacs
 
 #+begin_src emacs-lisp
+  ;; `copilot` and `copilot-chat` both ship a `copilot-chat.el` file name.
+  ;; Keep the standalone `copilot-chat` package first on `load-path` so
+  ;; autoloads resolve to the expected implementation.
+  (let ((copilot-chat-dir
+         (car (sort (directory-files package-user-dir t "^copilot-chat-[0-9]")
+                    #'string>))))
+    (when copilot-chat-dir
+      (setq load-path (cons copilot-chat-dir
+                            (delete copilot-chat-dir load-path)))))
+
   (use-package copilot-chat 
-    :ensure t)
+    :ensure t
+    :after copilot)
 #+end_src
+
+**** Aidermacs
+
+Using emacs to interact with LLMs in a more emacs way
+
+#+begin_src emacs-lisp
+  (use-package aidermacs
+    :ensure t
+    :bind (("C-c a" . aidermacs-transient-menu))
+    :config
+    (setenv ANTHROPIC_API_KEY antropic-api-key))
+#+end_src
+
+
+
+*** Let AI use emacs
+
+
+Connect AI to emacs so that it has access to the power of emacs
+
+#+begin_src emacs-lisp
+  (use-package mcp-server
+    :quelpa (mcp-server :fetcher github
+                        :repo "rhblind/emacs-mcp-server"
+                        :branch "main"
+                        ;; Avoid installing the chat module from copilot.el because
+                        ;; it collides with the separate `copilot-chat` package file
+                        ;; name (`copilot-chat.el`) on `load-path`.
+                        :files ("*.el" "tools/*.el" "mcp-wrapper.py" "mcp-wrapper.sh"))
+      :config
+    (add-hook 'emacs-startup-hook #'mcp-server-start-unix))
+#+end_src
+
+#+RESULTS:
+: #s(hash-table data (:use-package (27224 38561 408724 289000) :use-package-secs (0 0 4 945000)))
 
 ** Assists
 *** Diff on buffer
