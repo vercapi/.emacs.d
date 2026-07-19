@@ -42,7 +42,9 @@ If a package or feature requires OS-level tooling (system binaries, native libra
 After editing `config.org`, tangle to rebuild `config.el`:
 
 ```bash
-emacs --batch --eval "(progn (require 'org) (require 'ob-tangle) (org-babel-tangle-file \"config.org\"))"
+emacs --batch --eval "(progn (require 'org) (require 'ob-tangle) (org-babel-tangle-file \"config.org\" \"config.el\" \"emacs-lisp\"))"
 ```
+
+The target-file and lang arguments are required: without them `org-babel-tangle-file` only tangles blocks with an explicit `:tangle` header (just an org-protocol `.desktop` file), not the ~225 emacs-lisp blocks. The 3-arg form matches what `org-babel-load-file` in `init.el` does.
 
 There is no automated test suite or CI for this repository.
