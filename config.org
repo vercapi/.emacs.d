@@ -1960,6 +1960,21 @@ Sorting for dired
           helm-follow-input-idle-delay 0.5
           helm-ff-keep-cached-candidates nil)     ; Don't cache results, it had a memory leak
     (customize-set-variable 'helm-ff-lynx-style-map t)
+    ;; Guard against a leaked `helm-M-x--timer'.  Its callback
+    ;; `helm-M-x--notify-prefix-arg' runs `with-helm-window' whenever a
+    ;; prefix arg is set; when the timer survives an abnormal helm exit
+    ;; there is no live helm window, so `select-window' on nil signals
+    ;; `(wrong-type-argument window-live-p nil)'.  This surfaces e.g. when
+    ;; filtering the org agenda by TODO state.  Only notify when a helm
+    ;; window is actually live.
+    (defun pve/helm-M-x-notify-prefix-arg-guard (orig-fn &rest args)
+      "Skip ORIG-FN unless a live helm window exists.
+Prevents spurious `window-live-p' timer errors from a leaked
+`helm-M-x--timer'."
+      (when (helm-window)
+        (apply orig-fn args)))
+    (advice-add 'helm-M-x--notify-prefix-arg :around
+                #'pve/helm-M-x-notify-prefix-arg-guard)
     :bind (("M-x" . helm-M-x)
            ("C-x b" . helm-mini)
            ("C-x C-f" . helm-find-files)
