@@ -2452,6 +2452,18 @@ We want to keep a logbook of the actions done but keep it tucked a way in the LO
 #+END_SRC
 Will look create :LOGBOOK: under the heading
 
+The four AI-workflow drawers (=:AIINSTRUCTIONS:=, =:DECISIONS:=, =:AILOG:=,
+=:QUESTIONS:=) are already first-class drawers in Org 9.7 — any name matching
+=org-drawer-regexp= folds and parses automatically, so no =org-drawers=
+allow-list is needed (that variable was removed in Org 8.3). We only keep them
+out of PDF/LaTeX export here: =org-export-with-drawers= defaults to
+=(not "LOGBOOK")=, which would otherwise leak all four into exported documents.
+We keep "LOGBOOK" in the list to preserve the current behaviour.
+#+BEGIN_SRC emacs-lisp
+  (setq org-export-with-drawers
+        '(not "LOGBOOK" "AIINSTRUCTIONS" "DECISIONS" "AILOG" "QUESTIONS"))
+#+END_SRC
+
 #+BEGIN_SRC emacs-lisp
   (setq org-todo-keywords
         '((sequence "NEEDSWORK(w@!)" "TODO(t!)" "DOING(o!)" "BLOCKED(b@/!)" "WAITING(e@!)" "ANSWERED(a!)" "REVIEW(r!)" "REVIEWED(v!)" "|" "DONE(d@!)" "CANCELED(c@!)")))
@@ -2802,6 +2814,168 @@ changed.  The result is shown in the echo area via =message=.
     (interactive)
     (let ((output (shell-command-to-string "/home/nixos/.local/bin/org-snapshot")))
       (message "%s" (string-trim output))))
+#+END_SRC
+
+** DONE pve/org-questions-meta-return
+:PROPERTIES:
+:ID:       cacfedca-4de9-49c8-8b83-945b7c88eb9f
+:END:
+:LOGBOOK:
+- State "REVIEWED"   from "REVIEW"     [2026-07-20 Mon 09:10]
+- State "REVIEW"     from              [2026-07-19 Sun 19:57]
+:END:
+
+When point is inside a =:QUESTIONS:= drawer and on a list-item line,
+pressing =M-RET= should insert =-> = (an answer line) rather than the
+default =- = (a new question bullet).  The hook function below detects
+this situation and, when true, inserts the answer prefix and returns =t=
+to suppress Org's default =org-meta-return= action.
+#+BEGIN_SRC emacs-lisp
+  (defun pve/org-questions-meta-return ()
+    "In a :QUESTIONS: drawer, insert an answer line (-> ) instead of a new item.
+  Intended as an `org-metareturn-hook' function: returns t to skip the
+  default `org-meta-return' behaviour when point is inside a :QUESTIONS:
+  drawer and on a list-item line, nil otherwise."
+    (when (and (derived-mode-p 'org-mode)
+               ;; Is point on a list-item line?
+               (save-excursion
+                 (beginning-of-line)
+                 (looking-at "[ \t]*- "))
+               ;; Is point inside a :QUESTIONS: drawer?
+               (save-excursion
+                 (let ((drawer-start
+                        (re-search-backward "^[ \t]*:QUESTIONS:" nil t))
+                       (drawer-end
+                        (progn
+                          (goto-char (point))
+                          (re-search-forward "^[ \t]*:END:" nil t))))
+                   (and drawer-start drawer-end
+                        ;; Make sure the :QUESTIONS: we found really closes
+                        ;; with the :END: that comes *after* point.
+                        (progn
+                          (goto-char drawer-start)
+                          (re-search-forward "^[ \t]*:END:" nil t))
+                        ;; Current point must be between the two markers.
+                        (let ((pos (point-marker)))
+                          (and (> (marker-position pos) drawer-start)
+                               drawer-end))))))
+      (end-of-line)
+      (insert "\n-> ")
+      t))
+
+  (add-hook 'org-metareturn-hook #'pve/org-questions-meta-return)
+#+END_SRC
+
+** pve/add-ailog-entry
+
+Append a timestamped note to the =:AILOG:= drawer of the Org node with the
+given ID.  If the drawer already exists, the entry is inserted on a new line
+just before the closing =:END:=.  If no =:AILOG:= drawer exists yet, one is
+created immediately after the node's meta-data block.
+
+The =re-search-forward= for the drawer open-line uses =^:AILOG:= (no =$=
+anchor) so it matches lines that have trailing whitespace or tags after the
+drawer name — a strict =^:AILOG:$= would miss those and fall through to the
+else branch, creating a duplicate drawer.
+#+BEGIN_SRC emacs-lisp
+  (defun pve/add-ailog-entry (id note)
+    "Append NOTE to the :AILOG: drawer of the Org node identified by ID.
+  If the drawer exists it is extended; otherwise a new one is created after
+  the node's meta-data block.  The buffer is saved after the insertion."
+    (save-window-excursion
+      (org-id-goto id)
+      (org-back-to-heading t)
+      (let* ((beg (point))
+             (end (save-excursion (org-end-of-subtree t t) (point))))
+        (goto-char beg)
+        (if (re-search-forward "^:AILOG:" end t)
+            (progn
+              (re-search-forward "^:END:$" end t)
+              (beginning-of-line)
+              (insert (format "[%s] %s\n"
+                              (format-time-string "%Y-%m-%d")
+                              note)))
+          (goto-char beg)
+          (org-end-of-meta-data t)
+          (insert (format ":AILOG:\n[%s] %s\n:END:\n"
+                          (format-time-string "%Y-%m-%d")
+                          note)))
+        (save-buffer))))
+#+END_SRC
+
+** pve/org-aiinstructions
+
+Ancestor-aware reader for =:AIINSTRUCTIONS:= drawers. Given a node ID it
+collects every applicable drawer in scope — the file-level drawer (before the
+first heading), each ancestor heading's drawer, and the node's own drawer —
+ordered broadest to closest so the caller can apply closest-wins. The result
+is a single labelled string (=[file]=, =[ancestor: TITLE]=, =[node: TITLE]=),
+or nil when no such drawer exists in any scope. It is a pure reader and never
+saves the buffer.
+
+The two private helpers do the region scanning. Each restricts its search to a
+region bounded by the next heading, so a *descendant's* drawer is never picked
+up for an ancestor. The opener is matched with =^[ \t]*:AIINSTRUCTIONS:= (no
+=$= anchor, per the drawer-regexp gotcha — a trailing tag or whitespace on the
+line would otherwise defeat the match).
+#+BEGIN_SRC emacs-lisp
+  (defun pve/org--aiinstructions-in-region (beg end)
+    "Return body of the first :AIINSTRUCTIONS: drawer within [BEG,END), or nil.
+  The opener is matched with ^[ \\t]*:AIINSTRUCTIONS: (no $ anchor, per the
+  drawer-regexp gotcha).  Body is the text strictly between the opener line and
+  its matching ^[ \\t]*:END:, markers excluded and trimmed."
+    (save-excursion
+      (goto-char beg)
+      (when (re-search-forward "^[ \t]*:AIINSTRUCTIONS:" end t)
+        (forward-line 1)
+        (let ((body-start (point))
+              (body-end (if (re-search-forward "^[ \t]*:END:" end t)
+                            (line-beginning-position) end)))
+          (string-trim (buffer-substring-no-properties body-start body-end))))))
+
+  (defun pve/org--aiinstructions-in-heading-region ()
+    "Return the :AIINSTRUCTIONS: body for the heading at point, or nil.
+  Searches only from the heading to the next heading of any level, so a
+  descendant's drawer is never picked up."
+    (save-excursion
+      (org-back-to-heading t)
+      (let ((beg (line-beginning-position))
+            (end (save-excursion
+                   (forward-line 1)
+                   (if (re-search-forward "^\\*+ " nil t)
+                       (line-beginning-position) (point-max)))))
+        (pve/org--aiinstructions-in-region beg end))))
+
+  (defun pve/org-aiinstructions (id)
+    "Return all applicable :AIINSTRUCTIONS: drawer bodies in scope for node ID.
+  Collects the file-level drawer (before the first heading), every ancestor
+  heading's drawer, and the node's own drawer, ordered broadest to closest so
+  the caller applies closest-wins.  Returns a single labeled string (scopes
+  labeled [file], [ancestor: TITLE], [node: TITLE]), or nil when no
+  :AIINSTRUCTIONS: drawer exists in any scope.  Pure reader: does not save."
+    (save-window-excursion
+      (org-id-goto id)
+      (org-back-to-heading t)
+      (let ((scopes '()))
+        (let ((body (pve/org--aiinstructions-in-heading-region)))
+          (when body
+            (push (cons (format "[node: %s]" (org-get-heading t t t t)) body) scopes)))
+        (save-excursion
+          (while (org-up-heading-safe)
+            (let ((body (pve/org--aiinstructions-in-heading-region)))
+              (when body
+                (push (cons (format "[ancestor: %s]" (org-get-heading t t t t)) body) scopes)))))
+        (save-excursion
+          (goto-char (point-min))
+          (let* ((first-heading (save-excursion
+                                  (if (re-search-forward "^\\*+ " nil t)
+                                      (line-beginning-position) (point-max))))
+                 (body (pve/org--aiinstructions-in-region (point-min) first-heading)))
+            (when body
+              (push (cons "[file]" body) scopes))))
+        (when scopes
+          (concat (mapconcat (lambda (s) (format "%s\n%s" (car s) (cdr s))) scopes "\n\n")
+                  "\n\n(closest scope wins: the last block above overrides the earlier ones.)")))))
 #+END_SRC
 
 * Application Integration
