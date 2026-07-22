@@ -19,7 +19,8 @@ This is a **literate Emacs configuration** built around a single Org file:
 - Use `use-package` blocks for all package configuration — it is the dominant pattern throughout.
 - New user-defined functions must be namespaced `pve-` or `pve/` (existing convention).
 - `config.org` is organized with Org mode hierarchy (`*` / `**` sections by function); place new code under the appropriate existing heading.
-- Follow literate style: accompany code blocks with concise Org prose describing intent.
+- Keep `config.org` clean and minimalistic. Follow literate style, but write the Org prose **for a human reader**: a short sentence or two describing intent, no more. Do not narrate root causes, upstream-bug analysis, version incompatibilities, or other AI-oriented detail in the visible prose.
+- Any extra context meant for the AI assistant rather than the user goes in an `:AIINSTRUCTIONS:` drawer (same convention as the org workspace's `CLAUDE.md`), never in the human-facing prose. Place the drawer **directly under the heading**, before the prose, following regular Emacs drawer conventions (`:AIINSTRUCTIONS:` … `:END:`). Drawers are not tangled, so they stay out of `config.el`.
 - Prefer existing Emacs packages and built-ins before writing custom Emacs Lisp; keep `custom/` additions minimal and focused.
 - Absolute paths (`~/.emacs.d/...`) are intentional — preserve them.
 - Package management is entirely within this repo (MELPA + ELPA via `package.el` + `quelpa`); do not use Nix for Emacs packages.

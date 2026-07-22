@@ -609,15 +609,17 @@ Yasnippets
 #+END_SRC
 
 ** Syntax checking
-   
-Using flycheck as the syntax checker.
+:AIINSTRUCTIONS:
+org-lint is disabled because, since Org 9.7, it returns each report's line
+as a propertized string (org-lint-marker text property) rather than a
+number. Flycheck's org-lint adapter passes it straight to
+flycheck-error-new-at, producing "Wrong type argument: number-or-marker-p".
+Present even in the latest flycheck. Do not re-enable without coercing the
+line to a number.
+:END:
 
-We disable the built-in ~org-lint~ checker.  Since Org 9.7 it returns
-each report's line as a propertized string (carrying an ~org-lint-marker~
-text property) rather than a number, which flycheck's adapter feeds
-straight into ~flycheck-error-new-at~, producing
-=Wrong type argument: number-or-marker-p=.  org-lint is meant as an
-on-demand report anyway — run =M-x org-lint= when a lint pass is wanted.
+Using flycheck as the syntax checker. The ~org-lint~ checker is disabled;
+run =M-x org-lint= on demand instead.
 
 #+BEGIN_SRC emacs-lisp
   (use-package flycheck
@@ -2079,6 +2081,17 @@ Sorting for dired
 
 * Utils
 ** Helm
+:AIINSTRUCTIONS:
+The guard wraps helm-M-x--notify-prefix-arg, whose repeating timer
+(helm-M-x--timer) can survive an abnormal helm exit. Its callback runs
+with-helm-window when a prefix arg is set; with no live helm window,
+select-window on nil signals "(wrong-type-argument window-live-p nil)"
+repeatedly — seen e.g. when filtering the org agenda by TODO state. Only
+notify when a helm window is live.
+:END:
+
+The advice below stops a stray =helm-M-x= timer from erroring after Helm
+closes.
 
 #+BEGIN_SRC emacs-lisp
   (use-package helm
@@ -2094,17 +2107,8 @@ Sorting for dired
           helm-follow-input-idle-delay 0.5
           helm-ff-keep-cached-candidates nil)     ; Don't cache results, it had a memory leak
     (customize-set-variable 'helm-ff-lynx-style-map t)
-    ;; Guard against a leaked `helm-M-x--timer'.  Its callback
-    ;; `helm-M-x--notify-prefix-arg' runs `with-helm-window' whenever a
-    ;; prefix arg is set; when the timer survives an abnormal helm exit
-    ;; there is no live helm window, so `select-window' on nil signals
-    ;; `(wrong-type-argument window-live-p nil)'.  This surfaces e.g. when
-    ;; filtering the org agenda by TODO state.  Only notify when a helm
-    ;; window is actually live.
     (defun pve/helm-M-x-notify-prefix-arg-guard (orig-fn &rest args)
-      "Skip ORIG-FN unless a live helm window exists.
-Prevents spurious `window-live-p' timer errors from a leaked
-`helm-M-x--timer'."
+      "Skip ORIG-FN unless a live helm window exists."
       (when (helm-window)
         (apply orig-fn args)))
     (advice-add 'helm-M-x--notify-prefix-arg :around
