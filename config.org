@@ -15,8 +15,8 @@ Packages are managed in this file so I don't want the packages being handled by 
 
 Configure all sources for packages to be used throughtout this config file.
 #+BEGIN_SRC emacs-lisp
-  (setq package-archives '(("melpa" . "http://melpa.org/packages/")
-                           ("gnu" . "http://elpa.gnu.org/packages/")))
+  (setq package-archives '(("melpa" . "https://melpa.org/packages/")
+                           ("gnu" . "https://elpa.gnu.org/packages/")))
 #+END_SRC
 
 ** use-package & quelpa bootstrap
@@ -256,7 +256,9 @@ Turn of the bell alarm
 
 Start the server
 #+BEGIN_SRC emacs-lisp
-  (server-start)
+  (require 'server)
+  (unless (server-running-p)
+    (server-start))
 #+END_SRC
 
 No splash screen
@@ -368,7 +370,7 @@ And also ensure this works in org mode. See org-mode [[https://orgmode.org/manua
 #+BEGIN_SRC emacs-lisp
   (windmove-default-keybindings)
 
-  (setq org-replace-disputed-keys t)
+  ;; S-<arrow> in Org falls back to windmove via the *-final-hooks below.
   (add-hook 'org-shiftup-final-hook 'windmove-up)
   (add-hook 'org-shiftleft-final-hook 'windmove-left)
   (add-hook 'org-shiftdown-final-hook 'windmove-down)
@@ -572,7 +574,7 @@ Company (complete anything) is the front end system to autocomplete. Has mutlipl
     :hook (after-init . global-company-mode)
     :bind ("C-<tab>" . company-complete)
     :config
-    (add-to-list 'company-backends 'company-yasnippet 'company-capf)
+    (add-to-list 'company-backends 'company-yasnippet)
     (define-key company-active-map (kbd "TAB") nil)
     (define-key company-active-map (kbd "<tab>") nil)
     (define-key company-active-map (kbd "S-TAB") nil)
@@ -639,7 +641,7 @@ Set flyspell on all buffers automatically detect prog mode
   (defun flyspell-on-for-buffer-type ()
     "Enable Flyspell appropriately for the major mode of the current buffer.  Uses `flyspell-prog-mode' for modes derived from `prog-mode', so only strings and comments get checked.  All other buffers get `flyspell-mode' to check all text.  If flyspell is already enabled, does nothing."
     (interactive)
-    (if (not (symbol-value flyspell-mode)) ; if not already on
+    (if (not (bound-and-true-p flyspell-mode)) ; if not already on
         (progn
           (if (or (string-match-p "helm" (if (listp mode-name)
                                              (car mode-name)
@@ -659,7 +661,7 @@ Set flyspell on all buffers automatically detect prog mode
   (defun flyspell-toggle ()
     "Turn Flyspell on if it is off, or off if it is on.  When turning on, it uses `flyspell-on-for-buffer-type' so code-vs-text is handled appropriately."
     (interactive)
-    (if (symbol-value flyspell-mode)
+    (if (bound-and-true-p flyspell-mode)
         (progn ; flyspell is on, turn it off
           (message "Flyspell off")
           (flyspell-mode -1))
@@ -787,7 +789,8 @@ Comment short cuts
 
 Set Folding characters for every programming mode
 #+BEGIN_SRC emacs-lisp
-  (defvar hs-special-modes-alist
+  (require 'hideshow)
+  (setq hs-special-modes-alist
     (mapcar 'purecopy
             '((c-mode "{" "}" "/[*/]" nil nil)
               (c++-mode "{" "}" "/[*/]" nil nil)
@@ -1309,9 +1312,7 @@ In Org mode we want to tangle URI's with parameters, following fucntions allow f
      js-indent-level 2
      js2-indent-switch-body t
      js2-auto-indent-p t
-     js2-indent-on-enter-key t)
-    (with-eval-after-load "lsp-mode"
-      (add-to-list 'lsp-enabled-clients 'ts-ls)))
+     js2-indent-on-enter-key t))
 #+END_SRC
 
 *** Typescript mode
@@ -1322,10 +1323,7 @@ In Org mode we want to tangle URI's with parameters, following fucntions allow f
     :mode "\\.ts\\'"
     :hook ((typescript-mode . lsp)
            (typescript-mode . (lambda ()
-                                (setq typescript-indent-level 2))))
-    :init
-    (with-eval-after-load "lsp-mode"
-      (add-to-list 'lsp-enabled-clients 'ts-ls)))
+                                (setq typescript-indent-level 2)))))
 #+end_src
 
 org bable mode
@@ -1363,17 +1361,14 @@ Angular modes (ng2-ts-mode, ng2-html-mode)
            (ng2-ts-mode . lsp)
            (ng2-html-mode . yas-minor-mode)
            (ng2-ts-mode . yas-minor-mode))
-    :init (progn
-            (setq lsp-clients-angular-language-server-command
-                  '("node"
-                    "/usr/lib/node_modules/@angular/language-server"
-                    "--ngProbeLocations"
-                    "/usr/lib/node_modules"
-                    "--tsProbeLocations"
-                    "/usr/lib/node_modules"
-                    "--stdio"))
-            (with-eval-after-load "lsp-mode"
-              (add-to-list 'lsp-enabled-clients 'angular-ls))))
+    :init (setq lsp-clients-angular-language-server-command
+                '("node"
+                  "/usr/lib/node_modules/@angular/language-server"
+                  "--ngProbeLocations"
+                  "/usr/lib/node_modules"
+                  "--tsProbeLocations"
+                  "/usr/lib/node_modules"
+                  "--stdio")))
 #+end_src
 
 ** python
@@ -1397,8 +1392,7 @@ Configure lsp mode for python
   (use-package lsp-jedi
     :ensure t
     :config (with-eval-after-load "lsp-mode"
-              (add-to-list 'lsp-disabled-clients 'pyls)
-              (add-to-list 'lsp-enabled-clients 'jedi))
+              (add-to-list 'lsp-disabled-clients 'pyls))
     :hook (python-mode . (lambda ()
                            (require 'lsp-jedi)
                            (lsp))))
@@ -1442,8 +1436,6 @@ Mode for editing docker files
   (use-package dockerfile-mode
     :ensure t
     :mode "\\Dockerfile\\'"
-    :config (with-eval-after-load "lsp-mode"
-              (add-to-list 'lsp-enabled-clients 'dockerfile-ls))
     :hook ((dockerfile-mode . (lambda () (lsp)))
            (dockerfile-mode . yas-minor-mode)))
 #+END_SRC
@@ -1535,8 +1527,6 @@ Download [[http://download.eclipse.org/jdtls/snapshots/jdt-language-server-lates
     :ensure t
     :after lsp-mode
     :config
-    (with-eval-after-load "lsp-mode"
-      (add-to-list 'lsp-enabled-clients 'jdtls))
     (setq lsp-java-vmargs
           (list "-noverify"
                 "-Xmx2G"
@@ -1615,13 +1605,11 @@ Hide show rules for YAML files
       (forward-line -1)
       (end-of-line)))
 
-  (map-put hs-special-modes-alist
-           'yaml-mode
-           '("\\s-*\\_<\\(?:[^:]+\\)\\_>" "" "#" +data-hideshow-forward-sexp nil))
+  (setf (alist-get 'yaml-mode hs-special-modes-alist)
+        '("\\s-*\\_<\\(?:[^:]+\\)\\_>" "" "#" +data-hideshow-forward-sexp nil))
 
-  (map-put hs-special-modes-alist
-           'openapi-yaml-mode
-           '("\\s-*\\_<\\(?:[^:]+\\)\\_>" "" "#" +data-hideshow-forward-sexp nil))
+  (setf (alist-get 'openapi-yaml-mode hs-special-modes-alist)
+        '("\\s-*\\_<\\(?:[^:]+\\)\\_>" "" "#" +data-hideshow-forward-sexp nil))
 #+END_SRC
 
 Yaml mode
@@ -1692,8 +1680,6 @@ Preview mode
 
 #+begin_src emacs-lisp
   (use-package css-mode
-    :config (with-eval-after-load "lsp-mode"
-              (add-to-list 'lsp-enabled-clients 'css-ls))
     :hook ((css-mode . (lambda () (lsp)))
            (css-mode . yas-minor-mode)))
 #+end_src
@@ -1794,7 +1780,7 @@ Us copilot autocomplete functionality within emacs.
     (add-to-list 'copilot-indentation-alist '(prog-mode . 2))
     (add-to-list 'copilot-indentation-alist '(org-mode . 2))
     (add-to-list 'copilot-indentation-alist '(text-mode . 2))
-    (add-to-list 'copilot-indentation-alist '(closure-mode . 2))
+    (add-to-list 'copilot-indentation-alist '(clojure-mode . 2))
     (add-to-list 'copilot-indentation-alist '(emacs-lisp-mode . 2)))
 #+end_src
 
@@ -1817,20 +1803,6 @@ Chat with copilot from within emacs
     :ensure t
     :after copilot)
 #+end_src
-
-**** Aidermacs
-
-Using emacs to interact with LLMs in a more emacs way
-
-#+begin_src emacs-lisp
-  (use-package aidermacs
-    :ensure t
-    :bind (("C-c a" . aidermacs-transient-menu))
-    :config
-    (setenv ANTHROPIC_API_KEY antropic-api-key))
-#+end_src
-
-
 
 *** Let AI use emacs
 
@@ -2255,11 +2227,6 @@ Set the killall function key binding
 * Shells
 ** Eshell
 
-Add hook to eshell to set paths when eshell starts
-#+BEGIN_SRC emacs-lisp
-  (add-hook 'eshell-mode-hook 'pve-set-eshell-path-env)
-#+END_SRC
-
 Enable eshell history to be accessses by helm instead of the static history
 #+BEGIN_SRC emacs-lisp
   (add-hook 'eshell-mode-hook
@@ -2431,7 +2398,8 @@ Store and restore the configuration setting before opening the window to edit th
 
   (defun pve/org-edit-src-exit ()
     "Restore the window configuration that was saved before org-edit-special was called."
-    (set-window-configuration pve/org-src-block-tmp-window-configuration))
+    (when pve/org-src-block-tmp-window-configuration
+      (set-window-configuration pve/org-src-block-tmp-window-configuration)))
 #+end_src
 
 We need to execute this code after org is loaded so we use eval-after-load.
@@ -2473,7 +2441,7 @@ Show bullets as images not just '*'s
     :ensure t
     :after org-mode
     :hook ((org-present-mode . org-present-init)
-           (org-present-mode-qui . org-present-cleanup)))
+           (org-present-mode-quit . org-present-cleanup)))
 #+END_SRC
 
 ** WorkFlow
@@ -3142,7 +3110,7 @@ Dependency for all-the-icons. If not installed it will not show in windows and s
   (progn 
     (let ((destination "~/.emacs.d/custom/font-lock+.el"))
       (if (not (file-exists-p destination))
-          (url-copy-file "https://github.com/emacsmirror/font-lock-plus/blob/master/font-lock%2B.el" destination t)))
+          (url-copy-file "https://raw.githubusercontent.com/emacsmirror/font-lock-plus/master/font-lock%2B.el" destination t)))
     (use-package font-lock+))
 #+END_SRC
 
