@@ -3173,6 +3173,46 @@ line would otherwise defeat the match).
                   "\n\n(closest scope wins: the last block above overrides the earlier ones.)")))))
 #+END_SRC
 
+** pve/org-clear-reviewed-states
+
+=REVIEWED= sits before the =|= in the workspace's TODO sequence, so it
+counts as a NOT-DONE keyword and signed-off items keep cluttering agenda
+views. This command clears =REVIEWED= to no keyword on every matching
+heading across all files in ~org-agenda-files~, using =org-map-entries=
+with scope =agenda= to visit them. Each transition is logged into the
+heading's =:LOGBOOK:= the same way =pve/org-set-state= does — calling
+~org-todo ""~ and then flushing the pending log note explicitly, since a
+programmatic call skips it. Every buffer that changed is saved afterwards.
+#+BEGIN_SRC emacs-lisp
+  (defun pve/org-clear-reviewed-states ()
+    "Clear the REVIEWED TODO keyword on every heading across `org-agenda-files'.
+
+  For each heading whose current TODO keyword is exactly \"REVIEWED\", the
+  state is cleared via `org-todo' and the pending log note is flushed
+  explicitly — the same mechanism `pve/org-set-state' uses — so the
+  transition is still recorded in the heading's :LOGBOOK: drawer.  Only
+  REVIEWED is touched; REVIEW and other keywords are left alone.  Every
+  buffer that was modified is saved.  Reports the number of headings
+  cleared via `message' and returns that count."
+    (interactive)
+    (let ((count 0))
+      (save-window-excursion
+        (org-map-entries
+         (lambda ()
+           (org-todo "")
+           (when (and (markerp org-log-note-marker) (marker-buffer org-log-note-marker))
+             (org-add-log-note))
+           (setq count (1+ count)))
+         "TODO=\"REVIEWED\""
+         'agenda)
+        (dolist (file (org-agenda-files))
+          (let ((buf (get-file-buffer file)))
+            (when (and buf (buffer-modified-p buf))
+              (with-current-buffer buf (save-buffer))))))
+      (message "pve/org-clear-reviewed-states: cleared REVIEWED on %d heading(s)." count)
+      count))
+#+END_SRC
+
 * Application Integration
 ** Exchange Web Services
 
