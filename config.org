@@ -16,7 +16,8 @@ Packages are managed in this file so I don't want the packages being handled by 
 Configure all sources for packages to be used throughtout this config file.
 #+BEGIN_SRC emacs-lisp
   (setq package-archives '(("melpa" . "https://melpa.org/packages/")
-                           ("gnu" . "https://elpa.gnu.org/packages/")))
+                           ("gnu" . "https://elpa.gnu.org/packages/")
+                           ("nongnu" . "https://elpa.nongnu.org/nongnu/")))
 #+END_SRC
 
 ** use-package & quelpa bootstrap
@@ -279,7 +280,7 @@ Set all encodings etc. to utf-8
 Show completion of keybindings
 #+BEGIN_SRC emacs-lisp
   (use-package which-key
-    :ensure t
+    :ensure nil
     :diminish which-key-mode
     :config (progn
               (which-key-mode)
@@ -565,34 +566,59 @@ This also uses the LSP integration if it is enabled in the current buffer.
 
 ** Autocomplete
 
-Company (complete anything) is the front end system to autocomplete. Has mutliple backends that can provide autocompletion
+Corfu is the front-end for in-buffer completion, driven by Emacs' native
+=completion-at-point-functions=. TAB stays free so Copilot can accept its suggestions.
 #+BEGIN_SRC emacs-lisp
-  (use-package company
+  (use-package corfu
     :ensure t
     :demand t
-    :diminish company-mode
-    :hook (after-init . global-company-mode)
-    :bind ("C-<tab>" . company-complete)
-    :config
-    (add-to-list 'company-backends 'company-yasnippet)
-    (define-key company-active-map (kbd "TAB") nil)
-    (define-key company-active-map (kbd "<tab>") nil)
-    (define-key company-active-map (kbd "S-TAB") nil)
-    (define-key company-active-map (kbd "<backtab>") nil)
-    :init (setq company-minimum-prefix-length 1
-                company-dabbrev-downcase nil
-                company-idle-delay 0
-                company-global-modes '(not eshell-mode)))
+    :bind (("C-<tab>" . completion-at-point)
+           :map corfu-map
+           ("TAB" . nil)
+           ([tab] . nil)
+           ("S-TAB" . nil)
+           ([backtab] . nil))
+    :init
+    (setq corfu-auto t
+          corfu-auto-prefix 1
+          corfu-auto-delay 0
+          corfu-cycle t
+          corfu-quit-no-match 'separator)
+    (global-corfu-mode)
+    (corfu-popupinfo-mode))
 #+END_SRC
 
-Company box. Adds icons and backround colors to company autocomplete. To distinguish between sources and types.
+In a terminal frame, render the popup with overlays instead of child frames.
 #+BEGIN_SRC emacs-lisp
-  (use-package company-box
+  (use-package corfu-terminal
     :ensure t
-    :demand t
-    :after (company)
-    :diminish company-box-mode
-    :hook (company-mode . company-box-mode))
+    :after corfu
+    :config (unless (display-graphic-p) (corfu-terminal-mode +1)))
+#+END_SRC
+
+Icons in the completion popup, matching the treemacs icon set.
+#+BEGIN_SRC emacs-lisp
+  (use-package nerd-icons-corfu
+    :ensure t
+    :after (corfu nerd-icons)
+    :init (add-to-list 'corfu-margin-formatters #'nerd-icons-corfu-formatter))
+#+END_SRC
+
+Extra completion sources (files, dabbrev) as capfs.
+#+BEGIN_SRC emacs-lisp
+  (use-package cape
+    :ensure t
+    :init
+    (add-to-list 'completion-at-point-functions #'cape-file)
+    (add-to-list 'completion-at-point-functions #'cape-dabbrev))
+#+END_SRC
+
+Snippet completion (replaces the old company-yasnippet backend).
+#+BEGIN_SRC emacs-lisp
+  (use-package yasnippet-capf
+    :ensure t
+    :after (yasnippet cape)
+    :init (add-to-list 'completion-at-point-functions #'yasnippet-capf))
 #+END_SRC
 
 Auto insert the other pair of a bracket
@@ -743,16 +769,19 @@ Some code based on xah-lee's version on http://ergoemacs.org/emacs/emacs_copy_cu
    
 ** Undo
 
-Visual aid to see all undo history in a tree
+Visual aid to see all undo history as a tree over Emacs' native undo.
 #+BEGIN_SRC emacs-lisp
-  (use-package undo-tree
+  (use-package vundo
     :ensure t
-    :diminish undo-tree-mode
-    :bind ("C-x u" . undo-tree-visualize)
-    :config (setq undo-tree-visualizer-relative-timestamps t
-                  undo-tree-visualizer-timestamps t
-                  undo-tree-enable-undo-in-region t)
-    (global-undo-tree-mode))
+    :bind ("C-x u" . vundo)
+    :config (setq vundo-glyph-alist vundo-unicode-symbols))
+#+END_SRC
+
+Persist undo history across sessions (into a single cache directory).
+#+BEGIN_SRC emacs-lisp
+  (use-package undo-fu-session
+    :ensure t
+    :config (global-undo-fu-session-mode))
 #+END_SRC
 ** Text formatting
 
@@ -1239,6 +1268,22 @@ The base of projectmanangement is projectile
 #+end_src
 
 * Programming environments
+** Tree-sitter
+
+Use Emacs' built-in tree-sitter major modes for the web/config languages below.
+Grammars are compiled on first use (prompted). Python and Lua stay on their classic
+modes for now.
+#+BEGIN_SRC emacs-lisp
+  (use-package treesit-auto
+    :ensure t
+    :demand t
+    :custom (treesit-auto-install 'prompt)
+    :config
+    (setq treesit-auto-langs '(javascript typescript tsx json yaml dockerfile css))
+    (treesit-auto-add-to-auto-mode-alist treesit-auto-langs)
+    (global-treesit-auto-mode))
+#+END_SRC
+
 ** restclient
 
 Do restcalls from witin an emacs buffer
@@ -1250,12 +1295,14 @@ Install restclient
     :mode ("\\.http\\'" . restclient-mode))
 #+END_SRC
 
-Setup auto completion for restclient
+Setup auto completion for restclient, bridged into corfu as a capf.
 #+BEGIN_SRC emacs-lisp
   (use-package company-restclient
     :ensure t
-    :after restclient
-    :config (add-to-list 'company-backends 'company-restclient))
+    :after (restclient cape)
+    :hook (restclient-mode . (lambda ()
+                               (add-hook 'completion-at-point-functions
+                                         (cape-company-to-capf #'company-restclient) nil t))))
 #+END_SRC
 
 Add integration into org mode for restclient
@@ -1300,30 +1347,26 @@ In Org mode we want to tangle URI's with parameters, following fucntions allow f
 
 ** javascript
 
-*** An enhanced Javascript mode
+*** Javascript mode
 
 #+BEGIN_SRC emacs-lisp
-  (use-package js2-mode
+  (use-package js-ts-mode
+    :ensure nil
     :mode "\\.js\\'"
-    :ensure t
-    :hook (js2-mode . lsp)
+    :hook (js-ts-mode . lsp)
     :init
-    (setq-default
-     js-indent-level 2
-     js2-indent-switch-body t
-     js2-auto-indent-p t
-     js2-indent-on-enter-key t))
+    (setq-default js-indent-level 2))
 #+END_SRC
 
 *** Typescript mode
 
 #+begin_src emacs-lisp
-  (use-package typescript-mode
-    :ensure t
+  (use-package typescript-ts-mode
+    :ensure nil
     :mode "\\.ts\\'"
-    :hook ((typescript-mode . lsp)
-           (typescript-mode . (lambda ()
-                                (setq typescript-indent-level 2)))))
+    :hook ((typescript-ts-mode . lsp)
+           (typescript-ts-mode . (lambda ()
+                                   (setq typescript-ts-mode-indent-offset 2)))))
 #+end_src
 
 org bable mode
@@ -1433,18 +1476,15 @@ Manage dockers from within emacs.
 
 Mode for editing docker files
 #+BEGIN_SRC emacs-lisp
-  (use-package dockerfile-mode
-    :ensure t
+  (use-package dockerfile-ts-mode
+    :ensure nil
     :mode "\\Dockerfile\\'"
-    :hook ((dockerfile-mode . (lambda () (lsp)))
-           (dockerfile-mode . yas-minor-mode)))
+    :hook ((dockerfile-ts-mode . (lambda () (lsp)))
+           (dockerfile-ts-mode . yas-minor-mode)))
 #+END_SRC
 
-Mange files in docker
-#+begin_src emacs-lisp
-  (use-package docker-tramp
-    :ensure t)
-#+end_src
+Managing files in Docker uses TRAMP's built-in ~docker~/~podman~ methods (no extra
+package needed) — e.g. ~/docker:container:/path~.
 
 ** LUA
 
@@ -1548,7 +1588,6 @@ Download [[http://download.eclipse.org/jdtls/snapshots/jdt-language-server-lates
           lsp-java-save-action-organize-imports nil)
     :hook ((java-mode . lsp)
            (java-mode . flycheck-mode)
-           (java-mode . company-mode)
            (java-mode . lsp-ui-sideline-mode)
            (java-mode . yas-minor-mode)
            (java-mode . (lambda () (setq c-basic-offset 2)))))
@@ -1608,18 +1647,21 @@ Hide show rules for YAML files
   (setf (alist-get 'yaml-mode hs-special-modes-alist)
         '("\\s-*\\_<\\(?:[^:]+\\)\\_>" "" "#" +data-hideshow-forward-sexp nil))
 
+  (setf (alist-get 'yaml-ts-mode hs-special-modes-alist)
+        '("\\s-*\\_<\\(?:[^:]+\\)\\_>" "" "#" +data-hideshow-forward-sexp nil))
+
   (setf (alist-get 'openapi-yaml-mode hs-special-modes-alist)
         '("\\s-*\\_<\\(?:[^:]+\\)\\_>" "" "#" +data-hideshow-forward-sexp nil))
 #+END_SRC
 
 Yaml mode
 #+BEGIN_SRC emacs-lisp
-  (use-package yaml-mode
-    :ensure t
-    :mode "\\.yml\\'"
-    :hook((yaml-mode . hs-minor-mode)
-          (yaml-mode . (lambda ()
-                         (define-key yaml-mode-map "\C-m" 'newline-and-indent)))))
+  (use-package yaml-ts-mode
+    :ensure nil
+    :mode "\\.ya?ml\\'"
+    :hook((yaml-ts-mode . hs-minor-mode)
+          (yaml-ts-mode . (lambda ()
+                            (define-key yaml-ts-mode-map "\C-m" 'newline-and-indent)))))
 #+END_SRC
    
 By default yaml mode doesn't use newline-and-indent (as python mode does). So this was added as a hook on he yaml-mode.
@@ -1679,9 +1721,11 @@ Preview mode
 ** CSS
 
 #+begin_src emacs-lisp
-  (use-package css-mode
-    :hook ((css-mode . (lambda () (lsp)))
-           (css-mode . yas-minor-mode)))
+  (use-package css-ts-mode
+    :ensure nil
+    :mode "\\.css\\'"
+    :hook ((css-ts-mode . (lambda () (lsp)))
+           (css-ts-mode . yas-minor-mode)))
 #+end_src
 ** Jenkins
 
@@ -1929,7 +1973,7 @@ Install and config the treemacs package.
   (use-package treemacs
     :ensure t
     :defer t
-    :after (all-the-icons)
+    :after (nerd-icons)
     :config
     ;; Set the differnt config options
     (setq treemacs-collapse-dirs              (if (executable-find "python") 3 0)
@@ -1978,11 +2022,11 @@ Integration with projectile
 #+end_src
 
 #+begin_src emacs-lisp
-  (use-package treemacs-all-the-icons
+  (use-package treemacs-nerd-icons
     :ensure t
-    :after (treemacs all-the-icons)
+    :after (treemacs nerd-icons)
     :config
-    (treemacs-load-theme "all-the-icons"))
+    (treemacs-load-theme "nerd-icons"))
 #+end_src
 
 Customization of faces for treemacs
@@ -2317,11 +2361,6 @@ Global shortcuts
 
 ** Babel configuration
 
-#+BEGIN_SRC emacs-lisp
-  (defun pve-enable-org-bullets ()
-    (org-bullets-mode 1))
-#+END_SRC
-
 This package enables asynchronous org babel evaluation
 #+BEGIN_SRC emacs-lisp
   (use-package ob-async
@@ -2375,13 +2414,12 @@ We want all the results to be wrapped in a block once they are longer then one l
     (setq org-startup-folded t)
     :hook
     ((org-mode . pve-org-keys)
-     (org-mode . pve-enable-org-bullets)
      (org-mode . helm-mode)
      (org-mode . (lambda ()
                    (setq-local electric-pair-inhibit-predicate
                                `(lambda (c)
                                   (if (char-equal c ?<) t (,electric-pair-inhibit-predicate c)))))))
-    :after (hydra org-bullets ob-async))
+    :after (hydra ob-async))
 #+END_SRC
 
 ** Editing org code blocks
@@ -2412,10 +2450,12 @@ We need to execute this code after org is loaded so we use eval-after-load.
 
 ** Eye candy
 
-Show bullets as images not just '*'s
+Modern styling for headings, lists, tables and blocks.
 #+BEGIN_SRC emacs-lisp
-  (use-package org-bullets
-    :ensure t)
+  (use-package org-modern
+    :ensure t
+    :hook ((org-mode . org-modern-mode)
+           (org-agenda-finalize . org-modern-agenda)))
 #+END_SRC
 
 ** Presenting
@@ -3039,20 +3079,6 @@ line would otherwise defeat the match).
 #+END_SRC
 
 * Application Integration
-** Pocket
-
-Simple client to show list of pocket items
-#+BEGIN_SRC emacs-lisp
-  (use-package pocket-mode
-    :ensure t
-    :after (pocket-api))
-#+END_SRC
-
-Backend API to login into pocket and retrieive the (getpocket.com)
-#+BEGIN_SRC emacs-lisp
-  (use-package pocket-api
-    :ensure t)
-#+END_SRC
 ** Exchange Web Services
 
 This doesn't seem to work at this moment <2020-09-01 Tue>
@@ -3117,24 +3143,12 @@ LSP-UI higher level UI modules for LSP integration into emacs.
     :hook (lsp-mode . lsp-ui-mode))
 #+END_SRC  
 
-Dependency for all-the-icons. If not installed it will not show in windows and some wrong icons on linux
-#+BEGIN_SRC emacs-lisp
-  (progn 
-    (let ((destination "~/.emacs.d/custom/font-lock+.el"))
-      (if (not (file-exists-p destination))
-          (url-copy-file "https://raw.githubusercontent.com/emacsmirror/font-lock-plus/master/font-lock%2B.el" destination t)))
-    (use-package font-lock+))
-#+END_SRC
-
-
 Icon library with many unicode characters, icons, ...
 #+BEGIN_SRC emacs-lisp
-  (use-package all-the-icons
-    :ensure t
-    :after (font-lock+)
-    :init (require 'font-lock+))
+  (use-package nerd-icons
+    :ensure t)
 #+END_SRC
-If the icons are not installed run 'all-the-icons-install-fonts'.
+If the icons are not installed run 'nerd-icons-install-fonts'.
 
 ** Coding
 
