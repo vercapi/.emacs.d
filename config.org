@@ -2708,6 +2708,18 @@ Org Query Language
     :ensure t)
 #+end_src
 
+Agenda command =r= shows the review queue across =org-agenda-files=: nodes in
+REVIEW state and nodes tagged =:QUESTIONS:=, each as its own org-ql block.
+#+begin_src emacs-lisp
+  (with-eval-after-load 'org-ql
+    (add-to-list 'org-agenda-custom-commands
+                 '("r" "Review queue (REVIEW + QUESTIONS)"
+                   ((org-ql-block '(todo "REVIEW")
+                                  ((org-ql-block-header "In review (REVIEW)")))
+                    (org-ql-block '(tags "QUESTIONS")
+                                  ((org-ql-block-header "Open questions (:QUESTIONS:)")))))))
+#+end_src
+
 With Helm support for Org Query Language
 #+begin_src emacs-lisp
   (use-package helm-org-ql
