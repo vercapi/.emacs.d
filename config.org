@@ -2450,12 +2450,59 @@ We need to execute this code after org is loaded so we use eval-after-load.
 
 ** Eye candy
 
-Modern styling for headings, lists, tables and blocks.
+Modern styling for headings, lists, tables and blocks. Each tag and TODO-state
+pill gets a distinct background color, with the hues spread evenly across the
+list so no two share a color and differently tagged or stated headlines stay
+visually distinguishable.
 #+BEGIN_SRC emacs-lisp
+  (require 'color)
+
+  (defun pve/org-tag-readable-foreground (hex)
+    "Return black or white, whichever is more readable on HEX background."
+    (pcase-let ((`(,r ,g ,b) (color-name-to-rgb hex)))
+      (if (> (+ (* 0.299 r) (* 0.587 g) (* 0.114 b)) 0.55) "#000000" "#ffffff")))
+
+  (defun pve/org-modern-tag-faces-from (tag-alist)
+    "Alist for `org-modern-tag-faces', giving every tag in TAG-ALIST its own
+  background color. Hues are spread evenly across the string tags so each pill
+  is unique; the foreground is chosen for contrast."
+    (let* ((tags (delq nil (mapcar (lambda (e) (and (stringp (car e)) (car e)))
+                                   tag-alist)))
+           (n (max 1 (length tags)))
+           (i -1))
+      (mapcar (lambda (tag)
+                (setq i (1+ i))
+                (let ((bg (apply #'color-rgb-to-hex
+                                 (append (color-hsl-to-rgb (/ (float i) n) 0.55 0.6)
+                                         (list 2)))))
+                  (cons tag `(:background ,bg
+                              :foreground ,(pve/org-tag-readable-foreground bg)))))
+              tags)))
+
+  (defun pve/org-modern-todo-faces-from-org ()
+    "Alist for `org-modern-todo-faces', giving every TODO keyword its own
+  background color. Hues are spread evenly across the keywords so each state
+  pill is unique; the foreground is chosen for contrast."
+    (let* ((kwds (seq-remove (lambda (k) (equal k "|")) org-todo-keywords-1))
+           (n (max 1 (length kwds)))
+           (i -1))
+      (mapcar (lambda (kwd)
+                (setq i (1+ i))
+                (let ((bg (apply #'color-rgb-to-hex
+                                 (append (color-hsl-to-rgb (/ (float i) n) 0.55 0.6)
+                                         (list 2)))))
+                  (cons kwd `(:background ,bg
+                              :foreground ,(pve/org-tag-readable-foreground bg)
+                              :weight bold))))
+              kwds)))
+
   (use-package org-modern
     :ensure t
     :hook ((org-mode . org-modern-mode)
-           (org-agenda-finalize . org-modern-agenda)))
+           (org-agenda-finalize . org-modern-agenda))
+    :config
+    (setq org-modern-tag-faces (pve/org-modern-tag-faces-from org-tag-alist))
+    (setq org-modern-todo-faces (pve/org-modern-todo-faces-from-org)))
 #+END_SRC
 
 ** Presenting
