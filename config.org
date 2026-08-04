@@ -2565,6 +2565,54 @@ Give the newer states distinct colors so they stand out
           ("REVIEWED" . (:foreground "#268bd2" :weight bold))))
 #+END_SRC
 
+*** Tags
+
+A workspace-wide faceted tag taxonomy, grouped by facet (context, organisation,
+person, domain, activity, tech, skill) so the tag-selection menu (=C-c C-c= on
+a heading) shows them clustered instead of alphabetically flat. Tags stay
+free-form — this only affects completion and grouping, it does not restrict
+which tags a heading may carry. With =org-group-tags= (on by default), a
+search for a parent tag like =COMMERCIAL= also matches its children (=SALES=,
+=BUSDEV=, …).
+#+BEGIN_SRC emacs-lisp
+  (setq org-tag-alist
+        '(;; CONTEXT
+          (:startgroup) ("THUIS") (:grouptags)
+            ("COMMUNIE") ("LENTEFEEST") ("HOCKEY") ("DIY") ("3DPRINTER") ("TUINHUIS") ("GARDEN") ("KIDS")
+          (:endgroup)
+          ;; ORGANISATIE
+          (:startgroup) ("ORGANISATIE") (:grouptags)
+            ("CRAFTCODE") ("CONTRIBUTE") ("THRIX")
+            ("KBVB") ("CEPA") ("LIANTIS") ("VAARR") ("CARTESOFT") ("BENERAIL") ("DIOSS") ("UZA")
+          (:endgroup)
+          (:startgroup) ("PROJECT") (:grouptags) ("SORANO") ("TOTARA") ("LCM") (:endgroup)
+          ;; PERSOON
+          (:startgroup) ("PERSOON") (:grouptags)
+            ("SANDRA") ("MARTYNA") ("WIM") ("ROB") ("INGE") ("JEROEN") ("JOHAN") ("JOHN") ("GABRIEL")
+            ("BRECHT") ("GWEN") ("ELS") ("DIANA") ("PETRA") ("STEFAAN") ("KOEN") ("JELLE") ("MAURITS")
+            ("CIARAN") ("MATTIAS") ("ROBBY") ("SASKIA") ("YASSER") ("SVEN") ("STEVEN") ("MARJOLIJN")
+            ("MANOU") ("LOWIE") ("LOIC") ("JUUL") ("OLIVIER") ("FILIP") ("EVA") ("GERRIT") ("JOKE")
+            ("JORD") ("ILIAS") ("KOENL") ("TOMD")
+          (:endgroup)
+          ;; DOMEIN
+          (:startgroup) ("HR") (:grouptags) ("RECRUITMENT") ("SOLICITATIE") ("STAGE") ("FREELANCE") (:endgroup)
+          (:startgroup) ("COMMERCIAL") (:grouptags) ("SALES") ("BUSDEV") (:endgroup)
+          (:startgroup) ("MARKETING") (:grouptags) ("SOCIAL") ("WEBSITE") ("SOCIALPIETER") (:endgroup)
+          (:startgroup) ("KENNIS") (:grouptags) ("KNOWLEDGEBASE") ("EDUCATION") (:endgroup)
+          (:startgroup) ("QUALITY") (:grouptags) ("ISO") (:endgroup)
+          (:startgroup) ("LEGAL") (:grouptags) ("DPO") (:endgroup)
+          ("FIN")
+          ;; ACTIVITEIT
+          (:startgroup) ("ACTIVITEIT") (:grouptags) ("IV") ("MEETING") ("WEBINAR") ("MEETUP") ("EVENT") (:endgroup)
+          ;; TECH
+          (:startgroup) ("TECH") (:grouptags)
+            ("EMACS") ("JAVA") ("ORACLE") ("ADF") ("JET") ("PLSQL") ("PYTHON") ("JAVASCRIPT") ("LISP")
+            ("CLOJURE") ("DOCKER") ("GIT") ("LINUX") ("LDAP") ("VPN") ("API") ("DB") ("UI")
+          (:endgroup)
+          ;; SKILL
+          (:startgroup) ("SKILL") (:grouptags) ("DDD") ("BDD") ("TDD") ("CLEANCODE") ("CRAFTSMANSHIP") (:endgroup)))
+#+END_SRC
+
 *** Capture templates
 
 Load org-protocol and org-capture so we can use these librarie to setup catpuring witing emacs and from else where
