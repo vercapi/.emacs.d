@@ -2699,8 +2699,8 @@ When text is selected
                `("p" "Protocol" entry (file, org-default-inbox-file)
                  "* %?
   :PROPERTIES:
-  :CREATED:%U
-  :SOURCE:%:link
+  :CREATED: %U
+  :SOURCE: %:link
   :END:
 
   %i"))
@@ -2712,8 +2712,8 @@ Capture template when no text is selected.
                `("L" "Protocol Link" entry (file, org-default-inbox-file)
                  "* [[%:link][%:description]]
   :PROPERTIES:
-  :CREATED:%U
-  :SOURCE:%:link
+  :CREATED: %U
+  :SOURCE: %:link
   :END:
 
   %?"))
@@ -2725,9 +2725,9 @@ General task entry, something actionable
 #+BEGIN_SRC emacs-lisp
   (add-to-list 'org-capture-templates
                `("t" "Task Entry" entry (file, org-default-inbox-file)
-                 "* TODO %?
+                 "* %?
   :PROPERTIES:
-  :CREATED:%U
+  :CREATED: %U
   :END:
 
   %i"
