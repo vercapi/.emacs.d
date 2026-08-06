@@ -179,8 +179,13 @@ Define theme
 #+BEGIN_SRC emacs-lisp
   (use-package flucui-themes
     :ensure t
-    :config (flucui-themes-load-style 'light))
+    :config
+    (flucui-themes-load-style 'light)
+    ;; The theme sets these branch faces with an invalid :background nil.
+    (set-face-attribute 'magit-branch-remote nil :background 'unspecified)
+    (set-face-attribute 'magit-branch-local nil :background 'unspecified))
 #+END_SRC
+
 
 Colorize delimters (,[,... different colors for every level
 #+BEGIN_SRC emacs-lisp
