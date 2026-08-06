@@ -3220,6 +3220,83 @@ programmatic call skips it. Every buffer that changed is saved afterwards.
       count))
 #+END_SRC
 
+** pve/inbox-dispatch-by-state
+
+Run from =inbox.org= to triage its top-level headings by TODO state in one
+go: anything with an active keyword (=NEEDSWORK=, =TODO=, =DOING=,
+=BLOCKED=, =WAITING=, =ANSWERED=, =REVIEW= or =REVIEWED=) is refiled to the
+top level of =tasks.org=; anything already =DONE= or =CANCELED= is moved to
+the top level of =archive.org= — deliberately *not* the default
+=org-archive-location=, since this workflow wants archived inbox items
+alongside the rest of the archive rather than in a per-file
+=inbox.org_archive=. Plain headings with no keyword (inbox staging items)
+are left untouched. Only level-1 headings are inspected; a matching
+heading's subtree — including any children — moves as a whole, it is
+never recursed into and re-dispatched child by child.
+
+Headings are collected as markers before anything moves, then visited in
+their original top-to-bottom order: markers relocate automatically as
+earlier subtrees are cut away, so refiling one entry never invalidates the
+position of the ones still to be visited, and it has the pleasant side
+effect of preserving the original order in the destination files. Both
+=org-refile= targets use the =(nil FILE nil nil)= rfloc, i.e. top level of
+the file with no headline match. All modified buffers are saved.
+#+BEGIN_SRC emacs-lisp
+  (defun pve/inbox-dispatch-by-state ()
+    "Dispatch each top-level heading in `org-default-inbox-file' by TODO state.
+
+  Headings with an active (not-done) TODO keyword are refiled to the top
+  level of `org-default-tasks-file'.  Headings whose keyword is DONE or
+  CANCELED are moved to the top level of `org-default-archive-file'
+  \(rather than the default `org-archive-location', which this flow does
+  not use\).  Headings with no TODO keyword at all \(plain inbox staging
+  items\) are left untouched.
+
+  Only level-1 headings are inspected; a matching heading's entire
+  subtree moves as a unit, its children are never individually
+  re-dispatched.  Headings are collected as markers up front, then
+  visited in their original top-to-bottom order; markers relocate
+  automatically as earlier subtrees are cut away, so refiling one entry
+  never invalidates the position of the ones still to be visited, and
+  the destination files end up in the same order as inbox.org.  Reports
+  and returns a list \(REFILED ARCHIVED LEFT\) with the three counts."
+    (interactive)
+    (let ((tasks-refloc (list nil org-default-tasks-file nil nil))
+          (archive-refloc (list nil org-default-archive-file nil nil))
+          (refiled 0) (archived 0) (left 0)
+          (markers '()))
+      (with-current-buffer (find-file-noselect org-default-inbox-file)
+        (save-excursion
+          (goto-char (point-min))
+          (when (org-at-heading-p) (push (point-marker) markers))
+          (while (outline-next-heading)
+            (when (= (org-outline-level) 1)
+              (push (point-marker) markers))))
+        (setq markers (nreverse markers))
+        ;; Visit top-to-bottom; markers self-adjust as earlier subtrees are cut.
+        (dolist (m markers)
+          (goto-char (marker-position m))
+          (when (= (org-outline-level) 1)
+            (let ((state (org-get-todo-state)))
+              (cond
+               ((null state)
+                (setq left (1+ left)))
+               ((org-entry-is-done-p)
+                (org-refile nil nil archive-refloc)
+                (setq archived (1+ archived)))
+               (t
+                (org-refile nil nil tasks-refloc)
+                (setq refiled (1+ refiled)))))))
+        (save-buffer))
+      (dolist (file (list org-default-tasks-file org-default-archive-file))
+        (let ((buf (get-file-buffer file)))
+          (when (and buf (buffer-modified-p buf))
+            (with-current-buffer buf (save-buffer)))))
+      (message "pve/inbox-dispatch-by-state: refiled %d to tasks.org, archived %d to archive.org, left %d in inbox.org."
+                refiled archived left)
+      (list refiled archived left)))
+#+END_SRC
+
 * Application Integration
 ** Exchange Web Services
 
