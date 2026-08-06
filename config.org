@@ -2534,7 +2534,7 @@ visually distinguishable.
 ** WorkFlow
 *** File setup
 
-More or less loosly based on: [[http://howardism.org/Technical/Emacs/getting-more-boxes-done.html][Getting boxes done]]
+More or less loosly based on: [[http://howardism.org/Technical/Emacs/getting-more-boxes-done.html][Getting things done]]
 
 The flow works as follows
 
