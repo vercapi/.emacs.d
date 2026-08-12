@@ -644,6 +644,28 @@ This also uses the LSP integration if it is enabled in the current buffer.
 #+END_SRC
 
 ** Autocomplete
+:AIINSTRUCTIONS:
+Capfs are registered with `add-hook', never `add-to-list'.  This is not a style
+preference, it is a correctness fix -- do not "tidy" it back:
+
+- `config.el' is loaded from `init.el' while the current buffer is *scratch*,
+  whose `lisp-interaction-mode' has already made
+  `completion-at-point-functions' buffer-local.  `add-to-list' therefore mutated
+  *scratch*'s local value and `cape-file'/`cape-dabbrev' were dead in every other
+  buffer.  `add-hook' writes the global value regardless.
+- The depth arguments set the order deliberately: `cape-file' (-10) is the most
+  specific, `yasnippet-capf' (10) next, `cape-dabbrev' (90) last because it
+  matches in nearly any buffer and would otherwise shadow the others.
+- All three functions are autoloaded, so the hooks may be added before the
+  packages load.  `yasnippet-capf' must not go back to `:after (yasnippet cape)':
+  that deferred its own `:init' until both features happened to load, which is
+  what let it land in a random buffer's local value.
+- Verify changes here with `(default-value 'completion-at-point-functions)' in a
+  fresh session.  A managed buffer's local value ends in `t', which splices the
+  global list in, so it looks healthy even when the global value is empty.
+- Eglot adds `eglot-completion-at-point' buffer-locally and ahead of these; that
+  is intended (see [[LSP]]).
+:END:
 
 Corfu is the front-end for in-buffer completion, driven by Emacs' native
 =completion-at-point-functions=. TAB stays free so Copilot can accept its suggestions.
@@ -683,21 +705,22 @@ Icons in the completion popup, matching the treemacs icon set.
     :init (add-to-list 'corfu-margin-formatters #'nerd-icons-corfu-formatter))
 #+END_SRC
 
-Extra completion sources (files, dabbrev) as capfs.
+Extra completion sources (files, dabbrev) as capfs. Dabbrev matches in almost any
+buffer, so it is registered last and never shadows a more specific source.
 #+BEGIN_SRC emacs-lisp
   (use-package cape
     :ensure t
     :init
-    (add-to-list 'completion-at-point-functions #'cape-file)
-    (add-to-list 'completion-at-point-functions #'cape-dabbrev))
+    (add-hook 'completion-at-point-functions #'cape-file -10)
+    (add-hook 'completion-at-point-functions #'cape-dabbrev 90))
 #+END_SRC
 
 Snippet completion (replaces the old company-yasnippet backend).
 #+BEGIN_SRC emacs-lisp
   (use-package yasnippet-capf
     :ensure t
-    :after (yasnippet cape)
-    :init (add-to-list 'completion-at-point-functions #'yasnippet-capf))
+    :defer t
+    :init (add-hook 'completion-at-point-functions #'yasnippet-capf 10))
 #+END_SRC
 
 Auto insert the other pair of a bracket
