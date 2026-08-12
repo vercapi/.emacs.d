@@ -2420,6 +2420,8 @@ We want all the results to be wrapped in a block once they are longer then one l
     :hook
     ((org-mode . pve-org-keys)
      (org-mode . helm-mode)
+     ;; Keep a final newline so point-max stays at bol and appends/refiles never fuse onto the last line.
+     (org-mode . (lambda () (setq-local require-final-newline t)))
      (org-mode . (lambda ()
                    (setq-local electric-pair-inhibit-predicate
                                `(lambda (c)
@@ -2782,6 +2784,13 @@ List of targets to refile to
                                      (org-default-stack-dir :maxlevel . 1))))
   (add-to-list 'org-refile-targets '(pve/org-refile-candidates :maxlevel . 3))
   (add-to-list 'org-refile-targets '(pve/org-notebook-refile-candidates :maxlevel . 2))
+#+END_SRC
+
+Guard against refiled subtrees being glued onto the previous line when the
+destination file has lost its trailing newline. The helper lives in the AI
+Helpers section.
+#+BEGIN_SRC emacs-lisp
+  (add-hook 'org-after-refile-insert-hook #'pve/org-refile-ensure-bol)
 #+END_SRC
 
 
@@ -3302,6 +3311,25 @@ the file with no headline match. All modified buffers are saved.
       (message "pve/inbox-dispatch-by-state: refiled %d to tasks.org, archived %d to archive.org, left %d in inbox.org."
                 refiled archived left)
       (list refiled archived left)))
+#+END_SRC
+
+** pve/org-refile-ensure-bol
+
+Runs from =org-after-refile-insert-hook= to make sure a just-refiled subtree
+starts on its own line. Org's refile insertion only guards entry separation
+with a single =(unless (bolp) (newline))=, which fails when the destination
+file lost its trailing newline (OneDrive sync) or the copied subtree text
+lacks one — producing glued headings like =OPCKEY* TODO ...=. This splits the
+heading back onto its own line without forcing an extra blank line.
+#+BEGIN_SRC emacs-lisp
+  (defun pve/org-refile-ensure-bol ()
+    "Ensure a just-refiled subtree starts on its own line.
+  Run from `org-after-refile-insert-hook': point is at the start of
+  the inserted subtree. If the heading was glued onto the previous
+  line (point not at beginning-of-line), split it onto its own line.
+  Does not force an extra blank line between entries."
+    (unless (bolp)
+      (insert "\n")))
 #+END_SRC
 
 * Application Integration
