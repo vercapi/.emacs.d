@@ -67,49 +67,40 @@ Ensure that 'use-package' is installed.
   (setq use-package-compute-statistics t)
 #+END_SRC
 
-Ensure that 'quelpa' is installed, a dependency for quelpa-use-package, the package we really want
-Allows to load Emacs Lisp packages built directly from source (github etc.)
-#+BEGIN_SRC emacs-lisp
-  (use-package quelpa
-    :ensure t
-    :defer t
-    :init (setq quelpa-update-melpa-p nil))
-#+END_SRC
+** Packages from git
 
-
-Further install quelpa-use-package
-This is the quelpa handle for use-package
+A handful of packages are not in any archive and are checked out straight from
+their repository by =use-package='s =:vc= keyword, which is built on Emacs' own
+=package-vc=. Update them all with =M-x package-vc-upgrade-all=.
 :AIINSTRUCTIONS:
-`quelpa-use-package' registers the `:quelpa' keyword, so it must be demanded --
-deferring it makes every `:quelpa' block fail to expand.  `quelpa' itself stays
-deferred: `quelpa-use-package-inhibit-loading-quelpa' is what stops it being
-required, and it must be set before the library is loaded, so it belongs in
-this block and not later in the file.  With it enabled, a `:quelpa' recipe
-expands to a no-op when the package is already in `package-user-dir', and still
-falls back to `quelpa' when it is missing.
+This replaced quelpa and quelpa-use-package; do not reintroduce them.  Points to
+respect when touching a `:vc' block:
+
+- Only these keywords are accepted: `:url', `:branch', `:lisp-dir',
+  `:main-file', `:vc-backend', `:rev', `:shell-command', `:make',
+  `:ignored-files' (see `use-package-vc-valid-keywords').  There is no `:files'
+  equivalent -- `:ignored-files' only narrows the dependency scan, it does not
+  keep files out of the checkout or off `load-path'.
+- `use-package-vc-prefer-newest' is set below so these track their branch head.
+  Without it the default rev is `:last-release', which pins to the newest tag and
+  fails outright on repositories that carry no tags -- sunrise-commander is one.
+- Never add `:ensure t' next to `:vc'; that would send use-package looking for
+  the package in an archive.
+- `:vc' expands to a `package-installed-p' guard, so it costs nothing once the
+  package is checked out.  Do not "optimise" it away.
+- That guard interacts with `package-quickstart' (see [[Early init]]): quickstart
+  leaves `package-alist' empty, so `package-installed-p' answers from
+  `package-activated-list', which is built from the quickstart cache.  A stale
+  cache therefore makes these packages look absent and Emacs tries to clone them
+  during startup.  package.el refreshes the cache on install and delete, but
+  after hand-editing `elpa/' run `M-x package-quickstart-refresh'.
+- The `use-package-vc-prefer-newest' setq below must stay ahead of the `:vc'
+  blocks in load order, because `:vc' arguments are normalised at macro-expansion
+  time.  This is one of the reasons `config.el' is loaded as source rather than
+  byte-compiled.
 :END:
-Git-sourced packages are treated as already installed at startup; refresh them
-explicitly with =pve/quelpa-refresh=.
 #+BEGIN_SRC emacs-lisp
-  (setq quelpa-use-package-inhibit-loading-quelpa t)
-
-  (use-package quelpa-use-package
-    :ensure t
-    :demand t)
-
-  (defun pve/quelpa-refresh ()
-    "Install or update all packages sourced from git through quelpa."
-    (interactive)
-    (let ((quelpa-use-package-inhibit-loading-quelpa nil))
-      (require 'quelpa)
-      (dolist (recipe
-               '((copilot :fetcher github :repo "copilot-emacs/copilot.el" :branch "main"
-                          :files ("copilot.el" "copilot-balancer.el" "copilot-nes.el"))
-                 (mcp-server :fetcher github :repo "rhblind/emacs-mcp-server" :branch "main"
-                             :files ("*.el" "tools/*.el" "mcp-wrapper.py" "mcp-wrapper.sh"))
-                 (sunrise-commander :fetcher github :repo "escherdragon/sunrise-commander")))
-        (quelpa recipe))
-      (message "quelpa refresh done; restart Emacs to pick up new versions")))
+  (setq use-package-vc-prefer-newest t)
 #+END_SRC
 
 ** Load custom local code
@@ -1903,13 +1894,7 @@ Us copilot autocomplete functionality within emacs.
 
 #+begin_src emacs-lisp
   (use-package copilot
-    :quelpa (copilot :fetcher github
-                      :repo "copilot-emacs/copilot.el"
-                      :branch "main"
-                      ;; Avoid installing the chat module from copilot.el because
-                      ;; it collides with the separate `copilot-chat` package file
-                      ;; name (`copilot-chat.el`) on `load-path`.
-                      :files ("copilot.el" "copilot-balancer.el" "copilot-nes.el"))
+    :vc (:url "https://github.com/copilot-emacs/copilot.el" :branch "main")
     :hook (prog-mode . copilot-mode)
     :bind (:map copilot-mode-map
                 ("<tab>" . copilot-accept-completion)
@@ -1925,6 +1910,12 @@ Us copilot autocomplete functionality within emacs.
 **** Copilot chat
 
 Chat with copilot from within emacs
+:AIINSTRUCTIONS:
+The `load-path' reordering below cannot be dropped.  copilot is checked out with
+`:vc', which always puts the whole repository on `load-path', and that repository
+contains its own `copilot-chat.el'; `:ignored-files' does not help, as it only
+narrows package-vc's dependency scan.  See [[Packages from git]].
+:END:
 
 #+begin_src emacs-lisp
   ;; `copilot` and `copilot-chat` both ship a `copilot-chat.el` file name.
@@ -1949,13 +1940,7 @@ Connect AI to emacs so that it has access to the power of emacs
 
 #+begin_src emacs-lisp
   (use-package mcp-server
-    :quelpa (mcp-server :fetcher github
-                        :repo "rhblind/emacs-mcp-server"
-                        :branch "main"
-                        ;; Avoid installing the chat module from copilot.el because
-                        ;; it collides with the separate `copilot-chat` package file
-                        ;; name (`copilot-chat.el`) on `load-path`.
-                        :files ("*.el" "tools/*.el" "mcp-wrapper.py" "mcp-wrapper.sh"))
+    :vc (:url "https://github.com/rhblind/emacs-mcp-server" :branch "main")
     :defer t
     :init
     ;; Load the server once the frame is up rather than on the init path.
@@ -2151,9 +2136,7 @@ Custom fucntion to add projects in a dir in buld to the current treemacs workspa
 Disabled doesn't work on windows, only windows?
 #+BEGIN_SRC emacs-lisp
   (use-package sunrise-commander
-    :quelpa (sunrise-commander
-             :fetcher github
-             :repo "escherdragon/sunrise-commander")
+    :vc (:url "https://github.com/escherdragon/sunrise-commander")
     :defer t
     :commands (sunrise sunrise-cd))
 #+END_SRC
