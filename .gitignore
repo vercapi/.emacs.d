@@ -5,6 +5,10 @@
 /auto-save-list/
 /bm-repository
 /config.el
+/config.elc
+/early-init.el
+/package-quickstart.el
+/package-quickstart.elc
 elpa/*
 /eshell/*
 /projectile-bookmarks.eld

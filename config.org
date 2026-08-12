@@ -3,15 +3,48 @@
 An elegant editor... for a more civilized age.
 
 * Packages setup
-  
-Configure everything related to installing and loading packages 
+
+Configure everything related to installing and loading packages
+
+** Early init
+
+Startup tuning that has to happen before packages are activated: a relaxed
+garbage collector for the duration of startup, and a cached package index.
+:AIINSTRUCTIONS:
+This block tangles to =early-init.el=, which Emacs reads before =init.el=.  Three
+things to keep in mind:
+
+- Edits here take effect one restart later, because =early-init.el= is read
+  before =init.el= tangles this file.
+- An explicit per-block `:tangle' overrides the target-file argument that
+  `org-babel-load-file' passes, so this block does *not* end up in =config.el=.
+- Never put `(setq package-enable-at-startup nil)' here.  It would suppress
+  `package-activate-all' and nothing would load.
+- `package-quickstart' needs its cache built once with
+  `M-x package-quickstart-refresh'; afterwards package.el keeps it current on
+  install and delete.
+:END:
+#+BEGIN_SRC emacs-lisp :tangle ~/.emacs.d/early-init.el
+  ;; Startup allocates heavily; collect rarely now and settle down afterwards.
+  (setq gc-cons-threshold (* 128 1024 1024)
+        gc-cons-percentage 0.6)
+
+  (defvar pve--file-name-handler-alist file-name-handler-alist)
+  (setq file-name-handler-alist nil)
+
+  (add-hook 'emacs-startup-hook
+            (lambda ()
+              (setq gc-cons-threshold (* 32 1024 1024)
+                    gc-cons-percentage 0.1
+                    file-name-handler-alist pve--file-name-handler-alist)))
+
+  ;; Load one precomputed autoload file instead of scanning every package.
+  (setq package-quickstart t)
+
+  (setq frame-inhibit-implied-resize t)
+#+END_SRC
 
 ** Packages
-
-Packages are managed in this file so I don't want the packages being handled by any other systems
-#+begin_src emacs-lisp
-    (setq package-enable-at-startup nil)
-#+end_src
 
 Configure all sources for packages to be used throughtout this config file.
 #+BEGIN_SRC emacs-lisp
@@ -38,17 +71,45 @@ Ensure that 'quelpa' is installed, a dependency for quelpa-use-package, the pack
 Allows to load Emacs Lisp packages built directly from source (github etc.)
 #+BEGIN_SRC emacs-lisp
   (use-package quelpa
-    :init (setq quelpa-update-melpa-p nil)
-    :ensure t)
+    :ensure t
+    :defer t
+    :init (setq quelpa-update-melpa-p nil))
 #+END_SRC
 
 
 Further install quelpa-use-package
 This is the quelpa handle for use-package
+:AIINSTRUCTIONS:
+`quelpa-use-package' registers the `:quelpa' keyword, so it must be demanded --
+deferring it makes every `:quelpa' block fail to expand.  `quelpa' itself stays
+deferred: `quelpa-use-package-inhibit-loading-quelpa' is what stops it being
+required, and it must be set before the library is loaded, so it belongs in
+this block and not later in the file.  With it enabled, a `:quelpa' recipe
+expands to a no-op when the package is already in `package-user-dir', and still
+falls back to `quelpa' when it is missing.
+:END:
+Git-sourced packages are treated as already installed at startup; refresh them
+explicitly with =pve/quelpa-refresh=.
 #+BEGIN_SRC emacs-lisp
+  (setq quelpa-use-package-inhibit-loading-quelpa t)
+
   (use-package quelpa-use-package
     :ensure t
-    :after quelpa)
+    :demand t)
+
+  (defun pve/quelpa-refresh ()
+    "Install or update all packages sourced from git through quelpa."
+    (interactive)
+    (let ((quelpa-use-package-inhibit-loading-quelpa nil))
+      (require 'quelpa)
+      (dolist (recipe
+               '((copilot :fetcher github :repo "copilot-emacs/copilot.el" :branch "main"
+                          :files ("copilot.el" "copilot-balancer.el" "copilot-nes.el"))
+                 (mcp-server :fetcher github :repo "rhblind/emacs-mcp-server" :branch "main"
+                             :files ("*.el" "tools/*.el" "mcp-wrapper.py" "mcp-wrapper.sh"))
+                 (sunrise-commander :fetcher github :repo "escherdragon/sunrise-commander")))
+        (quelpa recipe))
+      (message "quelpa refresh done; restart Emacs to pick up new versions")))
 #+END_SRC
 
 ** Load custom local code
@@ -432,7 +493,8 @@ Set the time emacs caches a password in seconds, tramp, sudo, ...?
 
 Ensure that emacs is actually using the eshell/sudo so that the cache above works
 #+BEGIN_SRC emacs-lisp
-  (require 'em-tramp)
+  (with-eval-after-load 'eshell
+    (require 'em-tramp))
   (add-hook 'eshell-mode-hook
             (lambda ()
               (eshell/alias "sudo" "eshell/sudo $*")))
@@ -626,7 +688,7 @@ Icons in the completion popup, matching the treemacs icon set.
 #+BEGIN_SRC emacs-lisp
   (use-package nerd-icons-corfu
     :ensure t
-    :after (corfu nerd-icons)
+    :after corfu
     :init (add-to-list 'corfu-margin-formatters #'nerd-icons-corfu-formatter))
 #+END_SRC
 
@@ -658,8 +720,11 @@ Yasnippets
 #+BEGIN_SRC emacs-lisp
   (use-package yasnippet
      :ensure t
-     :init (yas-global-mode 1)
-     :config (add-to-list 'yas-snippet-dirs "~/.emacs.d/snippets"))
+     :defer t
+     :hook ((prog-mode text-mode org-mode) . yas-minor-mode)
+     :config
+     (add-to-list 'yas-snippet-dirs "~/.emacs.d/snippets")
+     (yas-reload-all))
 #+END_SRC
 
 ** Syntax checking
@@ -874,13 +939,18 @@ e.g. running a helm search while already answering a minibuffer prompt.
 
 Using special shells or prompts might interfere with sudo in tramp.
 This makes tramp use a basic shell that has no issues.
+:AIINSTRUCTIONS:
+`tramp-methods' is only bound once tramp is loaded, and tramp is no longer
+pulled in at startup, so this must stay inside the `with-eval-after-load'.
+:END:
 #+begin_src emacs-lisp
-  (add-to-list 'tramp-methods
-               '("sudo"
-                 (tramp-login-program        "sudo")
-                 (tramp-login-args           (("-u" "root") ("-s")))
-                 (tramp-remote-shell         "/bin/bash")
-                 (tramp-remote-shell-args    ("-c"))))
+  (with-eval-after-load 'tramp
+    (add-to-list 'tramp-methods
+                 '("sudo"
+                   (tramp-login-program        "sudo")
+                   (tramp-login-args           (("-u" "root") ("-s")))
+                   (tramp-remote-shell         "/bin/bash")
+                   (tramp-remote-shell-args    ("-c")))))
 #+end_src
 
 * Source control
@@ -898,7 +968,9 @@ Using magit for soruce control
 Add git flow extension to magit. This enables feature branches etc.
 #+BEGIN_SRC emacs-lisp
   (use-package magit-gitflow
-    :ensure t)
+    :ensure t
+    :after magit
+    :hook (magit-mode . turn-on-magit-gitflow))
 #+END_SRC
 
 Helper functions to set local git repo's
@@ -1285,8 +1357,10 @@ The base of projectmanangement is projectile
 #+begin_src emacs-lisp 
   (use-package helm-projectile
     :ensure t
+    :after projectile
     :init
     (setq projectile-completion-system 'helm)
+    :config
     (helm-projectile-on)
     :bind (:map projectile-mode-map
                 ("C-c p h" . helm-projectile)
@@ -1419,7 +1493,8 @@ Angular, not installed automatically by LSP
 Snippets for angular
 #+BEGIN_SRC emacs-lisp
   (use-package angular-snippets
-    :ensure t)
+    :ensure t
+    :after yasnippet)
 #+END_SRC
 
 Angular modes (ng2-ts-mode, ng2-html-mode)
@@ -1460,6 +1535,7 @@ Configure lsp mode for python
 #+BEGIN_SRC emacs-lisp
   (use-package lsp-jedi
     :ensure t
+    :defer t
     :config (with-eval-after-load "lsp-mode"
               (add-to-list 'lsp-disabled-clients 'pyls))
     :hook (python-mode . (lambda ()
@@ -1476,19 +1552,24 @@ Python snippets
 #+begin_src emacs-lisp
   (use-package py-snippets
     :ensure t
+    :after yasnippet
     :config (py-snippets-initialize))
 #+end_src
 
 Pipenv porcelain
 #+begin_src emacs-lisp
   (use-package pipenv
-    :ensure t)
+    :ensure t
+    :defer t
+    :hook (python-mode . pipenv-mode))
 #+end_src
 
 Tool to switch to a virtualenv. To use lsp, install the server in the virtualenv too.
 #+BEGIN_SRC emacs-lisp
   (use-package pyvenv
-    :ensure t)
+    :ensure t
+    :defer t
+    :commands (pyvenv-activate pyvenv-workon pyvenv-mode))
 #+END_SRC
         
 ** Docker
@@ -1624,7 +1705,8 @@ Download [[http://download.eclipse.org/jdtls/snapshots/jdt-language-server-lates
 Templates for java snippets
 #+BEGIN_SRC emacs-lisp
   (use-package java-snippets
-    :ensure t)
+    :ensure t
+    :after yasnippet)
 #+END_SRC
    
 *** create project
@@ -1727,7 +1809,8 @@ EROS emacs inline, in buffer evaluation
 
 #+begin_src emacs-lisp
   (use-package cider
-    :ensure t)
+    :ensure t
+    :defer t)
 #+end_src
 ** openscad
 
@@ -1805,8 +1888,8 @@ Format HTML in markdown
 #+begin_src emacs-lisp
   (use-package php-mode
     :ensure t
-    :config 
-    (lsp-mode t))
+    :mode "\\.php\\'"
+    :hook (php-mode . lsp))
 #+end_src
 
 * Generative AI LLMs
@@ -1873,8 +1956,13 @@ Connect AI to emacs so that it has access to the power of emacs
                         ;; it collides with the separate `copilot-chat` package file
                         ;; name (`copilot-chat.el`) on `load-path`.
                         :files ("*.el" "tools/*.el" "mcp-wrapper.py" "mcp-wrapper.sh"))
-      :config
-    (add-hook 'emacs-startup-hook #'mcp-server-start-unix))
+    :defer t
+    :init
+    ;; Load the server once the frame is up rather than on the init path.
+    (add-hook 'emacs-startup-hook
+              (lambda ()
+                (require 'mcp-server)
+                (mcp-server-start-unix))))
 #+end_src
 
 #+RESULTS:
@@ -1967,7 +2055,7 @@ Install and config the treemacs package.
   (use-package treemacs
     :ensure t
     :defer t
-    :after (nerd-icons)
+    :commands (treemacs treemacs-select-window)
     :config
     ;; Set the differnt config options
     (setq treemacs-collapse-dirs              (if (executable-find "python") 3 0)
@@ -2065,8 +2153,9 @@ Disabled doesn't work on windows, only windows?
   (use-package sunrise-commander
     :quelpa (sunrise-commander
              :fetcher github
-             :repo "escherdragon/sunrise-commander"
-             :defer 2))
+             :repo "escherdragon/sunrise-commander")
+    :defer t
+    :commands (sunrise sunrise-cd))
 #+END_SRC
 
 ** Dired config
@@ -2174,8 +2263,9 @@ Enable viewing and working with PDFs inside emacs
 #+BEGIN_SRC emacs-lisp
   (use-package pdf-tools
     :ensure t
+    :magic ("%PDF" . pdf-view-mode)
     :config
-    (pdf-tools-install)
+    (pdf-tools-install :no-query)
     (setq-default pdf-view-display-size 'fit-page))
 #+END_SRC
 ** RFC mode
@@ -2237,6 +2327,8 @@ Complete terminal emulator inside of emacs
 #+begin_src emacs-lisp
   (use-package vterm
     :ensure t
+    :defer t
+    :commands (vterm vterm-other-window)
     :hook (vterm-mode . (lambda () (setq-local global-hl-line-mode nil)))
     :config (setq vterm-shell "fish"))
 #+end_src
@@ -2322,29 +2414,31 @@ We want all the results to be wrapped in a block once they are longer then one l
   (setq org-babel-min-lines-for-block-output 2)
 #+end_src
 
-*** Add javascript support to babel
-#+BEGIN_SRC emacs-lisp
-  (require 'ob-js)
+*** Language backends
 
-  (org-babel-do-load-languages
-   'org-babel-load-languages
-   '((shell . t) (js . t) (sqlite . t) (python . t)))
+Shell, javascript, sqlite, python, java and clojure blocks are executable. The
+backends are pulled in the first time a block is actually evaluated.
+:AIINSTRUCTIONS:
+Loading these eagerly cost ~0.3s of startup.  Do not move the
+`org-babel-do-load-languages' call back to top level: Org is required by
+`init.el' for tangling, so a `with-eval-after-load' on org would fire
+immediately and buy nothing -- first execution is the only point that is
+genuinely off the startup path.  The tangle-extension and clojure-backend
+settings stay eager because tangling must not depend on the advice having fired.
+:END:
+#+BEGIN_SRC emacs-lisp
+  (defun pve/org-babel-load-languages-once (&rest _)
+    "Load the Babel language backends on first source block execution."
+    (org-babel-do-load-languages
+     'org-babel-load-languages
+     '((shell . t) (js . t) (sqlite . t) (python . t) (java . t) (clojure . t)))
+    (advice-remove 'org-babel-execute-src-block
+                   #'pve/org-babel-load-languages-once))
+
+  (advice-add 'org-babel-execute-src-block :before
+              #'pve/org-babel-load-languages-once)
+
   (add-to-list 'org-babel-tangle-lang-exts '("js" . "js"))
-#+END_SRC
-
-
-*** Add java support to babel
-
-#+BEGIN_SRC emacs-lisp
-  (require 'ob-java)
-  (add-to-list 'org-babel-load-languages '(java . t))
-#+END_SRC
-
-*** Add Clojure support tot babel
-    
-#+BEGIN_SRC emacs-lisp
-  (require 'ob-clojure)
-  (add-to-list 'org-babel-load-languages '(clojure . t))
   (setq org-babel-clojure-backend 'cider)
 #+END_SRC
 
@@ -2768,6 +2862,8 @@ Manually synchronize with org-gcal-sync
   (use-package org-gcal
     :ensure t
     :if (boundp 'google-client-id)
+    :defer t
+    :commands (org-gcal-sync org-gcal-fetch)
     :config (setq org-gcal-client-id google-client-id
                   org-gcal-client-secret google-client-secret
                   org-gcal-file-alist `((,personal-email . ,(concat org-default-dir "calendars/priv_cal.org"))
@@ -2808,13 +2904,23 @@ Examxple:
 Org Query Language
 #+begin_src emacs-lisp
   (use-package org-ql
-    :ensure t)
+    :ensure t
+    :defer t
+    :commands (org-ql-search org-ql-select org-ql-block))
 #+end_src
 
 Agenda command =r= shows the review queue across =org-agenda-files=: nodes in
 REVIEW state and nodes tagged =:QUESTIONS:=, each as its own org-ql block.
+:AIINSTRUCTIONS:
+Hang this off org-agenda, not org-ql.  org-ql is deferred, so keying the
+registration on it would mean =r= never appears in the dispatcher; org-agenda's
+after-load hook runs before the dispatcher reads
+`org-agenda-custom-commands', and it also guarantees the variable is bound
+(`add-to-list' on an unbound defcustom errors).  `org-ql-block' is autoloaded,
+so the quoted form is safe to install before org-ql itself is loaded.
+:END:
 #+begin_src emacs-lisp
-  (with-eval-after-load 'org-ql
+  (with-eval-after-load 'org-agenda
     (add-to-list 'org-agenda-custom-commands
                  '("r" "Review queue (REVIEW + QUESTIONS)"
                    ((org-ql-block '(todo "REVIEW")
@@ -2827,7 +2933,9 @@ With Helm support for Org Query Language
 #+begin_src emacs-lisp
   (use-package helm-org-ql
     :ensure t
-    :requires org-ql)
+    :defer t
+    :commands (helm-org-ql helm-org-ql-agenda-files
+                           helm-org-ql-org-directory helm-org-ql-views))
 #+end_src
 
 ** LaTeX export
@@ -3316,7 +3424,7 @@ It also creates a new prefix "C-l" to house all LSP key bindings
 #+BEGIN_SRC emacs-lisp
   (use-package lsp-mode
     :ensure t
-    :demand t
+    :commands (lsp lsp-deferred)
     :hook (lsp-mode . (lambda ()
                         (let ((lsp-keymap-prefix "C-c l"))
                           (lsp-enable-which-key-integration))))
@@ -3329,7 +3437,6 @@ LSP-UI higher level UI modules for LSP integration into emacs.
 #+BEGIN_SRC emacs-lisp
   (use-package lsp-ui
     :ensure t
-    :demand t
     :after (lsp-mode)
     :config
     (setq
@@ -3345,7 +3452,8 @@ LSP-UI higher level UI modules for LSP integration into emacs.
 Icon library with many unicode characters, icons, ...
 #+BEGIN_SRC emacs-lisp
   (use-package nerd-icons
-    :ensure t)
+    :ensure t
+    :defer t)
 #+END_SRC
 If the icons are not installed run 'nerd-icons-install-fonts'.
 
