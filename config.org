@@ -135,6 +135,25 @@ This is based on std configuration. So if emacs adds this again in init.el or .e
    '(mode-line ((t (:family "ProggyVector" :foundry "PfEd" :slant normal :weight normal :height 120 :width normal)))))
 #+END_SRC
 
+Route symbol/icon codepoints the default font does not really cover to dedicated
+fallback fonts, so they render as glyphs instead of hex-code boxes: Nerd-Font
+icons (e.g. in vterm) to "Symbols Nerd Font Mono", and the Miscellaneous Symbols
+and Arrows block (org-modern's fold indicator, U+2BxX) to "Symbola". Using
+=prepend= makes these win over other fonts that falsely claim coverage. Applied on
+the default fontset =t=, so every frame — current and future — inherits it.
+#+BEGIN_SRC emacs-lisp
+  (defun pve-setup-glyph-fallback-fonts ()
+    "Route icon/symbol codepoints to dedicated fallback fonts on fontset t."
+    (when (display-graphic-p)
+      ;; Nerd-Font icons (private-use areas), e.g. the Claude Code mode indicator in vterm.
+      (dolist (range '((#xe000 . #xf8ff) (#xf0000 . #xffffd)))
+        (set-fontset-font t range (font-spec :family "Symbols Nerd Font Mono") nil 'prepend))
+      ;; Miscellaneous Symbols and Arrows (org-modern fold indicator, U+2BC6-2BCB).
+      (set-fontset-font t '(#x2b00 . #x2bff) (font-spec :family "Symbola") nil 'prepend)))
+
+  (pve-setup-glyph-fallback-fonts)
+#+END_SRC
+
 
 Simple shortcuts to switch between to common used font sizes
 #+BEGIN_SRC emacs-lisp
