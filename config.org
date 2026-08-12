@@ -720,24 +720,41 @@ Yasnippets
 
 ** Syntax checking
 :AIINSTRUCTIONS:
-org-lint is disabled because, since Org 9.7, it returns each report's line
-as a propertized string (org-lint-marker text property) rather than a
-number. Flycheck's org-lint adapter passes it straight to
-flycheck-error-new-at, producing "Wrong type argument: number-or-marker-p".
-Present even in the latest flycheck. Do not re-enable without coercing the
-line to a number.
+Flymake replaced flycheck; do not reintroduce flycheck or any flycheck-*
+package.  Points to respect:
+
+- Eglot only speaks flymake, so this is the single diagnostics channel for every
+  language server (see [[LSP]]).
+- Flymake is built in, hence `:ensure nil'.
+- It is deliberately scoped to `prog-mode' rather than enabled globally: flymake
+  has no org-lint backend, and the old flycheck setup had to disable its
+  org-lint checker outright because of an Org 9.7 incompatibility.
+- The `C-c !' prefix is inherited from flycheck's bindings on purpose.  It lives
+  in `flymake-mode-map', a minor-mode map, so it does not shadow org's global
+  `C-c !' -- flymake is never on in Org buffers.
+- Elisp gets `elisp-flymake-byte-compile' and `elisp-flymake-checkdoc' for free.
+  External linters (eslint, yamllint, flake8, shellcheck) have no built-in
+  backend; add `flymake-collection' if one is ever needed rather than going back
+  to flycheck.
 :END:
 
-Using flycheck as the syntax checker. The ~org-lint~ checker is disabled;
-run =M-x org-lint= on demand instead.
+Flymake is the syntax checker, enabled for programming buffers. It is also the
+channel eglot reports diagnostics through. For Org files run =M-x org-lint= on
+demand.
 
 #+BEGIN_SRC emacs-lisp
-  (use-package flycheck
-    :ensure t
-    :diminish flycheck-mode
-    :init (global-flycheck-mode)
-    :config
-    (add-to-list 'flycheck-disabled-checkers 'org-lint))
+  (use-package flymake
+    :ensure nil
+    :hook (prog-mode . flymake-mode)
+    :bind (:map flymake-mode-map
+                ("C-c ! n" . flymake-goto-next-error)
+                ("C-c ! p" . flymake-goto-prev-error)
+                ("C-c ! l" . flymake-show-buffer-diagnostics)
+                ("C-c ! P" . flymake-show-project-diagnostics))
+    :init
+    (setq flymake-no-changes-timeout 0.5
+          flymake-fringe-indicator-position 'left-fringe
+          flymake-mode-line-lighter "FlyM"))
 #+END_SRC
 
 ** Spell Checking
@@ -1444,7 +1461,7 @@ In Org mode we want to tangle URI's with parameters, following fucntions allow f
   (use-package js-ts-mode
     :ensure nil
     :mode "\\.js\\'"
-    :hook (js-ts-mode . lsp)
+    :hook (js-ts-mode . eglot-ensure)
     :init
     (setq-default js-indent-level 2))
 #+END_SRC
@@ -1455,7 +1472,7 @@ In Org mode we want to tangle URI's with parameters, following fucntions allow f
   (use-package typescript-ts-mode
     :ensure nil
     :mode "\\.ts\\'"
-    :hook ((typescript-ts-mode . lsp)
+    :hook ((typescript-ts-mode . eglot-ensure)
            (typescript-ts-mode . (lambda ()
                                    (setq typescript-ts-mode-indent-offset 2)))))
 #+end_src
@@ -1475,12 +1492,32 @@ org bable mode
 #+END_SRC
 
 *** Angular specifics
+:AIINSTRUCTIONS:
+The Angular server is the one language server eglot has no built-in entry for,
+so it is spelled out here.  Points to respect:
 
-Angular, not installed automatically by LSP
+- `ng2-ts-mode' derives from `typescript-mode' and `ng2-html-mode' from
+  `html-mode', both of which eglot already knows.  Only the template mode needs
+  an override; TypeScript buffers are meant to reach
+  `typescript-language-server' through the inherited entry.
+- The `add-to-list' must stay a prepend so it wins over eglot's `html-mode' entry
+  (`eglot--lookup-mode' takes the first matching entry).
+- It also has to sit in a top-level `with-eval-after-load "eglot"' rather than in
+  ng2-mode's `:config'.  Nested inside `:config' it would only register once
+  ng2-mode itself had loaded, which is needlessly ordering-dependent.
+- Resolving `npm root -g' happens inside the contact function, not at load time.
+  Eglot calls a function-valued contact with (INTERACTIVE PROJECT) when
+  connecting, which keeps the subprocess off the startup path.
+- Neither `@angular/language-server' nor `typescript-language-server' is
+  installed system-wide yet, so both stay inert until the npm install below is
+  done.  That is intentional, not a bug to "fix" by hardcoding a path.
+:END:
+
+Angular is not packaged system-wide; install its server globally to use it:
 #+begin_src sh
-  npm install -g @angular/language-service@next typescript @angular/language-server
+  npm install -g @angular/language-server @angular/language-service typescript
 #+end_src
-    
+
 Snippets for angular
 #+BEGIN_SRC emacs-lisp
   (use-package angular-snippets
@@ -1488,25 +1525,47 @@ Snippets for angular
     :after yasnippet)
 #+END_SRC
 
-Angular modes (ng2-ts-mode, ng2-html-mode)
+Angular modes (ng2-ts-mode, ng2-html-mode). Templates use the Angular server;
+=.ts= files use the TypeScript server eglot already knows about.
 #+begin_src emacs-lisp
   (use-package ng2-mode
     :ensure t
-    :hook ((ng2-html-mode . lsp)
-           (ng2-ts-mode . lsp)
+    :hook ((ng2-html-mode . eglot-ensure)
+           (ng2-ts-mode . eglot-ensure)
            (ng2-html-mode . yas-minor-mode)
-           (ng2-ts-mode . yas-minor-mode))
-    :init (setq lsp-clients-angular-language-server-command
-                '("node"
-                  "/usr/lib/node_modules/@angular/language-server"
-                  "--ngProbeLocations"
-                  "/usr/lib/node_modules"
-                  "--tsProbeLocations"
-                  "/usr/lib/node_modules"
-                  "--stdio")))
+           (ng2-ts-mode . yas-minor-mode)))
+
+  (defun pve/angular-language-server-contact (&optional _interactive _project)
+    "Return the eglot contact for the Angular language server.
+  The global npm root is resolved here rather than at load time."
+    (let ((root (string-trim (shell-command-to-string "npm root -g"))))
+      (list "node" (expand-file-name "@angular/language-server" root)
+            "--ngProbeLocations" root
+            "--tsProbeLocations" root
+            "--stdio")))
+
+  (with-eval-after-load "eglot"
+    (add-to-list 'eglot-server-programs
+                 '(ng2-html-mode . pve/angular-language-server-contact)))
 #+end_src
 
 ** python
+:AIINSTRUCTIONS:
+This section used lsp-jedi; it is gone and must not come back.  Points to
+respect:
+
+- Do not set any variable that disables eldoc here.  The old config carried
+  `lsp-enable-eldoc nil' because lsp-ui rendered documentation instead; under
+  eglot, eldoc is the only doc channel (see [[LSP]]).
+- The server is pinned to `jedi-language-server' rather than left to eglot's
+  `eglot-alternatives' list for python, which would silently switch to pylsp,
+  basedpyright, pyright, pyrefly or ruff depending on what happens to be on
+  PATH.  Change the pin deliberately, not by installing another server.
+- `jedi-language-server' comes from the NixOS configuration in ~/nixos/, not from
+  pip and not from Nix used imperatively.
+- With `pyvenv' the server must also be present inside the activated virtualenv
+  for project dependencies to resolve; run `eglot-reconnect' after switching.
+:END:
 
 Standard Python mode config
 #+begin_src emacs-lisp
@@ -1514,29 +1573,19 @@ Standard Python mode config
     :ensure t
     :mode "\\.py\\'"
     :config
-    ;; Disable eldoc, we see the info with lsp-ui
-    (setq lsp-enable-eldoc nil
-          python-shell-completion-native-enable nil)
-    :hook (python-mode . yas-minor-mode))
+    (setq python-shell-completion-native-enable nil)
+    :hook ((python-mode . yas-minor-mode)
+           (python-mode . eglot-ensure)))
 #+END_SRC
 
 Disabled the standard completion method for python shell. It opens a new window gets in the way and doesn't do completion very well.
-   
-Configure lsp mode for python
-#+BEGIN_SRC emacs-lisp
-  (use-package lsp-jedi
-    :ensure t
-    :defer t
-    :config (with-eval-after-load "lsp-mode"
-              (add-to-list 'lsp-disabled-clients 'pyls))
-    :hook (python-mode . (lambda ()
-                           (require 'lsp-jedi)
-                           (lsp))))
-#+end_src
 
-Manual install for the jedi language server
-#+begin_src sh
-  pip install -U jedi-language-server
+Pin the language server to jedi rather than letting eglot pick whichever one is
+on the PATH.
+#+BEGIN_SRC emacs-lisp
+  (with-eval-after-load "eglot"
+    (add-to-list 'eglot-server-programs
+                 '((python-mode python-ts-mode) . ("jedi-language-server"))))
 #+end_src
 
 Python snippets
@@ -1577,7 +1626,7 @@ Mode for editing docker files
   (use-package dockerfile-ts-mode
     :ensure nil
     :mode "\\Dockerfile\\'"
-    :hook ((dockerfile-ts-mode . (lambda () (lsp)))
+    :hook ((dockerfile-ts-mode . eglot-ensure)
            (dockerfile-ts-mode . yas-minor-mode)))
 #+END_SRC
 
@@ -1654,41 +1703,102 @@ Functions to control the awesome wm testing util awmtt (xephyr).
 
 Java settings
 #+begin_src emacs-lisp
-  (defvar lombok-path "/home/vercapi/.m2/repository/org/projectlombok/lombok/1.18.16/lombok-1.18.16.jar" "Path to lombok jar for the project")
+  (defvar lombok-path "~/.m2/repository/org/projectlombok/lombok/1.18.16/lombok-1.18.16.jar" "Path to lombok jar for the project")
 #+end_src
 
 *** Language server
+:AIINSTRUCTIONS:
+This replaced lsp-java; do not reintroduce lsp-java or eglot-java.  The mapping
+from the old settings, so nothing gets dropped by accident:
 
-Download [[http://download.eclipse.org/jdtls/snapshots/jdt-language-server-latest.tar.gz][latest]] Eclipse JDT language server to "~/.emacs.d/.cache/lsp/eclipse.jdt.ls/"
+| lsp-java-vmargs                       | `--jvm-arg=' flags in `pve/jdtls-contact'       |
+| lsp-java-configuration-runtimes       | :java :configuration :runtimes below            |
+| lsp-java-import-order                 | :java :completion :importOrder below            |
+| lsp-java-save-action-organize-imports | :java :saveActions :organizeImports :json-false |
+| lsp-file-watch-ignored                | dropped; jdtls does its own exclusion           |
+| (java-mode . lsp-ui-sideline-mode)    | dropped; no sideline under eglot                |
+| (java-mode . flycheck-mode)           | dropped; prog-mode enables flymake globally     |
+
+Further points to respect:
+
+- `-noverify' and `-Xbootclasspath/a:' were dropped deliberately.  The former is
+  a no-op removed after Java 13; the latter is unnecessary for lombok on modern
+  JDKs, where the javaagent alone is enough.
+- The lombok `-javaagent' is added only when the jar exists.  A missing javaagent
+  aborts JVM startup outright, and the jar is absent until Maven has resolved it.
+- Both the JDK home and the lombok path are resolved at connect time, never
+  hardcoded: NixOS store paths are not stable, and `lombok-path' points into a
+  Maven repository that may not be populated yet.
+- `eglot-workspace-configuration' is a function, which eglot calls per request
+  with `major-mode' bound to the mode the server was started in.  That is why it
+  can gate on `derived-mode-p' and is the hook to extend if another language ever
+  needs workspace configuration -- there is exactly one such variable for all
+  servers, so add a branch rather than a second `setq-default'.
+- It is set with `setq-default' so per-project .dir-locals.el can still override
+  it buffer-locally.
+- The registration sits in a top-level `with-eval-after-load "eglot"', not in
+  cc-mode's `:config'.  Nested inside `:config' it would only register once
+  cc-mode had loaded, which is needlessly ordering-dependent.
+- JAVA_HOME is exported system-wide by ~/nixos/ (`environment.variables'), but it
+  points at a store path that changes on every nixpkgs bump -- hence reading the
+  variable, with `executable-find' as the fallback, instead of hardcoding it.
+- Eglot derives the project root from project.el, not from projectile and not from
+  pom.xml.  In a git-backed repository jdtls imports the Maven project correctly;
+  in a directory under no version control project.el finds no root, eglot falls
+  back to the buffer's directory and jdtls reports "non-project file, only syntax
+  errors".  Fix that per project (a repository, or .dir-locals.el) rather than by
+  adding pom.xml to `project-vc-extra-root-markers' -- that marker would split
+  multi-module Maven repositories into one project and one server per module.
+:END:
+
+The Eclipse JDT language server (=jdtls=) comes from the NixOS configuration in
+=~/nixos/=. Lombok is wired in as a JVM agent when its jar is present in the
+local Maven repository.
 #+BEGIN_SRC emacs-lisp
-  (use-package lsp-java
-    :ensure t
-    :after lsp-mode
-    :config
-    (setq lsp-java-vmargs
-          (list "-noverify"
-                "-Xmx2G"
-                "-XX:+UseG1GC"
-                "-XX:+UseStringDeduplication"
-                (concat "-javaagent:" lombok-path)
-                (concat "-Xbootclasspath/a:" lombok-path))
-          lsp-file-watch-ignored
-          '(".idea" ".ensime_cache" ".eunit" "node_modules"
-            ".git" ".hg" ".fslckout" "_FOSSIL_"
-            ".bzr" "_darcs" ".tox" ".svn" ".stack-work"
-            "build")
-          lsp-java-configuration-runtimes
-          '(:name "JavaSE-21"
-                  :path "/usr/lib/jvm/java-21-openjdk"
-                  :default t)
-          lsp-java-import-order '["" "java" "javax" "#"]
-          ;; Don't organize imports on save
-          lsp-java-save-action-organize-imports nil)
-    :hook ((java-mode . lsp)
-           (java-mode . flycheck-mode)
-           (java-mode . lsp-ui-sideline-mode)
+  (defun pve/java-home ()
+    "Return the JDK home directory, for the language server's runtime config."
+    (or (getenv "JAVA_HOME")
+        (let ((java (executable-find "java")))
+          (and java
+               (directory-file-name
+                (file-name-directory
+                 (directory-file-name
+                  (file-name-directory (file-truename java)))))))))
+
+  (defun pve/jdtls-contact (&optional _interactive _project)
+    "Return the eglot contact for jdtls, including this config's JVM arguments."
+    (let ((lombok (expand-file-name lombok-path)))
+      (append (list "jdtls"
+                    "--jvm-arg=-Xmx2G"
+                    "--jvm-arg=-XX:+UseG1GC"
+                    "--jvm-arg=-XX:+UseStringDeduplication")
+              (when (file-exists-p lombok)
+                (list (concat "--jvm-arg=-javaagent:" lombok))))))
+
+  (defun pve/eglot-workspace-configuration (_server)
+    "Return the LSP workspace configuration for the server being queried.
+  Eglot binds `major-mode' to the mode the server was started in."
+    (when (derived-mode-p 'java-mode 'java-ts-mode)
+      `(:java (:configuration
+               (:runtimes [(:name "JavaSE-21"
+                                  :path ,(pve/java-home)
+                                  :default t)])
+               :completion (:importOrder ["" "java" "javax" "#"])
+               ;; Don't organize imports on save
+               :saveActions (:organizeImports :json-false)))))
+
+  (use-package cc-mode
+    :ensure nil
+    :defer t
+    :hook ((java-mode . eglot-ensure)
            (java-mode . yas-minor-mode)
            (java-mode . (lambda () (setq c-basic-offset 2)))))
+
+  (with-eval-after-load "eglot"
+    (add-to-list 'eglot-server-programs
+                 '((java-mode java-ts-mode) . pve/jdtls-contact))
+    (setq-default eglot-workspace-configuration
+                  #'pve/eglot-workspace-configuration))
 #+END_SRC
 
 *** Code snippets
@@ -1759,6 +1869,7 @@ Yaml mode
     :ensure nil
     :mode "\\.ya?ml\\'"
     :hook((yaml-ts-mode . hs-minor-mode)
+          (yaml-ts-mode . eglot-ensure)
           (yaml-ts-mode . (lambda ()
                             (define-key yaml-ts-mode-map "\C-m" 'newline-and-indent)))))
 #+END_SRC
@@ -1824,7 +1935,7 @@ Preview mode
   (use-package css-ts-mode
     :ensure nil
     :mode "\\.css\\'"
-    :hook ((css-ts-mode . (lambda () (lsp)))
+    :hook ((css-ts-mode . eglot-ensure)
            (css-ts-mode . yas-minor-mode)))
 #+end_src
 ** Jenkins
@@ -1848,6 +1959,13 @@ Query a json file
     :ensure t
     :mode "\\.json?\\.'"
     :bind (:map jq-mode-map ("C-c C-j" . jq-interactively)))
+#+end_src
+
+Schema validation and completion for JSON buffers.
+#+begin_src emacs-lisp
+  (use-package json-ts-mode
+    :ensure nil
+    :hook (json-ts-mode . eglot-ensure))
 #+end_src
 
 ** Markdown
@@ -1880,7 +1998,7 @@ Format HTML in markdown
   (use-package php-mode
     :ensure t
     :mode "\\.php\\'"
-    :hook (php-mode . lsp))
+    :hook (php-mode . eglot-ensure))
 #+end_src
 
 * Generative AI LLMs
@@ -3400,37 +3518,66 @@ This doesn't seem to work at this moment <2020-09-01 Tue>
 
 * Libraries
 ** LSP
+:AIINSTRUCTIONS:
+Eglot replaced lsp-mode, lsp-ui, lsp-java and lsp-jedi; do not reintroduce them.
+Points to respect:
 
-Language Server Protocol (LSP) integration into emacs.
-This enables connections to LSP servers from emacs.
-It also creates a new prefix "C-l" to house all LSP key bindings
+- Eglot is built in (Emacs 30), hence `:ensure nil'.  Never add `:ensure t'.
+- Documentation and signature help come from eldoc.  Anything that sets
+  `eldoc-mode' off or an `lsp-enable-eldoc'-style flag silences eglot's only doc
+  channel -- there is deliberately no lsp-ui-doc/sideline replacement here.
+- Diagnostics go through flymake (see [[Syntax checking]]); eglot speaks no other
+  checker protocol.
+- `:inlayHintProvider' is ignored on purpose.  Emacs 30 enables inlay hints by
+  default and lsp-mode never showed them; drop the `add-to-list' to get them.
+- Per-language setup lives in the language's own section under
+  [[Programming environments]] as a `(MODE . eglot-ensure)' hook.  Built-in
+  `eglot-server-programs' already covers python, js/ts, json, yaml, css,
+  dockerfile, php, java, lua, html, terraform and nix, so only Angular needs a
+  hand-written entry.
+- `eglot-events-buffer-config' is set to size 0: the events buffer retains every
+  JSON message and is a real memory cost on long sessions.  Raise it temporarily
+  when debugging a server, do not make it permanent.
+:END:
+
+Eglot connects Emacs to language servers over LSP. It is built in, so there is
+nothing to install; each language enables it from its own section. All eglot
+commands live behind the =C-c l= prefix.
 #+BEGIN_SRC emacs-lisp
-  (use-package lsp-mode
-    :ensure t
-    :commands (lsp lsp-deferred)
-    :hook (lsp-mode . (lambda ()
-                        (let ((lsp-keymap-prefix "C-c l"))
-                          (lsp-enable-which-key-integration))))
-    :diminish lsp-mode
-    :config (define-key lsp-mode-map (kbd "C-c l") lsp-command-map)
-    )
+  (use-package eglot
+    :ensure nil
+    :defer t
+    :init
+    (setq eglot-autoshutdown t
+          eglot-extend-to-xref t
+          eglot-sync-connect 1
+          eglot-events-buffer-config '(:size 0 :format full))
+    :config
+    (add-to-list 'eglot-ignored-server-capabilities :inlayHintProvider)
+    (setq eglot-menu-string "")
+    (defvar-keymap pve/eglot-map
+      :doc "Prefix keymap for eglot commands, bound to C-c l in `eglot-mode-map'."
+      "r" #'eglot-rename
+      "a" #'eglot-code-actions
+      "o" #'eglot-code-action-organize-imports
+      "Q" #'eglot-code-action-quickfix
+      "f" #'eglot-format-buffer
+      "d" #'eglot-find-declaration
+      "i" #'eglot-find-implementation
+      "t" #'eglot-find-typeDefinition
+      "h" #'eldoc
+      "R" #'eglot-reconnect
+      "S" #'eglot-shutdown
+      "w" #'eglot-show-workspace-configuration)
+    (keymap-set eglot-mode-map "C-c l" pve/eglot-map)
+    (with-eval-after-load "which-key"
+      (which-key-add-keymap-based-replacements eglot-mode-map "C-c l" "eglot")))
 #+END_SRC
 
-LSP-UI higher level UI modules for LSP integration into emacs.
+Keep the echo area to a single line so signature help never resizes the frame.
 #+BEGIN_SRC emacs-lisp
-  (use-package lsp-ui
-    :ensure t
-    :after (lsp-mode)
-    :config
-    (setq
-     lsp-ui-sideline-ignore-duplicate t
-     lsp-ui-doc-enable nil
-     lsp-ui-doc-include-signature t
-     lsp-ui-sideline-enable t
-     lsp-ui-sideline-show-symbol nil)
-    ;; aut enable lsp-ui on lsp-mode
-    :hook (lsp-mode . lsp-ui-mode))
-#+END_SRC  
+  (setq eldoc-echo-area-use-multiline-p 1)
+#+END_SRC
 
 Icon library with many unicode characters, icons, ...
 #+BEGIN_SRC emacs-lisp

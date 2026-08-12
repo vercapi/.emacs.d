@@ -1,9 +1,6 @@
 
-;; Added by Package.el.  This must come before configurations of
-;; installed packages.  Don't delete this line.  If you don't want it,
-;; just comment it out by adding a semicolon to the start of the line.
-;; You may delete these explanatory comments.
-(package-initialize)
+;; No `package-initialize' call: since Emacs 27 packages are already activated
+;; before this file is read.  See the "Early init" section of config.org.
 
 (require 'org)
 (require 'ob-tangle)
