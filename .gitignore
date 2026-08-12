@@ -28,3 +28,12 @@ elpa/*
 /eln-cache/
 /eclipse.jdt.ls/
 /.org-generic-id-locations
+/bookmarks
+/projects
+/emojis/
+/multisession/
+/org-persist/
+/request/
+/tree-sitter/
+/undo-fu-session/
+*~
