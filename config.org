@@ -200,9 +200,11 @@ Define theme
     :ensure t
     :config
     (flucui-themes-load-style 'light)
-    ;; The theme sets these branch faces with an invalid :background nil.
-    (set-face-attribute 'magit-branch-remote nil :background 'unspecified)
-    (set-face-attribute 'magit-branch-local nil :background 'unspecified))
+    ;; The theme gives these branch faces an invalid :background nil, so clear it
+    ;; once magit has actually defined the faces.
+    (with-eval-after-load 'magit
+      (set-face-attribute 'magit-branch-remote nil :background 'unspecified)
+      (set-face-attribute 'magit-branch-local nil :background 'unspecified)))
 #+END_SRC
 
 
@@ -863,8 +865,8 @@ Don't show hideshow mode in the mode line
 #+END_SRC
 ** Minibuffer
 
-Enable the use of minibuffer commands in the minibuffer
-e.g. call on helm-lastpass when inserting password in the minibuffer
+Enable the use of minibuffer commands in the minibuffer,
+e.g. running a helm search while already answering a minibuffer prompt.
 #+begin_src emacs-lisp
   (setq enable-recursive-minibuffers t)
 #+end_src
@@ -1774,7 +1776,12 @@ Query a json file
     :bind (:map jq-mode-map ("C-c C-j" . jq-interactively)))
 #+end_src
 
-** Markdown 
+** Markdown
+
+Syntax highlight fenced code blocks in their own major mode.
+#+begin_src emacs-lisp
+  (setq markdown-fontify-code-blocks-natively t)
+#+end_src
 
 Format HTML in markdown
 #+begin_src emacs-lisp
@@ -1807,26 +1814,6 @@ Format HTML in markdown
 ** Emacs integration
 
 **** Use AI within emacs
-**** Org AI
-
-Use LLMs in org mode
-
-#+begin_src emacs-lisp
-  (use-package org-ai
-    :ensure
-    :commands (org-ai-mode org-ai-global-mode)
-    :init
-    (add-hook 'org-mode-hook #'org-ai-mode)
-    (setq org-ai-openai-api-token openai-token)
-    (setq org-ai-default-chat-model "gpt-4")
-    (setq org-ai-auto-fill nil)
-    (setq markdown-fontify-code-blocks-natively t)
-    (add-to-list 'org-babel-load-languages '(org-ai . t))
-    (org-ai-global-mode)
-    :hook
-    (org-ai-mode . (lambda () (visual-line-mode 1))))
-#+end_src
-
 **** Copilot
 
 Us copilot autocomplete functionality within emacs.
@@ -1952,23 +1939,6 @@ Connect AI to emacs so that it has access to the power of emacs
           (newline))
         (diff-buffers target-buffer temp-buffer)))
     (setq debug-on-error nil))
-
-  (defun pve-org-ai-elisp-assitant ()
-    "A minor mode for assisting with the generation of elisp code for org-ai."
-    (interactive)
-    (let* ((buffer-name "*org-ai-elisp-assistant*")
-          (buffer (get-buffer-create buffer-name)))
-      (switch-to-buffer buffer-name)
-      (org-mode)
-      (insert "** org-ai")
-      (org-ai--insert-created-timestamp)
-      (insert "\n")
-      (insert ":PROPERTIES:\n")
-      (insert ":SYS: You are an expert emacs lisp developer answering questions for a developer who is new to emacs lisp.\n")
-      (insert ":sys-everywhere: t\n")
-      (insert "#+begin_ai emacs-lisp\n" "[ME]: " "\n" "#+end_ai\n")
-      (search-backward "[ME]: ")
-      (end-of-line)))
 #+end_src
 
 * Drawing
@@ -2208,52 +2178,6 @@ Enable viewing and working with PDFs inside emacs
     (pdf-tools-install)
     (setq-default pdf-view-display-size 'fit-page))
 #+END_SRC
-** Lastpass
-
-lastpass software provedis the lpass cli utlity.
-#+BEGIN_SRC sh
-  sudo pacman -S lastpass
-#+END_SRC
-
-Lastpass core utils
-#+BEGIN_SRC emacs-lisp
-  (use-package lastpass
-    :ensure t
-    :init (setq lastpass-user personal-email))
-#+END_SRC
-
-Helm interface to lastpass
-#+BEGIN_SRC emacs-lisp
-  (require 'utils)
-
-  (defun helm-lastpass-source ()
-    "Creates a source for helm using lastpass command line"
-    (mapcar
-     (lambda (entry)
-       (let ((formatted (replace-regexp-in-string "^ " "ALL " entry)))
-         (let ((last-space (pve-last-char formatted " " 1)))
-           (list (substring formatted 0 last-space)
-                 (substring formatted (+ 1 last-space))))))
-     (split-string
-      (nth 1
-           (let ((formatstr (concat "--format=%ag"
-                                    " " "%an"
-                                    " " "%au"
-                                    " " "%ai")))
-             (lastpass-runcmd "ls" formatstr))) "\n" t)))
-
-  (defun helm-lastpass ()
-    "Helm interface to get password from lastpass"
-    (interactive)
-    (let ((data (helm-lastpass-source)))
-      (helm :sources (helm-build-sync-source "test"
-                       :candidates data
-                       :action (lambda (candidate) (insert (lastpass-getpass (car candidate)))))
-            :buffer "*helm lastpass*")))
-
-  (global-set-key (kbd "C-c C-p") 'helm-lastpass)
-#+END_SRC
-
 ** RFC mode
 
 Read/search RFC documents directly from emacs
@@ -2835,14 +2759,16 @@ Create a project file from a header
 
 *** Google calendar integration
 
-Synchronize calenders with google calendar.
+Synchronize calenders with google calendar. Only active when the Google
+credentials are present in =secrets.el=.
 
 Manually synchronize with org-gcal-sync
-    
+
 #+BEGIN_SRC emacs-lisp
   (use-package org-gcal
     :ensure t
-    :config (setq org-gcal-client-id google-client-id 
+    :if (boundp 'google-client-id)
+    :config (setq org-gcal-client-id google-client-id
                   org-gcal-client-secret google-client-secret
                   org-gcal-file-alist `((,personal-email . ,(concat org-default-dir "calendars/priv_cal.org"))
                                         (,school-kids-calendar . ,(concat org-default-dir "calendars/school_cal.org"))
